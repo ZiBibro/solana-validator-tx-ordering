@@ -4,6 +4,17 @@
 //! `--max-spend-lamports N`, and N can only lower the limit compiled in below
 //! (plan-implementation, section 11).
 
+mod b58;
+mod clock;
+mod journal;
+mod keys;
+mod quic;
+mod rows;
+mod rpc;
+mod slots;
+mod tls;
+mod tx;
+
 use std::process::ExitCode;
 
 /// Fee spend limit compiled into the binary: 0.05 SOL. A flag may lower it, never raise it.
