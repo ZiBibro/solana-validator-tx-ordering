@@ -32,8 +32,13 @@ host_path() { if command -v cygpath >/dev/null 2>&1; then cygpath -m "$1"; else 
 ITB_WALLET_KEY_FILE=$(host_path "$key")
 export ITB_WALLET_KEY_FILE
 export ITB_NETWORK=devnet ITB_RPC_URL=https://api.devnet.solana.com ITB_WS_URL=wss://api.devnet.solana.com
-ITB_GIT_COMMIT=$(git -C "$repo" rev-parse HEAD)$(git -C "$repo" diff --quiet HEAD -- . ':!data' ':!logs' || echo -dirty)
+# Git for Windows gets no path conversion under MSYS_NO_PATHCONV, so it takes the host path too.
+git_repo() { git -C "$(host_path "$repo")" "$@"; }
+repo_state() { git_repo status --porcelain -- . ':!data' ':!logs'; }
+head=$(git_repo rev-parse HEAD) && [ -n "$head" ] || { echo "devnet.sh: $repo is not a git checkout" >&2; exit 2; }
+ITB_GIT_COMMIT=$head$(git_repo diff --quiet HEAD -- . ':!data' ':!logs' || echo -dirty)
 export ITB_GIT_COMMIT
+repo_before=$(repo_state) || exit 2
 compose_file=$(host_path "$repo/compose.yaml")
 dc() { docker compose -f "$compose_file" --profile measure "$@"; }
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
@@ -62,7 +67,6 @@ draw_plan() {
     printf '%s\n' "$out" | sed -n 's|^plan: /repo/data/\(plans/.*plan\.json\)$|\1|p' | tr -d '\r'
 }
 run_id_of() { sed -n 's/^itb-probe [A-Za-z-]* run \([^:]*\):.*/\1/p' "$1" | head -1; }
-repo_before=$(git -C "$repo" status --porcelain -- . ':!data' ':!logs')
 echo "commit $ITB_GIT_COMMIT, transcript logs/devnet-pipeline-$stamp.txt"
 
 step "probe image (built as the README says)"
@@ -100,10 +104,17 @@ cat "$out"
 dry_id=$(run_id_of "$out")
 rm -f "$out"
 check "dry-run" test "$code" -eq 0
-check "dry-run rows simulated" grep -q '"result":"simulated"' "$repo/data/runs/$dry_id/probes.jsonl"
+rows="$repo/data/runs/$dry_id/probes.jsonl"
+sends=$(grep -c '"kind":"send"' "$rows")
+clean=$(grep '"kind":"send"' "$rows" | grep '"result":"simulated"' | grep -c '"simulate":{"err":null')
+echo "dry-run: $sends send rows, $clean simulated without error"
+check "dry-run rows simulated without error" test "${sends:-0}" -gt 0 -a "$clean" = "$sends"
 
 step "wallet balance"
-wallet=$(dc run --rm --no-deps -T probe status | tee /dev/stderr | sed -n 's/^wallet \([1-9A-HJ-NP-Za-km-z]*\).*/\1/p' | tr -d '\r')
+status=$(dc run --rm --no-deps -T probe status | tr -d '\r')
+echo "$status"
+wallet=$(printf '%s\n' "$status" | sed -n 's/^wallet \([1-9A-HJ-NP-Za-km-z]*\).*/\1/p')
+[ -n "$wallet" ] || { echo "no wallet address in the probe status"; exit 1; }
 balance=$(rpc getBalance "[\"$wallet\"]" value)
 echo "wallet $wallet holds $balance lamports"
 
@@ -136,7 +147,7 @@ check "keyscan" dc run --rm --no-deps -T -v "$ITB_WALLET_KEY_FILE:/keys/wallet-k
     tests/keyscan.py /keys/wallet-key.json /repo/data /repo/logs /scan/state
 
 step "nothing outside data/ and logs/ changed"
-check "repository untouched" test "$(git -C "$repo" status --porcelain -- . ':!data' ':!logs')" = "$repo_before"
+check "repository untouched" test "$(repo_state || echo git-failed)" = "$repo_before"
 
 if [ ${#failed[@]} -gt 0 ]; then
     printf '\ndevnet pipeline test FAILED: %s\n' "${failed[*]}"
