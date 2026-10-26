@@ -1,0 +1,226 @@
+{
+  "schema": "itb-raw",
+  "version": 1,
+  "about": "Canonical format of every raw row the tool writes. Python (itb/rawformat.py) validates rows against this file and the Rust probe checks its own rows against it in cargo test, so the two sides cannot drift apart. Type grammar: str, int, num, bool, obj, list<T>, enum:a|b; a trailing ? allows null. Unknown fields are errors. Every row carries v (schema version) and kind.",
+  "files": {
+    "data/runs/<run_id>/probes.jsonl": "written by probe: run, round, burst, probe, send, burst_end rows; probe rows are fsynced before the transaction leaves the machine",
+    "data/runs/<run_id>/collect.jsonl": "written by collect: slot and inclusion rows",
+    "data/runs/<run_id>/blocks/<slot>.jsonl.gz": "written by collect: block_tx rows, one per transaction of an inclusion slot (competition inside the block)",
+    "data/runs/<run_id>/snapshots/": "getClusterNodes, leader schedule and validators.app snapshots the labels come from",
+    "logs/<run_id>.jsonl": "operational log: log rows, kept apart from the raw data"
+  },
+  "formats": {
+    "pubkey": "base58, 32 to 44 characters",
+    "signature": "base58, 64 to 88 characters",
+    "utc": "ISO 8601 UTC ending in Z",
+    "hash": "base58, 32 to 44 characters",
+    "sha256": "64 lowercase hex characters"
+  },
+  "kinds": {
+    "run": {
+      "file": "probes.jsonl",
+      "doc": "First row of every run. Section 11: mode and spend limit; section 8: everything the run needs to be re-read later.",
+      "fields": {
+        "run_id": {"type": "str", "doc": "unique id, also the directory name"},
+        "stage": {"type": "enum:pilot|campaign|devnet|localnet|dry-run|test"},
+        "network": {"type": "enum:mainnet|devnet|localnet"},
+        "mode": {"type": "enum:dry-run|live", "doc": "dry-run unless --live was passed"},
+        "spend_limit_lamports": {"type": "int", "min": 0, "doc": "effective limit: the code constant or a smaller --max-spend-lamports"},
+        "code_limit_lamports": {"type": "int", "min": 0, "doc": "the constant compiled into the probe (50 000 000)"},
+        "rpc_url": {"type": "str"},
+        "ws_url": {"type": "str"},
+        "tool_version": {"type": "str"},
+        "git_commit": {"type": "str?"},
+        "started_utc": {"type": "str", "format": "utc"},
+        "wallet": {"type": "str?", "format": "pubkey", "doc": "public key of the funding wallet; null in dry-run"},
+        "payers": {"type": "list<str>", "format": "pubkey", "doc": "the twelve payer addresses in payer_index order"},
+        "doubling": {"type": "bool", "doc": "window doubling, section 7"},
+        "prereg_manifest_sha256": {"type": "str?", "format": "sha256"},
+        "seed_table_sha256": {"type": "str?", "format": "sha256"}
+      }
+    },
+    "round": {
+      "file": "probes.jsonl",
+      "doc": "One per round of section 7: the random reference time and the snapshots the panel labels come from.",
+      "fields": {
+        "run_id": {"type": "str"},
+        "round": {"type": "int", "min": 0},
+        "epoch": {"type": "int", "min": 0},
+        "part": {"type": "int", "min": 0, "max": 7, "doc": "quarter (0-3) or eighth (0-7) of the epoch"},
+        "anchor_utc": {"type": "str", "format": "utc", "doc": "random reference time fixed before the round"},
+        "anchor_slot": {"type": "int", "min": 0},
+        "cluster_nodes_file": {"type": "str"},
+        "leader_schedule_file": {"type": "str"},
+        "validators_app_file": {"type": "str?"},
+        "validators_app_utc": {"type": "str?", "format": "utc"},
+        "windows": {"type": "list<obj>", "doc": "selected windows: leader, first_slot, burst_seq"}
+      }
+    },
+    "burst": {
+      "file": "probes.jsonl",
+      "doc": "Written and fsynced before the first probe of the burst is sent. Sections 4-8.",
+      "fields": {
+        "run_id": {"type": "str"},
+        "burst_seq": {"type": "int", "min": 0, "doc": "global across all runs, recovered from data and chain on start"},
+        "round": {"type": "int?", "min": 0},
+        "cell": {"type": "int?", "min": 0, "doc": "cell of the seeded table (arm x timing)"},
+        "arm": {"type": "enum:independent|shared|equal_fee|denominator"},
+        "timing": {"type": "enum:pre300|slot2", "doc": "target arrival 300 ms before the window or at the start of its second slot"},
+        "path": {"type": "enum:quic|rpc"},
+        "epoch": {"type": "int", "min": 0},
+        "first_slot": {"type": "int", "min": 0, "doc": "first slot of the target leader window"},
+        "window_len": {"type": "int", "min": 1, "max": 4},
+        "selection_class": {"type": "str", "doc": "class the leader was selected under"},
+        "leader": {"type": "str", "format": "pubkey"},
+        "leader_vote": {"type": "str?", "format": "pubkey"},
+        "leader_client_id": {"type": "str?", "doc": "clientId from getClusterNodes at the burst"},
+        "leader_version": {"type": "str?"},
+        "tpu_quic": {"type": "str?", "doc": "ip:port from gossip at the burst"},
+        "tpu_quic_port": {"type": "int?", "min": 0, "max": 65535},
+        "gossip_ip": {"type": "str?"},
+        "relayer_default_port": {"type": "bool", "doc": "tpuQuic on port 11228, the Jito relayer default (section 3)"},
+        "fee_collector": {"type": "str?", "format": "pubkey", "doc": "set when the leader's fee collector differs from its identity"},
+        "validators_app": {"type": "obj?", "doc": "software_client, software_version, snapshot_utc"},
+        "cluster_nodes_file": {"type": "str?"},
+        "equal_fee_lamports": {"type": "int?", "min": 0, "doc": "shared priority fee of the equal_fee and denominator arms"},
+        "blockhash": {"type": "str", "format": "hash"},
+        "last_valid_block_height": {"type": "int", "min": 0},
+        "blockhash_context_slot": {"type": "int?", "min": 0},
+        "utc": {"type": "str", "format": "utc", "doc": "wall clock once per burst for the measurement log"},
+        "slot_clock_source": {"type": "enum:first_shred|slot_subscribe"},
+        "slot_ms": {"type": "num", "doc": "slot duration measured in this run"},
+        "anchor_slot": {"type": "int", "min": 0, "doc": "last slot the send moment was predicted from"},
+        "anchor_leader": {"type": "str?", "format": "pubkey"},
+        "predicted_first_slot_ns": {"type": "int", "doc": "monotonic clock of the probe process"},
+        "target_arrival_ns": {"type": "int"},
+        "rtt_ns": {"type": "int?", "min": 0, "doc": "Connection::rtt() right before the burst"},
+        "send_at_ns": {"type": "int", "doc": "target arrival minus rtt/2"},
+        "handshake": {"type": "obj?", "doc": "dry-run: ok, close_code, rtt_ns, error"}
+      }
+    },
+    "probe": {
+      "file": "probes.jsonl",
+      "doc": "One per probe, fsynced before the probe is sent, so a crash never leaves an on-chain signature without a row (section 8).",
+      "fields": {
+        "run_id": {"type": "str"},
+        "burst_seq": {"type": "int", "min": 0},
+        "signature": {"type": "str", "format": "signature"},
+        "payer_index": {"type": "int", "min": 1, "max": 12},
+        "payer": {"type": "str", "format": "pubkey"},
+        "send_rank": {"type": "int", "min": 0, "max": 11},
+        "transfer_lamports": {"type": "int", "min": 1, "doc": "burst_seq*16 + send_rank + 1 (section 4)"},
+        "priority_fee_lamports": {"type": "int", "min": 0},
+        "cu_limit": {"type": "int", "min": 0},
+        "loaded_data_limit": {"type": "int", "min": 0},
+        "write_accounts": {"type": "list<str>", "format": "pubkey"},
+        "tx_version": {"type": "enum:v1|legacy"},
+        "worst_fee_lamports": {"type": "int", "min": 0, "doc": "commitment booked in the spend journal before sending"},
+        "wire_bytes": {"type": "int", "min": 0},
+        "tx_b64": {"type": "str?", "doc": "serialized transaction as sent (unsigned in dry-run)"}
+      }
+    },
+    "send": {
+      "file": "probes.jsonl",
+      "doc": "Outcome of sending one probe, appended after the send under the same signature (section 8).",
+      "fields": {
+        "run_id": {"type": "str"},
+        "burst_seq": {"type": "int", "min": 0},
+        "signature": {"type": "str", "format": "signature"},
+        "result": {"type": "enum:finished|stopped|connection_closed|timeout|not_sent|simulated|rpc_ok|rpc_error"},
+        "code": {"type": "int?", "doc": "stream stop code or connection close code"},
+        "send_end_ns": {"type": "int?", "doc": "monotonic end of write_all, lower bound of leaving the machine"},
+        "stopped_ns": {"type": "int?", "doc": "monotonic moment stopped() resolved, upper bound"},
+        "rpc_response": {"type": "obj?", "doc": "sendTransaction response on the RPC path"},
+        "simulate": {"type": "obj?", "doc": "dry-run: simulateTransaction err, unitsConsumed, fee"},
+        "error": {"type": "str?"}
+      }
+    },
+    "burst_end": {
+      "file": "probes.jsonl",
+      "doc": "Written after the last probe of a burst: connection statistics and the slot clock observations (sections 5.1, 6, 8).",
+      "fields": {
+        "run_id": {"type": "str"},
+        "burst_seq": {"type": "int", "min": 0},
+        "quic_stats": {"type": "obj?", "doc": "rtt_ns, lost_packets and other quinn path stats at burst end"},
+        "first_shred_ns": {"type": "list<int?>", "doc": "local monotonic receipt of firstShredReceived for slots 1 and 2 of the window"},
+        "node_ts_ms": {"type": "list<int?>", "doc": "timestamp field of the same events as reported by the RPC node"},
+        "first_send_offset_ns": {"type": "int?", "doc": "first send minus firstShredReceived of slot 1"},
+        "last_send_offset_ns": {"type": "int?"},
+        "prediction_residual_ns": {"type": "int?", "doc": "observed minus predicted start of slot 1"},
+        "reconnects": {"type": "int", "min": 0},
+        "utc_end": {"type": "str", "format": "utc"}
+      }
+    },
+    "slot": {
+      "file": "collect.jsonl",
+      "doc": "One per slot that holds a probe and per first slot of each target window (crank memo). Section 8.",
+      "fields": {
+        "run_id": {"type": "str"},
+        "slot": {"type": "int", "min": 0},
+        "block_time": {"type": "int?"},
+        "parent_slot": {"type": "int?", "min": 0},
+        "blockhash": {"type": "str?", "format": "hash"},
+        "leader": {"type": "str?", "format": "pubkey", "doc": "identity from the Fee reward record of the same block"},
+        "tx_count": {"type": "int", "min": 0},
+        "cost_units": {"type": "int?", "min": 0},
+        "ticks": {"type": "list<obj>", "doc": "market-tick transactions: index, signer, timestamp_ns, interval_ms"},
+        "crank_memo": {"type": "str?", "doc": "memo of the tip-payment crank transaction, if present"},
+        "competition_file": {"type": "str?", "doc": "blocks/<slot>.jsonl.gz"}
+      }
+    },
+    "inclusion": {
+      "file": "collect.jsonl",
+      "doc": "Collector result for one probe signature. Section 8.",
+      "fields": {
+        "run_id": {"type": "str"},
+        "burst_seq": {"type": "int", "min": 0},
+        "signature": {"type": "str", "format": "signature"},
+        "status": {"type": "enum:included|not_found|expired|error"},
+        "slot": {"type": "int?", "min": 0},
+        "slot_in_window": {"type": "int?", "min": 1, "max": 4, "doc": "null when the probe landed outside the target window"},
+        "tx_index": {"type": "int?", "min": 0},
+        "block_tx_count": {"type": "int?", "min": 0},
+        "block_cost_units": {"type": "int?", "min": 0},
+        "fee": {"type": "int?", "min": 0, "doc": "meta.fee"},
+        "err": {"type": "obj?", "doc": "meta.err, wrapped as {\"value\": ...}"},
+        "actual_leader": {"type": "str?", "format": "pubkey"},
+        "actual_leader_class": {"type": "str?", "doc": "clientId of the actual leader from the burst's gossip snapshot"},
+        "in_target_window": {"type": "bool?"},
+        "tick_segment": {"type": "int?", "min": 0, "doc": "index of the inter-tick segment the probe fell into"},
+        "block_time": {"type": "int?"},
+        "checked_utc": {"type": "str", "format": "utc"}
+      }
+    },
+    "block_tx": {
+      "file": "blocks/<slot>.jsonl.gz",
+      "doc": "Inputs of the competition measure of section 10, one per transaction of an inclusion slot.",
+      "fields": {
+        "slot": {"type": "int", "min": 0},
+        "tx_index": {"type": "int", "min": 0},
+        "signatures": {"type": "list<str>", "format": "signature"},
+        "write_accounts": {"type": "list<str>", "format": "pubkey"},
+        "ix_data_bytes": {"type": "int", "min": 0},
+        "cu_limit": {"type": "int?", "min": 0},
+        "loaded_data_limit": {"type": "int?", "min": 0},
+        "priority_fee_lamports": {"type": "int?", "min": 0},
+        "fee": {"type": "int?", "min": 0},
+        "cost_units": {"type": "int?", "min": 0},
+        "jito_tip": {"type": "bool"},
+        "tx_version": {"type": "enum:v1|v0|legacy"}
+      }
+    },
+    "log": {
+      "file": "logs/<run_id>.jsonl",
+      "doc": "Operational log (section 12). Never carries key material.",
+      "fields": {
+        "ts": {"type": "str", "format": "utc"},
+        "level": {"type": "enum:debug|info|warn|error"},
+        "service": {"type": "enum:probe|collect|verify|analyze|reproduce"},
+        "run_id": {"type": "str?"},
+        "burst_seq": {"type": "int?", "min": 0},
+        "event": {"type": "str"},
+        "data": {"type": "obj?"}
+      }
+    }
+  }
+}

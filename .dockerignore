@@ -1,0 +1,9 @@
+# The probe image is built from the repository root; keep keys, data and git
+# history out of the build context.
+.git
+secrets
+data
+logs
+out
+probe/target
+**/__pycache__

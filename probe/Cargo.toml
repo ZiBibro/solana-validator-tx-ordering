@@ -1,0 +1,14 @@
+[package]
+name = "itb-probe"
+version = "0.1.0"
+edition = "2021"
+# Agave v4.3.2 pins the same toolchain (rust-toolchain.toml); the build image matches it.
+rust-version = "1.97.1"
+license = "MIT"
+publish = false
+
+[[bin]]
+name = "itb-probe"
+path = "src/main.rs"
+
+[dependencies]

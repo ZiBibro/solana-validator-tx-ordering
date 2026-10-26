@@ -1,0 +1,83 @@
+# Inside the Block: how Solana leaders order transactions.
+#
+# Judges:   docker compose run --rm reproduce          (no key, no Rust build)
+#           docker compose run --rm reproduce verify   (one step for debugging)
+# Measure:  docker compose --profile measure run --rm probe          (dry-run, the default)
+#           docker compose --profile measure run --rm probe --live --max-spend-lamports N
+#
+# Services without profiles always start (compose-spec, profiles), so a plain
+# `docker compose up` runs reproduce only and never builds the probe image.
+
+name: inside-the-block
+
+x-python: &python
+  # python:3.12-slim-bookworm; digest taken 2026-10-26. Standard library only.
+  image: python:3.12-slim-bookworm@sha256:6a0e06f5ba0b373d051aabd3fffb9b873f27f9a2a3a14bcbe37dee6f0e3bbc70
+  working_dir: /repo
+  entrypoint: ["python", "-m", "itb"]
+  environment:
+    ITB_RPC_URL: ${ITB_RPC_URL:-https://api.mainnet-beta.solana.com}
+    ITB_LOG_LEVEL: ${ITB_LOG_LEVEL:-info}
+    PYTHONDONTWRITEBYTECODE: "1"
+    PYTHONUNBUFFERED: "1"
+  read_only: true
+  tmpfs:
+    - /tmp
+
+services:
+  reproduce:
+    <<: *python
+    command: ["reproduce"]
+    # Reads the repository, writes nothing back to the host.
+    volumes:
+      - ./:/repo:ro
+
+  collect:
+    <<: *python
+    profiles: [measure]
+    command: ["collect"]
+    volumes:
+      - ./:/repo:ro
+      - ./data:/repo/data
+      - ./logs:/repo/logs
+
+  probe:
+    profiles: [measure]
+    build:
+      context: .
+      dockerfile: probe/Dockerfile
+    image: inside-the-block-probe:local
+    environment:
+      ITB_NETWORK: ${ITB_NETWORK:-mainnet}
+      ITB_RPC_URL: ${ITB_RPC_URL:-https://api.mainnet-beta.solana.com}
+      ITB_WS_URL: ${ITB_WS_URL:-wss://api.mainnet-beta.solana.com}
+      ITB_LOG_LEVEL: ${ITB_LOG_LEVEL:-info}
+      ITB_DATA_DIR: /data
+      ITB_LOG_DIR: /logs
+      ITB_STATE_DIR: /state
+      ITB_KEY_PATH: /run/secrets/wallet_key
+    volumes:
+      - ./data:/data
+      - ./logs:/logs
+      # Spend journal (section 11): survives restarts, reconciled with the chain on start.
+      - itb-state:/state
+    # Compose v5.6.1 ignores uid, gid and mode of a file secret outside Swarm and
+    # mounts it with the host file's rights (0777 under Docker Desktop, measured
+    # 2026-10-26), so the image runs one non-root user and one process instead.
+    # A missing key file makes Docker mount an empty directory; the probe treats
+    # that as "no key", which dry-run never needs and --live refuses.
+    secrets:
+      - wallet_key
+    read_only: true
+    tmpfs:
+      - /tmp
+
+volumes:
+  itb-state: {}
+
+secrets:
+  # The key never enters the repository: secrets/ is git-ignored and the path can
+  # point anywhere outside the checkout. compose.key-from-env.yaml switches the
+  # source to an environment variable instead of a file.
+  wallet_key:
+    file: ${ITB_WALLET_KEY_FILE:-./secrets/wallet-key.json}

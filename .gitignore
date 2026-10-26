@@ -1,0 +1,9 @@
+# Keys never enter the repository (plan-implementation, section 11).
+secrets/
+*.key
+.env
+# Build and local output.
+probe/target/
+out/
+__pycache__/
+*.pyc

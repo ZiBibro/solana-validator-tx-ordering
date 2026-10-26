@@ -1,0 +1,7 @@
+# Key from an environment variable instead of a file:
+#   ITB_WALLET_KEY=... docker compose -f compose.yaml -f compose.key-from-env.yaml \
+#     --profile measure run --rm probe --live --max-spend-lamports N
+# Compose still mounts it as a file at /run/secrets/wallet_key, read-only.
+secrets:
+  wallet_key: !override
+    environment: ITB_WALLET_KEY
