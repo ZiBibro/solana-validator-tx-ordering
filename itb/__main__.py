@@ -15,15 +15,17 @@ import argparse
 import os
 import sys
 
-from . import __version__, rawformat, selftest
+from . import __version__, analyze, rawformat, selftest
 
 EXIT_OK = 0
 EXIT_FAIL = 1
 EXIT_NOT_READY = 2
 
+DEFAULT_DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
 
-def _not_ready(name, stage):
-    print("%s: not implemented yet (build stage %d of plan-implementation)" % (name, stage),
+
+def _not_ready(name, when):
+    print("%s: not implemented yet (%s)" % (name, when),
           file=sys.stderr)
     return EXIT_NOT_READY
 
@@ -40,19 +42,32 @@ def cmd_selftest(args):
 
 
 def cmd_verify(args):
-    return _not_ready("verify", 3)
+    return _not_ready("verify", "build stage 3 of plan-implementation")
 
 
 def cmd_analyze(args):
-    return _not_ready("analyze", 2)
+    data = getattr(args, "data", None) or os.environ.get("ITB_ANALYZE_DATA", DEFAULT_DATA)
+    stages = tuple(getattr(args, "stage", None) or ("campaign",))
+    runs = [r for r in analyze.load_runs(data) if r.run["stage"] in stages]
+    if not runs:
+        print("analyze: no runs of stage %s under %s" % ("/".join(stages), os.path.join(data, "runs")),
+              file=sys.stderr)
+        return EXIT_NOT_READY
+    result = analyze.analyze(runs, stages)
+    for line in analyze.summary_lines(result):
+        print(line)
+    if getattr(args, "out", None):
+        analyze.write_result(result, args.out)
+        print("analyze: wrote " + args.out)
+    return EXIT_OK
 
 
 def cmd_claim(args):
-    return _not_ready("claim", 2)
+    return _not_ready("claim", "comes with the REPORT writer, which needs the pilot data")
 
 
 def cmd_collect(args):
-    return _not_ready("collect", 3)
+    return _not_ready("collect", "build stage 3 of plan-implementation")
 
 
 def cmd_reproduce(args):
@@ -92,7 +107,10 @@ def main(argv=None):
     sub.add_parser("reproduce", help="selftest, verify, analyze")
     sub.add_parser("selftest", help="known-answer checks")
     sub.add_parser("verify", help="re-read every recorded signature from the chain")
-    sub.add_parser("analyze", help="recompute REPORT from raw data")
+    p = sub.add_parser("analyze", help="recompute REPORT from raw data")
+    p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
+    p.add_argument("--stage", action="append", help="run stage to include (default: campaign)")
+    p.add_argument("--out", help="write the full result as JSON here")
     p = sub.add_parser("claim", help="recompute one REPORT claim")
     p.add_argument("claim_id")
     sub.add_parser("collect", help="append inclusion rows for a run")
