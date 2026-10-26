@@ -14,6 +14,15 @@ pub const PLAN_VERSION: u64 = 1;
 /// of consecutive bursts to it, across rounds too.
 pub const MIN_GAP_SLOTS: u64 = 160;
 pub const MAX_SEND_INTERVAL_US: u64 = 50_000;
+/// No single probe may ask a priority fee above the whole compiled spend limit, so fee
+/// sums stay far from u64 overflow before the limit check sees them.
+pub const MAX_PRIORITY_FEE_LAMPORTS: u64 = crate::SPEND_LIMIT_LAMPORTS;
+
+/// A snapshot named by the plan is a plain file beside plan.json. A path would let a
+/// plan copy any readable file, the key included, into the committed run data.
+pub fn plain_file_name(name: &str) -> bool {
+    std::path::Path::new(name).file_name().and_then(|f| f.to_str()) == Some(name)
+}
 
 #[derive(Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
@@ -117,6 +126,12 @@ pub fn check(plan: &Plan) -> Vec<String> {
         if r.part > 7 {
             out.push(format!("round {}: part {} above 7", r.round, r.part));
         }
+        let snapshots = [Some(&r.cluster_nodes_file), Some(&r.leader_schedule_file), r.validators_app_file.as_ref()];
+        for name in snapshots.into_iter().flatten() {
+            if !plain_file_name(name) {
+                out.push(format!("round {}: snapshot {name:?} is not a plain file name beside the plan", r.round));
+            }
+        }
         for (i, b) in r.bursts.iter().enumerate() {
             let at = format!("round {} burst {i}", r.round);
             if !ARMS.contains(&b.arm.as_str()) {
@@ -179,6 +194,9 @@ fn check_probes(b: &Burst) -> Vec<String> {
             out.push("an unset v1 limit is zero and fails the transaction (section 4)".into());
             break;
         }
+    }
+    if b.probes.iter().any(|p| p.priority_fee_lamports > MAX_PRIORITY_FEE_LAMPORTS) {
+        out.push(format!("priority fee above {MAX_PRIORITY_FEE_LAMPORTS} lamports"));
     }
     let fees: Vec<u64> = b.probes.iter().map(|p| p.priority_fee_lamports).collect();
     let equal = fees.iter().all(|&f| f == fees[0]);
@@ -259,5 +277,21 @@ pub mod tests {
         let mut extra = sample(&[1000]);
         extra["surprise"] = json!(1);
         assert!(parse(&extra.to_string()).unwrap_err().contains("unknown field"));
+        let mut fee = sample(&[1000]);
+        fee["rounds"][0]["bursts"][0]["probes"][0]["priority_fee_lamports"] = json!(u64::MAX);
+        assert!(parse(&fee.to_string()).unwrap_err().contains("priority fee above"));
+    }
+
+    #[test]
+    fn snapshots_are_plain_files_beside_the_plan() {
+        for name in ["/run/secrets/wallet_key", "../state/journal.jsonl", "a/b.json", "..", ""] {
+            let mut p = sample(&[1000]);
+            p["rounds"][0]["cluster_nodes_file"] = json!(name);
+            assert!(parse(&p.to_string()).unwrap_err().contains("plain file name"), "{name}");
+        }
+        let mut p = sample(&[1000]);
+        p["rounds"][0]["validators_app_file"] = json!("/etc/passwd");
+        assert!(parse(&p.to_string()).unwrap_err().contains("plain file name"));
+        assert!(plain_file_name("cluster-nodes.json"));
     }
 }

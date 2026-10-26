@@ -289,18 +289,18 @@ fn run_session(s: &Settings, mode: &Mode, plan_path: &Path, close_after: bool, s
         .iter()
         .flat_map(|(_, b)| b.probes.iter())
         .map(|p| tx::worst_fee(1, config_of(p)))
-        .sum();
+        .fold(0, u64::saturating_add);
     let overhead = CLOSE_FEE + if close_after { CLOSE_FEE * keys::PAYERS as u64 } else { 0 };
     let committed = journal.as_ref().map_or(0, Journal::committed);
     log.info("plan_cost", None, json!({"worst_fee_lamports": plan_worst, "overhead_lamports": overhead, "committed": committed, "limit": limit}));
     println!(
         "plan worst-case fees {plan_worst} lamports plus {overhead} for funding and closing; committed {committed}; limit {limit} ({:.1}% used after the plan)",
-        100.0 * (committed + plan_worst + overhead) as f64 / limit as f64
+        100.0 * committed.saturating_add(plan_worst).saturating_add(overhead) as f64 / limit as f64
     );
-    if committed + plan_worst + overhead > limit {
+    if committed.saturating_add(plan_worst).saturating_add(overhead) > limit {
         let e = format!(
             "spend limit: the plan needs up to {} lamports, the limit {limit} leaves {}",
-            plan_worst + overhead,
+            plan_worst.saturating_add(overhead),
             limit.saturating_sub(committed)
         );
         log.error("limit_refusal", None, json!({"message": e}));
@@ -398,7 +398,7 @@ fn fund(rpc: &mut Rpc, journal: &mut Journal, log: &mut Log, wallet: &Signer, pa
     let addrs: Vec<String> = payers.iter().map(Signer::address).collect();
     let balances = rpc.balances(&addrs)?;
     let deficits: Vec<u64> = balances.iter().zip(needs).map(|(b, n)| (rent + n).saturating_sub(*b)).collect();
-    let total: u64 = deficits.iter().sum();
+    let total: u64 = deficits.iter().fold(0, |a, &d| a.saturating_add(d));
     log.info("payer_balances", None, json!({"balances": balances, "rent": rent, "needs": needs, "deficits": deficits}));
     if total == 0 {
         return Ok(());
@@ -522,8 +522,11 @@ impl Session {
 
     /// Copy one snapshot of the plan into the run; returns its name relative to the run.
     fn copy_snapshot(&self, round: u64, name: &str) -> Result<String, String> {
-        let base = Path::new(name).file_name().and_then(|f| f.to_str()).ok_or_else(|| format!("snapshot name {name}"))?;
-        let rel = format!("snapshots/round{round}-{base}");
+        // plan::check already refused paths; this copy refuses them again on its own.
+        if !crate::plan::plain_file_name(name) {
+            return Err(format!("snapshot {name:?} is not a plain file name beside the plan"));
+        }
+        let rel = format!("snapshots/round{round}-{name}");
         let dst = self.run_dir.join(&rel);
         std::fs::create_dir_all(dst.parent().unwrap()).map_err(|e| e.to_string())?;
         std::fs::copy(self.plan_dir.join(name), &dst).map_err(|e| format!("snapshot {name}: {e}"))?;

@@ -179,7 +179,7 @@ pub fn probe_message(
 
 /// Highest fee the probe can be charged: one signature plus its v1 priority fee.
 pub fn worst_fee(signatures: usize, config: Config) -> u64 {
-    signatures as u64 * LAMPORTS_PER_SIGNATURE + config.priority_fee
+    (signatures as u64).saturating_mul(LAMPORTS_PER_SIGNATURE).saturating_add(config.priority_fee)
 }
 
 #[cfg(test)]

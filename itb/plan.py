@@ -29,6 +29,7 @@ EQUAL_FEE_INTERVAL_US = 5000
 PAYERS = 12
 CELLS = tuple((arm, timing) for arm in prereg.ARMS for timing in prereg.TIMINGS)
 TEST_STAGES = ("localnet", "devnet", "test")
+MAX_PRIORITY_FEE_LAMPORTS = 50_000_000  # probe/src/plan.rs, the compiled spend limit
 
 
 def utc_now():
@@ -122,8 +123,14 @@ def check(plan):
         if b - a < MIN_GAP_SLOTS:
             problems.append("windows at %d and %d closer than %d slots" % (a, b, MIN_GAP_SLOTS))
     for r in plan["rounds"]:
+        for key in ("cluster_nodes_file", "leader_schedule_file", "validators_app_file"):
+            name = r.get(key)
+            if name is not None and (not name or os.path.basename(name) != name or name in (".", "..")):
+                problems.append("round %d: snapshot %r is not a plain file name beside the plan" % (r["round"], name))
         for b in r["bursts"]:
             ps = b["probes"]
+            if any(p["priority_fee_lamports"] > MAX_PRIORITY_FEE_LAMPORTS for p in ps):
+                problems.append("slot %d: priority fee above %d lamports" % (b["first_slot"], MAX_PRIORITY_FEE_LAMPORTS))
             if sorted(p["send_rank"] for p in ps) != list(range(len(ps))):
                 problems.append("slot %d: send ranks" % b["first_slot"])
             if len({p["payer_index"] for p in ps}) != len(ps):

@@ -141,9 +141,9 @@ impl Journal {
 
     /// Book several transactions at once, all or none, with one fsync.
     pub fn book(&mut self, items: &[(String, u64, u64)], what: &str) -> Result<(), String> {
-        let asked: u64 = items.iter().map(|i| i.1).sum();
+        let asked: u64 = items.iter().fold(0, |a, i| a.saturating_add(i.1));
         let committed = self.committed();
-        if committed + asked > self.limit {
+        if committed.saturating_add(asked) > self.limit {
             return Err(LimitRefusal { committed, asked, limit: self.limit }.to_string());
         }
         for (sig, _, _) in items {

@@ -486,6 +486,12 @@ def plan_checks():
     bad = json.loads(json.dumps(p))
     bad["rounds"][0]["bursts"][1]["first_slot"] = slots[0] + 8
     out.append(("plan: windows closer than 160 slots are refused", any("closer" in x for x in plan.check(bad)), ""))
+    leak = json.loads(json.dumps(p))
+    leak["rounds"][0]["cluster_nodes_file"] = "/run/secrets/wallet_key"
+    leak["rounds"][0]["bursts"][0]["probes"][0]["priority_fee_lamports"] = 2 ** 64
+    found = plan.check(leak)
+    out.append(("plan: a snapshot path and a fee above the limit are refused",
+                any("plain file name" in x for x in found) and any("priority fee above" in x for x in found), "; ".join(found)))
     out.append(("plan: snapshots carry nodes and schedule",
                 len(snaps["cluster-nodes.json"]["nodes"]) == 2 and snaps["leader-schedule.json"]["first_slot"] == 10000, ""))
     return out
