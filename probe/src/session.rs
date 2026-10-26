@@ -382,6 +382,26 @@ fn run_session(s: &Settings, mode: &Mode, plan_path: &Path, close_after: bool, s
     result
 }
 
+/// Copy one snapshot of the plan into the run; returns its name relative to the run.
+fn copy_snapshot(plan_dir: &Path, run_dir: &Path, round: u64, name: &str) -> Result<String, String> {
+    // plan::check already refused paths; this copy refuses them again on its own.
+    if !crate::plan::plain_file_name(name) {
+        return Err(format!("snapshot {name:?} is not a plain file name beside the plan"));
+    }
+    // A symlink beside the plan could still point at the key; only a regular file is copied.
+    // A hard link cannot reach /run/secrets, a separate mount from the data volume.
+    let src = plan_dir.join(name);
+    let meta = std::fs::symlink_metadata(&src).map_err(|e| format!("snapshot {name}: {e}"))?;
+    if !meta.file_type().is_file() {
+        return Err(format!("snapshot {name:?} is not a regular file"));
+    }
+    let rel = format!("snapshots/round{round}-{name}");
+    let dst = run_dir.join(&rel);
+    std::fs::create_dir_all(dst.parent().unwrap()).map_err(|e| e.to_string())?;
+    std::fs::copy(&src, &dst).map_err(|e| format!("snapshot {name}: {e}"))?;
+    Ok(rel)
+}
+
 fn config_of(p: &ProbeSpec) -> Config {
     Config { priority_fee: p.priority_fee_lamports, cu_limit: p.cu_limit, loaded_data_limit: p.loaded_data_limit }
 }
@@ -520,17 +540,8 @@ impl Session {
         Ok(())
     }
 
-    /// Copy one snapshot of the plan into the run; returns its name relative to the run.
     fn copy_snapshot(&self, round: u64, name: &str) -> Result<String, String> {
-        // plan::check already refused paths; this copy refuses them again on its own.
-        if !crate::plan::plain_file_name(name) {
-            return Err(format!("snapshot {name:?} is not a plain file name beside the plan"));
-        }
-        let rel = format!("snapshots/round{round}-{name}");
-        let dst = self.run_dir.join(&rel);
-        std::fs::create_dir_all(dst.parent().unwrap()).map_err(|e| e.to_string())?;
-        std::fs::copy(self.plan_dir.join(name), &dst).map_err(|e| format!("snapshot {name}: {e}"))?;
-        Ok(rel)
+        copy_snapshot(&self.plan_dir, &self.run_dir, round, name)
     }
 
     fn summary(&mut self, _plan: &Plan, notes: &[BurstNote]) {
@@ -1055,6 +1066,24 @@ pub fn status(s: &Settings) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn snapshot_copy_takes_only_regular_files_beside_the_plan() {
+        let base = std::env::temp_dir().join(format!("itb-snapshots-{}", std::process::id()));
+        let (plan_dir, run_dir) = (base.join("plan"), base.join("run"));
+        std::fs::create_dir_all(&plan_dir).unwrap();
+        std::fs::write(plan_dir.join("cluster-nodes.json"), b"{}").unwrap();
+        std::fs::write(base.join("wallet-key.json"), b"secret").unwrap();
+        assert_eq!(copy_snapshot(&plan_dir, &run_dir, 0, "cluster-nodes.json").unwrap(), "snapshots/round0-cluster-nodes.json");
+        assert!(copy_snapshot(&plan_dir, &run_dir, 0, "../wallet-key.json").unwrap_err().contains("plain file name"));
+        #[cfg(unix)]
+        {
+            std::os::unix::fs::symlink(base.join("wallet-key.json"), plan_dir.join("link.json")).unwrap();
+            assert!(copy_snapshot(&plan_dir, &run_dir, 0, "link.json").unwrap_err().contains("not a regular file"));
+            assert!(!run_dir.join("snapshots/round0-link.json").exists());
+        }
+        std::fs::remove_dir_all(&base).unwrap();
+    }
 
     /// Live, read-only check against a cluster, run by hand:
     ///   ITB_RPC_URL=... cargo test -- --ignored v1_signature_verifies_on_chain
