@@ -66,6 +66,8 @@ services:
       ITB_RPC_URL: ${ITB_RPC_URL:-https://api.mainnet-beta.solana.com}
       ITB_WS_URL: ${ITB_WS_URL:-wss://api.mainnet-beta.solana.com}
       ITB_LOG_LEVEL: ${ITB_LOG_LEVEL:-info}
+      # Commit of the code that measured; the run row records it (ITB_GIT_COMMIT=$(git rev-parse HEAD)).
+      ITB_GIT_COMMIT: ${ITB_GIT_COMMIT:-}
       ITB_DATA_DIR: /data
       ITB_LOG_DIR: /logs
       ITB_STATE_DIR: /state
