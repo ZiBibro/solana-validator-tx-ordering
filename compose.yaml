@@ -68,6 +68,8 @@ services:
       ITB_LOG_LEVEL: ${ITB_LOG_LEVEL:-info}
       # Commit of the code that measured; the run row records it (ITB_GIT_COMMIT=$(git rev-parse HEAD)).
       ITB_GIT_COMMIT: ${ITB_GIT_COMMIT:-}
+      # Funded public address a dry-run simulates from; empty keeps the mainnet default.
+      ITB_SIM_PAYER: ${ITB_SIM_PAYER:-}
       ITB_DATA_DIR: /data
       ITB_LOG_DIR: /logs
       ITB_STATE_DIR: /state
