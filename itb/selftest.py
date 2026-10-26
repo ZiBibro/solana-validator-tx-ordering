@@ -105,6 +105,12 @@ def _mutations(rows):
         ("rank out of range", edit(lambda m: m[first_probe].__setitem__("send_rank", 12))),
         ("first row is not run", edit(lambda m: m.pop(0))),
         ("schema version", edit(lambda m: m[1].__setitem__("v", 2))),
+        ("RPC URL with an API key in the query",
+         edit(lambda m: m[0].__setitem__("rpc_url", "https://rpc.example.com/?api-key=abc"))),
+        ("RPC URL with a token in the path",
+         edit(lambda m: m[0].__setitem__("rpc_url", "https://x.example.com/0123abcd/"))),
+        ("WS URL with userinfo",
+         edit(lambda m: m[0].__setitem__("ws_url", "wss://user:pass@rpc.example.com"))),
     ]
 
 

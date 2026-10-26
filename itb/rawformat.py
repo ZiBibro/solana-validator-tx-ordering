@@ -15,6 +15,9 @@ SCHEMA_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 _B58 = re.compile(r"^[1-9A-HJ-NP-Za-km-z]+$")
 _UTC = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d{1,9})?)?Z$")
 _SHA256 = re.compile(r"^[0-9a-f]{64}$")
+# Origin only: paid RPC endpoints carry API keys in userinfo, path or query, and
+# raw rows are published, so anything after host[:port] is refused.
+_ENDPOINT = re.compile(r"^(https?|wss?)://[A-Za-z0-9.-]+(:\d{1,5})?/?$")
 
 # Section 4: transfer amount encodes the burst and the send rank.
 RANKS_PER_BURST = 16
@@ -37,6 +40,8 @@ def _check_format(fmt, value):
         return bool(_UTC.match(value))
     if fmt == "sha256":
         return bool(_SHA256.match(value))
+    if fmt == "endpoint":
+        return bool(_ENDPOINT.match(value))
     raise ValueError("unknown format in schema: " + fmt)
 
 

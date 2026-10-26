@@ -14,7 +14,8 @@
     "signature": "base58, 64 to 88 characters",
     "utc": "ISO 8601 UTC ending in Z",
     "hash": "base58, 32 to 44 characters",
-    "sha256": "64 lowercase hex characters"
+    "sha256": "64 lowercase hex characters",
+    "endpoint": "scheme://host[:port] only: no userinfo, path, query or fragment, because paid RPC URLs carry API keys there and raw data is published"
   },
   "kinds": {
     "run": {
@@ -27,8 +28,8 @@
         "mode": {"type": "enum:dry-run|live", "doc": "dry-run unless --live was passed"},
         "spend_limit_lamports": {"type": "int", "min": 0, "doc": "effective limit: the code constant or a smaller --max-spend-lamports"},
         "code_limit_lamports": {"type": "int", "min": 0, "doc": "the constant compiled into the probe (50 000 000)"},
-        "rpc_url": {"type": "str"},
-        "ws_url": {"type": "str"},
+        "rpc_url": {"type": "str", "format": "endpoint", "doc": "origin only; writers strip everything after host[:port]"},
+        "ws_url": {"type": "str", "format": "endpoint"},
         "tool_version": {"type": "str"},
         "git_commit": {"type": "str?"},
         "started_utc": {"type": "str", "format": "utc"},
