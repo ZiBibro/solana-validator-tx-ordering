@@ -5,6 +5,7 @@ interprets it, so the Rust probe (which checks its rows against the same file
 in cargo test) and the Python side read one source.
 """
 
+import gzip
 import json
 import os
 import re
@@ -130,8 +131,9 @@ def validate_row(row, schema):
 
 
 def read_jsonl(path):
-    """Yield (line_number, row) for every non-empty line; bad JSON raises."""
-    with open(path, "r", encoding="utf-8") as f:
+    """Yield (line_number, row) for every non-empty line (gzip when .gz); bad JSON raises."""
+    opener = gzip.open if path.endswith(".gz") else open
+    with opener(path, "rt", encoding="utf-8") as f:
         for n, line in enumerate(f, 1):
             line = line.strip()
             if not line:

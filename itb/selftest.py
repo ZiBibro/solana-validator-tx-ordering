@@ -5,6 +5,7 @@ verify starts.
 """
 
 import copy
+import gzip
 import itertools
 import json
 import math
@@ -13,7 +14,7 @@ import random
 import tempfile
 from fractions import Fraction
 
-from . import analyze, b58, rawformat, stats, synth, verdict
+from . import analyze, b58, collect, fakechain, rawformat, rpc, stats, synth, verdict, verify
 
 
 def sample_run(burst_seq=7, n=12):
@@ -306,10 +307,143 @@ def end_to_end_checks():
     return out
 
 
+def _quiet(_line):
+    pass
+
+
+def _edit_rows(path, change):
+    rows = [row for _, row in rawformat.read_jsonl(path)]
+    _write(path, change(rows))
+
+
+def _first(rows, kind, **match):
+    return next(r for r in rows if r["kind"] == kind and all(r[k] == v for k, v in match.items()))
+
+
+def _move_position(rows):
+    inc = _first(rows, "inclusion", status="included")
+    inc["tx_index"] += 1
+    return rows
+
+
+def _raise_fee(rows):
+    _first(rows, "probe")["priority_fee_lamports"] += 1
+    return rows
+
+
+def _swap_ranks(rows):
+    a, b = [r for r in rows if r["kind"] == "probe" and r["burst_seq"] == 0][:2]
+    a["send_rank"], b["send_rank"] = b["send_rank"], a["send_rank"]
+    return rows
+
+
+def _edit_tick(rows):
+    row = next(r for r in rows if r["kind"] == "slot" and r["ticks"])
+    row["ticks"][0]["timestamp_ns"] += 1
+    return rows
+
+
+def _swap_leader(rows):
+    _first(rows, "slot")["leader"] = synth.key(5, 9)
+    return rows
+
+
+def _drop_probe(run_dir):
+    """Removes one included probe from both raw files: only the chain still has it."""
+    collect_path = os.path.join(run_dir, "collect.jsonl")
+    crows = [row for _, row in rawformat.read_jsonl(collect_path)]
+    gone = _first(crows, "inclusion", status="included")["signature"]
+    _write(collect_path, [r for r in crows if r.get("signature") != gone])
+    _edit_rows(os.path.join(run_dir, "probes.jsonl"),
+               lambda rows: [r for r in rows if r.get("signature") != gone])
+
+
+CHAIN_MUTATIONS = (
+    ("a recorded position moved by one", "collect.jsonl", _move_position, False),
+    ("a raw priority fee raised by 1 lamport", "probes.jsonl", _raise_fee, False),
+    ("two raw send ranks swapped", "probes.jsonl", _swap_ranks, False),
+    ("a tick timestamp edited", "collect.jsonl", _edit_tick, False),
+    ("a slot leader replaced", "collect.jsonl", _swap_leader, False),
+    ("one probe dropped from the raw data", None, _drop_probe, False),
+    ("probe costs differing inside a burst", None, None, True),
+)
+
+
+def _fake_world(tmp, tamper_cost=False):
+    run_dir = os.path.join(tmp, "runs", "fake-live")
+    world, truth = fakechain.build_world(run_dir, "itb-selftest:chain", tamper_cost)
+    collect.collect_run(run_dir, world, checked_utc="2026-10-26T22:00:00Z", out=_quiet)
+    return run_dir, world, truth
+
+
+def chain_checks():
+    """collect and verify against the in-memory chain of fakechain (section 9):
+    three live bursts, one probe expired, one landed with the next leader."""
+    out = []
+    schema = rawformat.load_schema()
+    with tempfile.TemporaryDirectory() as tmp:
+        run_dir, world, truth = _fake_world(tmp)
+        run = analyze.load_run(run_dir)
+        wrong = 0
+        for sig, want in truth.items():
+            inc = run.inclusions[sig]
+            got = (inc["status"], inc["slot"], inc["tx_index"], inc["in_target_window"],
+                   inc["tick_segment"])
+            wrong += got[:len(want)] != want
+        segments = {w[4] for w in truth.values() if len(w) > 1}
+        out.append(("chain: collect recovers status, slot, position, window and tick segment",
+                    len(truth) == 36 and wrong == 0 and {0, 1, 2} <= segments,
+                    "%d probes, %d wrong, segments %s" % (len(truth), wrong, sorted(segments, key=str))))
+        _, problems = rawformat.check_rows_file(os.path.join(run_dir, "collect.jsonl"), schema)
+        competition = 0
+        for name in sorted(os.listdir(os.path.join(run_dir, "blocks"))):
+            with gzip.open(os.path.join(run_dir, "blocks", name), "rt", encoding="utf-8") as f:
+                for line in f:
+                    competition += 1
+                    problems += rawformat.validate_row(json.loads(line), schema)
+        out.append(("chain: collect rows and competition files pass the format checks",
+                    not problems and competition > 0,
+                    "%d competition rows %s" % (competition, problems[:2])))
+        calls = [params for method, params in world.calls if method in ("getBlock", "getTransaction")]
+        typed = [type(p[1].get("maxSupportedTransactionVersion")) is int
+                 and p[1]["maxSupportedTransactionVersion"] == 1 for p in calls]
+        out.append(("chain: every getBlock and getTransaction asks for version 1 as an integer",
+                    bool(typed) and all(typed), "%d calls" % len(typed)))
+        report = verify.verify([run], world, tmp, tmp, out=_quiet)
+        out.append(("chain: verify finds no problem in the untouched world",
+                    not report.problems and len(report.notes) == 3,
+                    "%d problems, %d notes %s" % (len(report.problems), len(report.notes),
+                                                  report.problems[:1])))
+    for value in (None, True):
+        saved = rpc.MAX_TX_VERSION
+        rpc.MAX_TX_VERSION = value
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                _fake_world(tmp)
+            refused = None
+        except rpc.RpcError as e:
+            refused = e.code
+        finally:
+            rpc.MAX_TX_VERSION = saved
+        out.append(("chain mutation: maxSupportedTransactionVersion %r is refused with -32015" % value,
+                    refused == -32015, "code %s" % refused))
+    for name, target, change, tamper in CHAIN_MUTATIONS:
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir, world, _ = _fake_world(tmp, tamper)
+            if target:
+                _edit_rows(os.path.join(run_dir, target), change)
+            elif change:
+                change(run_dir)
+            report = verify.verify([analyze.load_run(run_dir)], world, tmp, tmp, out=_quiet)
+        out.append(("chain mutation: %s fails verify" % name, bool(report.problems),
+                    report.problems[0][:90] if report.problems else "no problem found"))
+    return out
+
+
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
-              + end_to_end_checks())
+              + end_to_end_checks() + chain_checks())
     lines = []
     failed = 0
     for name, ok, detail in checks:

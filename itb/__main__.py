@@ -5,7 +5,7 @@
     python -m itb verify           re-read every recorded signature from the chain
     python -m itb analyze          recompute every REPORT table from raw data
     python -m itb claim <id>       recompute one REPORT claim and re-check its slots
-    python -m itb collect          append inclusion rows for a run
+    python -m itb collect [run]    write inclusion and slot rows of runs from the chain
     python -m itb check-raw FILE   validate raw files against schema/raw-format.json
 
 In Docker: docker compose run --rm reproduce [subcommand ...]
@@ -15,13 +15,15 @@ import argparse
 import os
 import sys
 
-from . import __version__, analyze, rawformat, selftest
+from . import __version__, analyze, collect, rawformat, rpc, selftest, verify
 
 EXIT_OK = 0
 EXIT_FAIL = 1
 EXIT_NOT_READY = 2
 
-DEFAULT_DATA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DEFAULT_DATA = os.path.join(REPO_DIR, "data")
+DEFAULT_RPC = "https://api.mainnet-beta.solana.com"
 
 
 def _not_ready(name, when):
@@ -41,8 +43,30 @@ def cmd_selftest(args):
     return EXIT_OK if failed == 0 else EXIT_FAIL
 
 
+def _data_dir(args):
+    return getattr(args, "data", None) or os.environ.get("ITB_ANALYZE_DATA", DEFAULT_DATA)
+
+
+def _network(args):
+    return getattr(args, "network", None) or os.environ.get("ITB_NETWORK", "mainnet")
+
+
+def _client():
+    return rpc.Client(os.environ.get("ITB_RPC_URL", DEFAULT_RPC))
+
+
 def cmd_verify(args):
-    return _not_ready("verify", "build stage 3 of plan-implementation")
+    data = _data_dir(args)
+    network = _network(args)
+    runs = verify.live_runs(analyze.load_runs(data), network)
+    if not runs:
+        print("verify: no live %s runs under %s" % (network, os.path.join(data, "runs")),
+              file=sys.stderr)
+        return EXIT_NOT_READY
+    url = os.environ.get("ITB_RPC_URL", DEFAULT_RPC)
+    print("verify: reading %s through %s" % (network, rpc.origin(url)))
+    report = verify.verify(runs, rpc.Client(url), data, REPO_DIR)
+    return EXIT_OK if not report.problems else EXIT_FAIL
 
 
 def cmd_analyze(args):
@@ -67,7 +91,23 @@ def cmd_claim(args):
 
 
 def cmd_collect(args):
-    return _not_ready("collect", "build stage 3 of plan-implementation")
+    data = _data_dir(args)
+    root = os.path.join(data, "runs")
+    names = args.run_ids or (sorted(os.listdir(root)) if os.path.isdir(root) else [])
+    client = _client()
+    done = 0
+    for name in names:
+        run_dir = os.path.join(root, name)
+        if not os.path.isfile(os.path.join(run_dir, "probes.jsonl")):
+            print("collect: %s has no probes.jsonl" % run_dir, file=sys.stderr)
+            return EXIT_FAIL
+        if args.run_ids or analyze.load_run(run_dir).run["network"] == _network(args):
+            collect.collect_run(run_dir, client)
+            done += 1
+    if done == 0:
+        print("collect: no %s runs under %s" % (_network(args), root), file=sys.stderr)
+        return EXIT_NOT_READY
+    return EXIT_OK
 
 
 def cmd_reproduce(args):
@@ -106,14 +146,19 @@ def main(argv=None):
     sub = parser.add_subparsers(dest="cmd")
     sub.add_parser("reproduce", help="selftest, verify, analyze")
     sub.add_parser("selftest", help="known-answer checks")
-    sub.add_parser("verify", help="re-read every recorded signature from the chain")
+    p = sub.add_parser("verify", help="re-read every recorded signature from the chain")
+    p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
+    p.add_argument("--network", help="network of the runs to verify (default: ITB_NETWORK or mainnet)")
     p = sub.add_parser("analyze", help="recompute REPORT from raw data")
     p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
     p.add_argument("--stage", action="append", help="run stage to include (default: campaign)")
     p.add_argument("--out", help="write the full result as JSON here")
     p = sub.add_parser("claim", help="recompute one REPORT claim")
     p.add_argument("claim_id")
-    sub.add_parser("collect", help="append inclusion rows for a run")
+    p = sub.add_parser("collect", help="write inclusion and slot rows of runs from the chain")
+    p.add_argument("run_ids", nargs="*", help="runs to collect (default: every run of the network)")
+    p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
+    p.add_argument("--network", help="network of the runs (default: ITB_NETWORK or mainnet)")
     p = sub.add_parser("check-raw", help="validate raw files")
     p.add_argument("files", nargs="*")
     args = parser.parse_args(argv)

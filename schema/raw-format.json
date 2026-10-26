@@ -7,7 +7,8 @@
     "data/runs/<run_id>/collect.jsonl": "written by collect: slot and inclusion rows",
     "data/runs/<run_id>/blocks/<slot>.jsonl.gz": "written by collect: block_tx rows, one per transaction of an inclusion slot (competition inside the block)",
     "data/runs/<run_id>/snapshots/": "getClusterNodes, leader schedule and validators.app snapshots the labels come from",
-    "logs/<run_id>.jsonl": "operational log: log rows, kept apart from the raw data"
+    "logs/<run_id>.jsonl": "operational log: log rows, kept apart from the raw data",
+    "data/prereg-anchors.json": "list of {stage, signature, file, manifest}: the Memo v2 transaction whose memo itb-prereg <sha256> anchors that file before the stage (plan section 10); manifest true when the file lists further files with their sha256"
   },
   "formats": {
     "pubkey": "base58, 32 to 44 characters",
@@ -164,7 +165,7 @@
         "leader": {"type": "str?", "format": "pubkey", "doc": "identity from the Fee reward record of the same block"},
         "tx_count": {"type": "int", "min": 0},
         "cost_units": {"type": "int?", "min": 0},
-        "ticks": {"type": "list<obj>", "doc": "market-tick transactions: index, signer, timestamp_ns, interval_ms"},
+        "ticks": {"type": "list<obj>", "doc": "market-tick Increment V1 transactions: index, signer, timestamp_ns, interval_ns (target interval)"},
         "crank_memo": {"type": "str?", "doc": "memo of the tip-payment crank transaction, if present"},
         "competition_file": {"type": "str?", "doc": "blocks/<slot>.jsonl.gz"}
       }

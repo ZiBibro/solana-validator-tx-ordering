@@ -16,6 +16,7 @@ x-python: &python
   working_dir: /repo
   entrypoint: ["python", "-m", "itb"]
   environment:
+    ITB_NETWORK: ${ITB_NETWORK:-mainnet}
     ITB_RPC_URL: ${ITB_RPC_URL:-https://api.mainnet-beta.solana.com}
     ITB_LOG_LEVEL: ${ITB_LOG_LEVEL:-info}
     PYTHONDONTWRITEBYTECODE: "1"
