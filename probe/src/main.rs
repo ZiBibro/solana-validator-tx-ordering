@@ -7,12 +7,14 @@
 //!   itb-probe run --plan FILE [--close-after] [--live --max-spend-lamports N]
 //!   itb-probe close [--live --max-spend-lamports N]
 //!   itb-probe status
+//!   itb-probe clock [--seconds N] [--connections K]
 //!
 //! Exit codes: 0 done, 1 refused or failed (the message names why), 64 bad arguments.
 
 mod b58;
 mod chain;
 mod clock;
+mod clockcheck;
 mod journal;
 mod keys;
 mod plan;
@@ -74,15 +76,25 @@ pub enum Command {
     Run { plan: String, close_after: bool, mode: Mode },
     Close { mode: Mode },
     Status,
+    Clock { seconds: u64, connections: usize },
 }
+
+/// The public node allows 10 subscriptions and each connection of the check takes two.
+const MAX_CLOCK_CONNECTIONS: usize = 5;
 
 /// Split the subcommand and its own flags from the mode flags parse_mode reads.
 pub fn parse_command(args: &[String]) -> Result<Command, String> {
-    let (sub, rest) = args.split_first().ok_or("usage: itb-probe run --plan FILE | close | status")?;
+    let (sub, rest) = args.split_first().ok_or("usage: itb-probe run --plan FILE | close | status | clock")?;
     let mut plan = None;
     let mut close_after = false;
+    let mut seconds: u64 = 180;
+    let mut connections: usize = 4;
     let mut mode_args = vec![];
     let mut i = 0;
+    let number = |flag: &str, v: Option<&String>| -> Result<u64, String> {
+        let v = v.ok_or(format!("{flag} needs a value"))?;
+        v.parse().map_err(|_| format!("{flag}: not a whole number: {v}"))
+    };
     while i < rest.len() {
         match rest[i].as_str() {
             "--plan" if sub == "run" => {
@@ -90,6 +102,14 @@ pub fn parse_command(args: &[String]) -> Result<Command, String> {
                 i += 1;
             }
             "--close-after" if sub == "run" => close_after = true,
+            "--seconds" if sub == "clock" => {
+                seconds = number("--seconds", rest.get(i + 1))?;
+                i += 1;
+            }
+            "--connections" if sub == "clock" => {
+                connections = number("--connections", rest.get(i + 1))? as usize;
+                i += 1;
+            }
             other => mode_args.push(other.to_string()),
         }
         i += 1;
@@ -99,7 +119,12 @@ pub fn parse_command(args: &[String]) -> Result<Command, String> {
         "close" => Ok(Command::Close { mode: parse_mode(&mode_args)? }),
         "status" if mode_args.is_empty() => Ok(Command::Status),
         "status" => Err(format!("status takes no arguments: {}", mode_args.join(" "))),
-        other => Err(format!("unknown command {other}; expected run, close or status")),
+        "clock" if !mode_args.is_empty() => Err(format!("clock takes --seconds and --connections only: {}", mode_args.join(" "))),
+        "clock" if seconds == 0 || !(1..=MAX_CLOCK_CONNECTIONS).contains(&connections) => {
+            Err(format!("clock needs --seconds above 0 and --connections from 1 to {MAX_CLOCK_CONNECTIONS}"))
+        }
+        "clock" => Ok(Command::Clock { seconds, connections }),
+        other => Err(format!("unknown command {other}; expected run, close, status or clock")),
     }
 }
 
@@ -117,6 +142,7 @@ fn main() -> ExitCode {
         Command::Run { plan, close_after, mode } => session::run(&settings, mode, std::path::Path::new(plan), *close_after),
         Command::Close { mode } => session::close(&settings, mode),
         Command::Status => session::status(&settings),
+        Command::Clock { seconds, connections } => clockcheck::check(&settings, *seconds, *connections),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -180,6 +206,15 @@ mod tests {
         assert!(parse_command(&args(&["status", "--live"])).is_err());
         assert!(parse_command(&args(&["send"])).is_err());
         assert!(parse_command(&args(&[])).is_err());
+        assert_eq!(parse_command(&args(&["clock"])), Ok(Command::Clock { seconds: 180, connections: 4 }));
+        assert_eq!(
+            parse_command(&args(&["clock", "--seconds", "60", "--connections", "2"])),
+            Ok(Command::Clock { seconds: 60, connections: 2 })
+        );
+        assert!(parse_command(&args(&["clock", "--connections", "6"])).is_err());
+        assert!(parse_command(&args(&["clock", "--seconds", "0"])).is_err());
+        assert!(parse_command(&args(&["clock", "--live"])).is_err());
+        assert!(parse_command(&args(&["run", "--plan", "p.json", "--seconds", "5"])).is_err());
     }
 
     #[test]
