@@ -32,7 +32,7 @@ POWER_PER_TAU = 0.9
 # Moment condition bands: estimated arrival (send offset from the first slot
 # start plus half the RTT) within this distance of the target counts as the
 # condition; bursts outside go to a separate group.
-TIMING_TARGET_MS = {"pre300": -300.0, "slot2": None}  # slot2 target = one slot length
+TIMING_TARGET_MS = {"pre300": -300.0, "slot2": None}  # slot2 target = start of slot 2, analyze.slot2_ms
 TIMING_BAND_HALF_MS = 100.0
 
 # Section 3: default QUIC port of the Jito relayer.

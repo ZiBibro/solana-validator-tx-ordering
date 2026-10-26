@@ -76,8 +76,9 @@ impl Issuer {
 }
 
 pub fn https_issuer(url: &str) -> Result<Issuer, String> {
-    let rest = url.split_once("://").map(|x| x.1).unwrap_or(url);
-    let hostport = rest.split(['/', '?']).next().unwrap_or("");
+    // Only the origin is ever used: paid RPC URLs carry API keys in userinfo, path or query.
+    let origin = crate::rows::origin(url);
+    let hostport = origin.split_once("://").map(|x| x.1).unwrap_or(&origin);
     let (host, port) = match hostport.rsplit_once(':') {
         Some((h, p)) if p.chars().all(|c| c.is_ascii_digit()) => (h.to_string(), p.parse().unwrap_or(443)),
         _ => (hostport.to_string(), 443u16),

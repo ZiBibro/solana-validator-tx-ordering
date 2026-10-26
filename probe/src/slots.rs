@@ -1,8 +1,11 @@
 //! Slot clock (plan, section 5.1). slotsUpdatesSubscribe gives firstShredReceived, the
 //! main source; slotSubscribe is the fallback, because the first subscription is marked
 //! unstable. Every event is stamped on receipt with the monotonic clock of the process.
-//! The send moment is predicted from the last event plus the slot duration measured in
-//! this run.
+//! The send moment is predicted from the last event plus the slot durations measured in
+//! this run. Slots inside one leader window run faster than the handoff to the next
+//! leader (devnet dry-run 2026-10-26: 145-149 ms between slots 1 and 2 of a window at a
+//! 238 ms mean), so near the anchor each step uses the median duration of its position
+//! in the 4-slot window; far from it the fitted mean slot duration is used.
 
 use crate::clock::mono_ns;
 use serde_json::{json, Value};
@@ -16,6 +19,12 @@ const FIT_SLOTS: u64 = 3_000;
 pub const MIN_FIT_SLOTS: u64 = 150;
 /// The main source counts as live when its last event is this fresh.
 const FRESH_NS: i64 = 2_000_000_000;
+/// Consecutive leader slots; window starts sit at multiples of it.
+pub const WINDOW_SLOTS: u64 = 4;
+/// Per-position steps are used up to this many slots past the anchor.
+const STEP_HORIZON: u64 = 16;
+/// Observed consecutive pairs needed per position.
+const MIN_STEP_SAMPLES: usize = 5;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Source {
@@ -47,10 +56,18 @@ pub struct Model {
     pub anchor_slot: u64,
     pub anchor_ns: i64,
     pub slot_ns: f64,
+    /// Median duration from a slot to the next by the slot's position in its window.
+    pub step_ns: Option<[f64; WINDOW_SLOTS as usize]>,
 }
 
 impl Model {
     pub fn predict(&self, slot: u64) -> i64 {
+        if let Some(steps) = self.step_ns {
+            if slot >= self.anchor_slot && slot - self.anchor_slot <= STEP_HORIZON {
+                let t: f64 = (self.anchor_slot..slot).map(|s| steps[(s % WINDOW_SLOTS) as usize]).sum();
+                return self.anchor_ns + t.round() as i64;
+            }
+        }
         self.anchor_ns + ((slot as f64 - self.anchor_slot as f64) * self.slot_ns).round() as i64
     }
 
@@ -78,17 +95,39 @@ fn fit(points: &BTreeMap<u64, i64>) -> Option<f64> {
     (sxx > 0.0).then(|| sxy / sxx)
 }
 
+/// Median step to the next slot by window position, from pairs of consecutive slots
+/// that both have an event, over the same history as the fit.
+fn steps(points: &BTreeMap<u64, i64>) -> Option<[f64; WINDOW_SLOTS as usize]> {
+    let last = *points.keys().next_back()?;
+    let mut by_pos: Vec<Vec<f64>> = vec![vec![]; WINDOW_SLOTS as usize];
+    let range: Vec<(u64, i64)> = points.range(last.saturating_sub(FIT_SLOTS)..).map(|(s, t)| (*s, *t)).collect();
+    for w in range.windows(2) {
+        if w[1].0 == w[0].0 + 1 {
+            by_pos[(w[0].0 % WINDOW_SLOTS) as usize].push((w[1].1 - w[0].1) as f64);
+        }
+    }
+    let mut out = [0.0; WINDOW_SLOTS as usize];
+    for (i, v) in by_pos.iter_mut().enumerate() {
+        if v.len() < MIN_STEP_SAMPLES {
+            return None;
+        }
+        v.sort_by(|a, b| a.total_cmp(b));
+        out[i] = v[v.len() / 2];
+    }
+    Some(out)
+}
+
 impl State {
     pub fn model(&self) -> Option<Model> {
         let now = mono_ns();
         let shred: BTreeMap<u64, i64> = self.first_shred.iter().map(|(s, (t, _))| (*s, *t)).collect();
         let fresh = |m: &BTreeMap<u64, i64>| m.iter().next_back().filter(|(_, t)| now - **t < FRESH_NS).map(|(s, t)| (*s, *t));
         if let (Some((slot, ns)), Some(slope)) = (fresh(&shred), fit(&shred)) {
-            return Some(Model { source: Source::FirstShred, anchor_slot: slot, anchor_ns: ns, slot_ns: slope });
+            return Some(Model { source: Source::FirstShred, anchor_slot: slot, anchor_ns: ns, slot_ns: slope, step_ns: steps(&shred) });
         }
         let (slot, ns) = fresh(&self.slot_events)?;
         let slope = fit(&self.slot_events)?;
-        Some(Model { source: Source::SlotSubscribe, anchor_slot: slot, anchor_ns: ns, slot_ns: slope })
+        Some(Model { source: Source::SlotSubscribe, anchor_slot: slot, anchor_ns: ns, slot_ns: slope, step_ns: steps(&self.slot_events) })
     }
 
     fn trim(&mut self) {
@@ -138,7 +177,8 @@ pub fn start(ws_url: String) -> Shared {
             if let Err(e) = run_once(&ws_url, &s) {
                 let mut st = s.lock().unwrap();
                 st.reconnects += 1;
-                st.last_error = Some(e);
+                // The log gets the origin only: a paid WebSocket URL carries an API key.
+                st.last_error = Some(e.replace(&ws_url, &crate::rows::origin(&ws_url)));
             }
             std::thread::sleep(Duration::from_millis(500));
         })
@@ -192,6 +232,29 @@ mod tests {
         assert_eq!(m.anchor_slot, 1399);
         assert!((m.predict(1409) - (now + 2_151_000_000)).abs() < 10);
         assert_eq!(m.slot_at(m.predict(1500) + 1), 1500);
+    }
+
+    #[test]
+    fn steps_by_window_position_near_the_anchor() {
+        let mut st = State::default();
+        // Window slots 150 ms apart, the handoff to the next window 450 ms: 900 ms a window.
+        let step = |s: u64| if s % 4 == 3 { 450_000_000i64 } else { 150_000_000 };
+        let mut t = mono_ns() - (0..399u64).map(step).sum::<i64>();
+        for s in 0..400u64 {
+            st.apply(&shred(s, 0), t);
+            t += step(s);
+        }
+        let m = st.model().expect("model");
+        assert_eq!(m.anchor_slot, 399);
+        assert_eq!(m.step_ns, Some([150e6, 150e6, 150e6, 450e6]));
+        assert!((m.slot_ns - 225e6).abs() < 1e6, "{}", m.slot_ns);
+        // Slot 399 ends a window: the next window starts one handoff later, its second
+        // slot 150 ms after that.
+        assert_eq!(m.predict(400) - m.anchor_ns, 450_000_000);
+        assert_eq!(m.predict(401) - m.anchor_ns, 600_000_000);
+        assert_eq!(m.predict(404) - m.anchor_ns, 1_350_000_000);
+        // Far ahead the fitted mean takes over.
+        assert_eq!(m.predict(799) - m.anchor_ns, (400.0 * m.slot_ns).round() as i64);
     }
 
     #[test]

@@ -155,7 +155,12 @@ def burst_rows(run, seq, probes, **fields):
         "quic_stats": {"rtt_ns": 30_000_000, "lost_packets": 0},
         "first_shred_ns": [1_010_000_000, None], "node_ts_ms": [None, None],
         "first_send_offset_ns": -325_000_000, "last_send_offset_ns": -324_989_000,
-        "prediction_residual_ns": 10_000_000, "reconnects": 0,
+        "prediction_residual_ns": 10_000_000,
+        # The final aim equals the aim at signing here.
+        "send_anchor_slot": burst["anchor_slot"], "send_anchor_leader": burst["anchor_leader"],
+        "send_predicted_first_slot_ns": burst["predicted_first_slot_ns"],
+        "send_target_arrival_ns": burst["target_arrival_ns"],
+        "send_rtt_ns": burst["rtt_ns"], "reconnects": 0,
         "utc_end": "2026-10-26T20:00:02Z",
     })
     return rows

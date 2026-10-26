@@ -7,6 +7,7 @@
     python -m itb claim <id>       recompute one REPORT claim and re-check its slots
     python -m itb collect [run]    write inclusion and slot rows of runs from the chain
     python -m itb check-raw FILE   validate raw files against schema/raw-format.json
+    python -m itb plan             draw a test plan for the probe from the live leader schedule
 
 In Docker: docker compose run --rm reproduce [subcommand ...]
 """
@@ -16,6 +17,7 @@ import os
 import sys
 
 from . import __version__, analyze, collect, rawformat, rpc, selftest, verify
+from . import plan as planmod
 
 EXIT_OK = 0
 EXIT_FAIL = 1
@@ -140,6 +142,38 @@ def cmd_check_raw(args):
     return EXIT_OK if bad == 0 else EXIT_FAIL
 
 
+def cmd_plan(args):
+    network = _network(args)
+    stage = args.stage or (network if network in ("localnet", "devnet") else None)
+    if stage not in planmod.TEST_STAGES:
+        print("plan: --stage must be one of %s for a drawn plan" % ", ".join(planmod.TEST_STAGES),
+              file=sys.stderr)
+        return EXIT_FAIL
+    seed = args.seed or planmod.new_seed()
+    leaders = args.leader or None
+    try:
+        p, snapshots = planmod.draw(_client(), network, stage, args.bursts, args.lead_slots, seed,
+                                    leaders, args.per_leader, args.path, args.probes)
+    except (ValueError, rpc.RpcError) as e:
+        print("plan: %s" % e, file=sys.stderr)
+        return EXIT_FAIL
+    problems = planmod.check(p)
+    if problems:
+        print("plan: %s" % "; ".join(problems), file=sys.stderr)
+        return EXIT_FAIL
+    stamp = planmod.utc_now().replace("-", "").replace(":", "").split(".")[0] + "Z"
+    plan_dir = os.path.join(_data_dir(args), "plans", "%s-%s-%s" % (stage, network, stamp))
+    path = planmod.write(plan_dir, p, snapshots)
+    r = p["rounds"][0]
+    print("plan: %s" % path)
+    print("plan: seed %s, %d bursts from slot %d (anchor %d)"
+          % (seed, len(r["bursts"]), r["bursts"][0]["first_slot"], r["anchor_slot"]))
+    for b in r["bursts"]:
+        print("  slot %d %s %s %s %s fee %s" % (b["first_slot"], b["leader"], b["arm"], b["timing"],
+                                                b["path"], b["equal_fee_lamports"]))
+    return EXIT_OK
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(prog="itb", description=__doc__.split("\n")[0])
     parser.add_argument("--version", action="version", version=__version__)
@@ -161,11 +195,23 @@ def main(argv=None):
     p.add_argument("--network", help="network of the runs (default: ITB_NETWORK or mainnet)")
     p = sub.add_parser("check-raw", help="validate raw files")
     p.add_argument("files", nargs="*")
+    p = sub.add_parser("plan", help="draw a test plan for the probe")
+    p.add_argument("--network", help="localnet, devnet or mainnet (default: ITB_NETWORK or mainnet)")
+    p.add_argument("--stage", help="localnet, devnet or test (default: the network)")
+    p.add_argument("--bursts", type=int, default=8, help="windows to draw (default 8)")
+    p.add_argument("--lead-slots", type=int, default=900,
+                   help="first window at least this many slots ahead (default 900)")
+    p.add_argument("--leader", action="append", help="allowed leader identity (repeatable)")
+    p.add_argument("--per-leader", type=int, help="at most this many windows per leader")
+    p.add_argument("--path", choices=("quic", "rpc"), default="quic")
+    p.add_argument("--probes", type=int, default=planmod.PAYERS, help="probes per burst, 2 to 12")
+    p.add_argument("--seed", help="seed of the draw (default: random, printed)")
+    p.add_argument("--data", help="data directory (default: repo data/)")
     args = parser.parse_args(argv)
     handlers = {
         "reproduce": cmd_reproduce, "selftest": cmd_selftest, "verify": cmd_verify,
         "analyze": cmd_analyze, "claim": cmd_claim, "collect": cmd_collect,
-        "check-raw": cmd_check_raw, None: cmd_reproduce,
+        "check-raw": cmd_check_raw, "plan": cmd_plan, None: cmd_reproduce,
     }
     return handlers[args.cmd](args)
 

@@ -3,14 +3,23 @@
 //! Dry-run is the default. Real sending needs `--live` together with an explicit
 //! `--max-spend-lamports N`, and N can only lower the limit compiled in below
 //! (plan-implementation, section 11).
+//!
+//!   itb-probe run --plan FILE [--close-after] [--live --max-spend-lamports N]
+//!   itb-probe close [--live --max-spend-lamports N]
+//!   itb-probe status
+//!
+//! Exit codes: 0 done, 1 refused or failed (the message names why), 64 bad arguments.
 
 mod b58;
+mod chain;
 mod clock;
 mod journal;
 mod keys;
+mod plan;
 mod quic;
 mod rows;
 mod rpc;
+mod session;
 mod slots;
 mod tls;
 mod tx;
@@ -60,18 +69,62 @@ pub fn parse_mode(args: &[String]) -> Result<Mode, String> {
     }
 }
 
+#[derive(Debug, PartialEq, Eq)]
+pub enum Command {
+    Run { plan: String, close_after: bool, mode: Mode },
+    Close { mode: Mode },
+    Status,
+}
+
+/// Split the subcommand and its own flags from the mode flags parse_mode reads.
+pub fn parse_command(args: &[String]) -> Result<Command, String> {
+    let (sub, rest) = args.split_first().ok_or("usage: itb-probe run --plan FILE | close | status")?;
+    let mut plan = None;
+    let mut close_after = false;
+    let mut mode_args = vec![];
+    let mut i = 0;
+    while i < rest.len() {
+        match rest[i].as_str() {
+            "--plan" if sub == "run" => {
+                plan = Some(rest.get(i + 1).ok_or("--plan needs a file")?.clone());
+                i += 1;
+            }
+            "--close-after" if sub == "run" => close_after = true,
+            other => mode_args.push(other.to_string()),
+        }
+        i += 1;
+    }
+    match sub.as_str() {
+        "run" => Ok(Command::Run { plan: plan.ok_or("run needs --plan FILE")?, close_after, mode: parse_mode(&mode_args)? }),
+        "close" => Ok(Command::Close { mode: parse_mode(&mode_args)? }),
+        "status" if mode_args.is_empty() => Ok(Command::Status),
+        "status" => Err(format!("status takes no arguments: {}", mode_args.join(" "))),
+        other => Err(format!("unknown command {other}; expected run, close or status")),
+    }
+}
+
 fn main() -> ExitCode {
     let args: Vec<String> = std::env::args().skip(1).collect();
-    let mode = match parse_mode(&args) {
-        Ok(m) => m,
+    let cmd = match parse_command(&args) {
+        Ok(c) => c,
         Err(e) => {
             eprintln!("itb-probe: {e}");
             return ExitCode::from(64);
         }
     };
-    println!("itb-probe: mode {mode:?}, compiled limit {SPEND_LIMIT_LAMPORTS} lamports");
-    eprintln!("itb-probe: sending is not implemented yet (build stage 4 of plan-implementation)");
-    ExitCode::from(2)
+    let settings = session::Settings::from_env();
+    let result = match &cmd {
+        Command::Run { plan, close_after, mode } => session::run(&settings, mode, std::path::Path::new(plan), *close_after),
+        Command::Close { mode } => session::close(&settings, mode),
+        Command::Status => session::status(&settings),
+    };
+    match result {
+        Ok(()) => ExitCode::SUCCESS,
+        Err(e) => {
+            eprintln!("itb-probe: {e}");
+            ExitCode::from(1)
+        }
+    }
 }
 
 #[cfg(test)]
@@ -108,6 +161,25 @@ mod tests {
         let over = (SPEND_LIMIT_LAMPORTS + 1).to_string();
         assert!(parse_mode(&args(&["--live", "--max-spend-lamports", &at])).is_ok());
         assert!(parse_mode(&args(&["--live", "--max-spend-lamports", &over])).is_err());
+    }
+
+    #[test]
+    fn commands_parse_with_their_own_flags() {
+        assert_eq!(
+            parse_command(&args(&["run", "--plan", "p.json"])),
+            Ok(Command::Run { plan: "p.json".into(), close_after: false, mode: Mode::DryRun })
+        );
+        assert_eq!(
+            parse_command(&args(&["run", "--live", "--plan", "p.json", "--max-spend-lamports", "9", "--close-after"])),
+            Ok(Command::Run { plan: "p.json".into(), close_after: true, mode: Mode::Live { max_spend_lamports: 9 } })
+        );
+        assert!(parse_command(&args(&["run"])).is_err());
+        assert!(parse_command(&args(&["run", "--plan", "p.json", "--live"])).is_err());
+        assert_eq!(parse_command(&args(&["close"])), Ok(Command::Close { mode: Mode::DryRun }));
+        assert!(parse_command(&args(&["close", "--plan", "p.json"])).is_err());
+        assert!(parse_command(&args(&["status", "--live"])).is_err());
+        assert!(parse_command(&args(&["send"])).is_err());
+        assert!(parse_command(&args(&[])).is_err());
     }
 
     #[test]

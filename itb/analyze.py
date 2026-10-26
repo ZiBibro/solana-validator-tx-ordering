@@ -62,18 +62,39 @@ def arrival_ms(burst, end):
 
     Send offset from the local first-shred moment of the first slot when the
     probe measured it, else from the predicted slot start; plus half the RTT.
+    The final aim in burst_end, taken right before the send, wins over the
+    aim at signing time in the burst row.
     """
-    offset = end.get("first_send_offset_ns") if end else None
+    end = end or {}
+    rtt = end.get("send_rtt_ns")
+    if rtt is None:
+        rtt = burst.get("rtt_ns") or 0
+    offset = end.get("first_send_offset_ns")
     if offset is None:
-        offset = burst["send_at_ns"] - burst["predicted_first_slot_ns"]
-    rtt = burst.get("rtt_ns") or 0
+        if end.get("send_predicted_first_slot_ns") is not None:
+            offset = end["send_target_arrival_ns"] - rtt / 2.0 - end["send_predicted_first_slot_ns"]
+        else:
+            offset = burst["send_at_ns"] - burst["predicted_first_slot_ns"]
     return (offset + rtt / 2.0) / 1e6
 
 
-def timing_in_band(burst, est_ms):
+def slot2_ms(burst, end):
+    """Start of slot 2 from the start of slot 1, ms. Slot steps are uneven
+    inside a leader window (plan section 5.1), so the observed firstShredReceived
+    gap wins; then the probe's final aim; then the mean slot length."""
+    end = end or {}
+    shreds = end.get("first_shred_ns") or [None, None]
+    if shreds[0] is not None and shreds[1] is not None:
+        return (shreds[1] - shreds[0]) / 1e6
+    if end.get("send_predicted_first_slot_ns") is not None:
+        return (end["send_target_arrival_ns"] - end["send_predicted_first_slot_ns"]) / 1e6
+    return float(burst["slot_ms"])
+
+
+def timing_in_band(burst, est_ms, end=None):
     target = prereg.TIMING_TARGET_MS[burst["timing"]]
     if target is None:
-        target = float(burst["slot_ms"])
+        target = slot2_ms(burst, end)
     return abs(est_ms - target) <= prereg.TIMING_BAND_HALF_MS
 
 
@@ -97,7 +118,7 @@ def units_of(run):
         if b.get("leader_client_id") != b["selection_class"]:
             reasons.append("client-differs-from-selection")
         est = arrival_ms(b, run.ends.get(seq))
-        if not timing_in_band(b, est):
+        if not timing_in_band(b, est, run.ends.get(seq)):
             reasons.append("outside-timing-band")
         per_slot = {}
         for p in by_burst.get(seq, []):

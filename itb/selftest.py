@@ -14,7 +14,7 @@ import random
 import tempfile
 from fractions import Fraction
 
-from . import analyze, b58, collect, fakechain, rawformat, rpc, stats, synth, verdict, verify
+from . import analyze, b58, collect, fakechain, plan, rawformat, rpc, stats, synth, verdict, verify
 
 
 def sample_run(burst_seq=7, n=12):
@@ -440,10 +440,83 @@ def chain_checks():
     return out
 
 
+class _PlanCluster:
+    """Answers the four calls plan.draw makes: two leaders over 4000 slots."""
+
+    def call(self, method, params):
+        if method == "getEpochInfo":
+            return {"epoch": 5, "absoluteSlot": 10100, "slotIndex": 100, "slotsInEpoch": 4000}
+        if method == "getLeaderSchedule":
+            a = [i for i in range(4000) if (i // 4) % 2 == 0]
+            return {"LeaderA": a, "LeaderB": [i for i in range(4000) if (i // 4) % 2 == 1]}
+        if method == "getClusterNodes":
+            return [{"pubkey": "LeaderA", "tpuQuic": "10.0.0.1:8009", "clientId": "Agave"},
+                    {"pubkey": "LeaderB", "tpuQuic": None, "clientId": "Firedancer"}]
+        if method == "getVoteAccounts":
+            return {"current": [{"nodePubkey": "LeaderA", "votePubkey": "VoteA"}], "delinquent": []}
+        raise AssertionError(method)
+
+
+def plan_checks():
+    """The test-plan draw: windows, spacing, cells and the probe specs of each arm."""
+    out = []
+    wins = plan.windows({"L": [0, 1, 2, 3, 4, 5, 6, 7, 12, 13]}, 1000)
+    out.append(("plan: leader runs split at 4-slot boundaries", wins == [(1000, 4, "L"), (1004, 4, "L"), (1012, 2, "L")],
+                str(wins)))
+    p, snaps = plan.draw(_PlanCluster(), "localnet", "localnet", 16, 300, "selftest")
+    bursts = p["rounds"][0]["bursts"]
+    slots = [b["first_slot"] for b in bursts]
+    out.append(("plan: 16 windows of the reachable leader, 160 slots apart, past the lead",
+                len(bursts) == 16 and {b["leader"] for b in bursts} == {"LeaderA"} and slots[0] >= 10400
+                and all(b - a >= plan.MIN_GAP_SLOTS for a, b in zip(slots, slots[1:])), str(slots[:3])))
+    cells = [(b["arm"], b["timing"]) for b in bursts]
+    out.append(("plan: each of the 8 cells twice in 16 bursts", sorted(cells) == sorted(list(plan.CELLS) * 2), ""))
+    fee_ok = all(sorted(pr["priority_fee_lamports"] for pr in b["probes"]) == sorted(list(plan.FEES) * 3)
+                 for b in bursts if b["arm"] in ("independent", "shared"))
+    eq_ok = all(len({pr["priority_fee_lamports"] for pr in b["probes"]}) == 1
+                and b["probes"][0]["priority_fee_lamports"] == b["equal_fee_lamports"]
+                for b in bursts if b["arm"] in ("equal_fee", "denominator"))
+    den_ok = all(sorted(pr["cu_limit"] for pr in b["probes"]) == [1000] * 6 + [20000] * 6
+                 for b in bursts if b["arm"] == "denominator")
+    gap_ok = all(b["send_interval_us"] == (5000 if b["arm"] == "equal_fee" else 0) for b in bursts)
+    out.append(("plan: fee levels, equal fees, CU halves and send interval by arm",
+                fee_ok and eq_ok and den_ok and gap_ok, ""))
+    out.append(("plan: the drawn plan passes the probe's checks", plan.check(p) == [], "; ".join(plan.check(p))))
+    out.append(("plan: same seed, same plan", plan.draw(_PlanCluster(), "localnet", "localnet", 16, 300, "selftest")[0]["rounds"][0]["bursts"] == bursts, ""))
+    bad = json.loads(json.dumps(p))
+    bad["rounds"][0]["bursts"][1]["first_slot"] = slots[0] + 8
+    out.append(("plan: windows closer than 160 slots are refused", any("closer" in x for x in plan.check(bad)), ""))
+    out.append(("plan: snapshots carry nodes and schedule",
+                len(snaps["cluster-nodes.json"]["nodes"]) == 2 and snaps["leader-schedule.json"]["first_slot"] == 10000, ""))
+    return out
+
+
+def timing_checks():
+    """Moment bands (plan sections 5.1 and 10): the slot-2 reference and the final aim."""
+    out = []
+    burst = {"timing": "slot2", "slot_ms": 243.0, "rtt_ns": 300_000_000,
+             "send_at_ns": 0, "predicted_first_slot_ns": 0}
+    aimed = {"first_shred_ns": [None, None], "first_send_offset_ns": None,
+             "send_predicted_first_slot_ns": 1_000_000_000, "send_target_arrival_ns": 1_145_000_000,
+             "send_rtt_ns": 40_000_000}
+    seen = dict(aimed, first_shred_ns=[1_000_000_000, 1_042_000_000], first_send_offset_ns=110_000_000)
+    out.append(("timing: slot 2 starts where its first shred was seen",
+                analyze.slot2_ms(burst, seen) == 42.0, str(analyze.slot2_ms(burst, seen))))
+    out.append(("timing: without both shreds the final aim gives slot 2",
+                analyze.slot2_ms(burst, aimed) == 145.0, str(analyze.slot2_ms(burst, aimed))))
+    out.append(("timing: without an aim the mean slot length gives slot 2",
+                analyze.slot2_ms(burst, None) == 243.0, ""))
+    est = analyze.arrival_ms(burst, seen)
+    out.append(("timing: arrival takes half the RTT of the final aim", est == 130.0, str(est)))
+    out.append(("timing: 130 ms is in the band of a slot 2 seen at 42 ms, out of one at 243 ms",
+                analyze.timing_in_band(burst, est, seen) and not analyze.timing_in_band(burst, est, None), ""))
+    return out
+
+
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
-              + end_to_end_checks() + chain_checks())
+              + end_to_end_checks() + chain_checks() + plan_checks() + timing_checks())
     lines = []
     failed = 0
     for name, ok, detail in checks:

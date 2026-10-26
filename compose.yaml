@@ -2,8 +2,11 @@
 #
 # Judges:   docker compose run --rm reproduce          (no key, no Rust build)
 #           docker compose run --rm reproduce verify   (one step for debugging)
-# Measure:  docker compose --profile measure run --rm probe          (dry-run, the default)
-#           docker compose --profile measure run --rm probe --live --max-spend-lamports N
+# Measure:  docker compose --profile measure run --rm plan plan --bursts 8   (draws data/plans/<id>/)
+#           docker compose --profile measure run --rm probe run --plan /data/plans/<id>/plan.json
+#                                                    (dry-run, the default)
+#           docker compose --profile measure run --rm probe run --plan ... --live --max-spend-lamports N
+#           docker compose --profile measure run --rm probe status | close
 #
 # Services without profiles always start (compose-spec, profiles), so a plain
 # `docker compose up` runs reproduce only and never builds the probe image.
@@ -32,6 +35,16 @@ services:
     # Reads the repository, writes nothing back to the host.
     volumes:
       - ./:/repo:ro
+
+  # Test plans for localnet, devnet and mainnet dry-runs: data/plans/<id>/plan.json,
+  # which the probe reads as /data/plans/<id>/plan.json.
+  plan:
+    <<: *python
+    profiles: [measure]
+    command: ["plan"]
+    volumes:
+      - ./:/repo:ro
+      - ./data:/repo/data
 
   collect:
     <<: *python

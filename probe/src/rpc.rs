@@ -75,7 +75,10 @@ impl Rpc {
                 Err(ureq::Error::Status(code, _)) => return Err(err(Some(code as i64), format!("HTTP {code}"))),
                 Err(ureq::Error::Transport(t)) => {
                     if attempt == 5 {
-                        return Err(err(None, t.to_string()));
+                        // Kind and message only: Display of a transport error carries the
+                        // full URL, and paid RPC URLs carry API keys.
+                        let msg = t.message().unwrap_or("").replace(&self.url, &crate::rows::origin(&self.url));
+                        return Err(err(None, format!("{} {msg}", t.kind())));
                     }
                     std::thread::sleep(wait);
                 }

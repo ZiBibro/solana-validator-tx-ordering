@@ -91,7 +91,7 @@
         "utc": {"type": "str", "format": "utc", "doc": "wall clock once per burst for the measurement log"},
         "slot_clock_source": {"type": "enum:first_shred|slot_subscribe"},
         "slot_ms": {"type": "num", "doc": "slot duration measured in this run"},
-        "anchor_slot": {"type": "int", "min": 0, "doc": "last slot the send moment was predicted from"},
+        "anchor_slot": {"type": "int", "min": 0, "doc": "last slot the send moment was predicted from at signing; burst_end holds the final aim"},
         "anchor_leader": {"type": "str?", "format": "pubkey"},
         "predicted_first_slot_ns": {"type": "int", "doc": "monotonic clock of the probe process"},
         "target_arrival_ns": {"type": "int"},
@@ -118,7 +118,7 @@
         "tx_version": {"type": "enum:v1|legacy"},
         "worst_fee_lamports": {"type": "int", "min": 0, "doc": "commitment booked in the spend journal before sending"},
         "wire_bytes": {"type": "int", "min": 0},
-        "tx_b64": {"type": "str?", "doc": "serialized transaction as sent (unsigned in dry-run)"}
+        "tx_b64": {"type": "str?", "doc": "serialized signed transaction as sent; dry-run signs with the payers of the public dry-run wallet and sends nothing"}
       }
     },
     "send": {
@@ -148,7 +148,12 @@
         "node_ts_ms": {"type": "list<int?>", "doc": "timestamp field of the same events as reported by the RPC node"},
         "first_send_offset_ns": {"type": "int?", "doc": "first send minus firstShredReceived of slot 1"},
         "last_send_offset_ns": {"type": "int?"},
-        "prediction_residual_ns": {"type": "int?", "doc": "observed minus predicted start of slot 1"},
+        "prediction_residual_ns": {"type": "int?", "doc": "observed minus the final prediction (send_predicted_first_slot_ns) of the start of slot 1; zero when the final anchor is slot 1 itself"},
+        "send_anchor_slot": {"type": "int?", "min": 0, "doc": "freshest slot event the send moment was finally aimed from, about 2 ms before the send; null when nothing was sent"},
+        "send_anchor_leader": {"type": "str?", "format": "pubkey"},
+        "send_predicted_first_slot_ns": {"type": "int?", "doc": "start of slot 1 as finally predicted"},
+        "send_target_arrival_ns": {"type": "int?"},
+        "send_rtt_ns": {"type": "int?", "min": 0, "doc": "Connection::rtt() at the final aim; the send moment is the target minus half of it"},
         "reconnects": {"type": "int", "min": 0},
         "utc_end": {"type": "str", "format": "utc"}
       }
