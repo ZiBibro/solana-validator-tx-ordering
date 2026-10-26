@@ -395,11 +395,34 @@ fn copy_snapshot(plan_dir: &Path, run_dir: &Path, round: u64, name: &str) -> Res
     if !meta.file_type().is_file() {
         return Err(format!("snapshot {name:?} is not a regular file"));
     }
+    // The copy reads the handle opened here, so a swap after the check above cannot redirect it.
+    let mut file = open_regular(&src).map_err(|e| format!("snapshot {name:?} is not a regular file: {e}"))?;
     let rel = format!("snapshots/round{round}-{name}");
     let dst = run_dir.join(&rel);
     std::fs::create_dir_all(dst.parent().unwrap()).map_err(|e| e.to_string())?;
-    std::fs::copy(&src, &dst).map_err(|e| format!("snapshot {name}: {e}"))?;
+    // create_new refuses an existing name, a planted symlink included.
+    let mut out = std::fs::OpenOptions::new().write(true).create_new(true).open(&dst).map_err(|e| format!("snapshot {rel}: {e}"))?;
+    std::io::copy(&mut file, &mut out).map_err(|e| format!("snapshot {name}: {e}"))?;
     Ok(rel)
+}
+
+/// Open a file for reading only if the name itself is a regular file: on Unix the open refuses
+/// a symlink (O_NOFOLLOW) and the type check runs on the open handle. Windows builds serve
+/// development only and rely on the symlink_metadata check before this call.
+fn open_regular(path: &Path) -> std::io::Result<std::fs::File> {
+    let mut opts = std::fs::OpenOptions::new();
+    opts.read(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt;
+        // O_NONBLOCK keeps a FIFO from stalling the open; a regular file reads as usual.
+        opts.custom_flags(libc::O_NOFOLLOW | libc::O_NONBLOCK);
+    }
+    let file = opts.open(path)?;
+    if !file.metadata()?.is_file() {
+        return Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, "not a regular file"));
+    }
+    Ok(file)
 }
 
 fn config_of(p: &ProbeSpec) -> Config {
@@ -1081,6 +1104,13 @@ mod tests {
             std::os::unix::fs::symlink(base.join("wallet-key.json"), plan_dir.join("link.json")).unwrap();
             assert!(copy_snapshot(&plan_dir, &run_dir, 0, "link.json").unwrap_err().contains("not a regular file"));
             assert!(!run_dir.join("snapshots/round0-link.json").exists());
+            // The open itself refuses a symlink, whatever a check before it saw.
+            assert!(open_regular(&plan_dir.join("link.json")).is_err());
+            assert!(open_regular(&plan_dir.join("cluster-nodes.json")).is_ok());
+            // A symlink planted at the destination is not written through.
+            std::os::unix::fs::symlink(base.join("wallet-key.json"), run_dir.join("snapshots/round1-cluster-nodes.json")).unwrap();
+            assert!(copy_snapshot(&plan_dir, &run_dir, 1, "cluster-nodes.json").is_err());
+            assert_eq!(std::fs::read(base.join("wallet-key.json")).unwrap(), b"secret");
         }
         std::fs::remove_dir_all(&base).unwrap();
     }
