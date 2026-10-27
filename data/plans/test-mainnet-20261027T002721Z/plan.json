@@ -1,0 +1,423 @@
+{
+ "plan_version": 1,
+ "network": "mainnet",
+ "stage": "test",
+ "doubling": false,
+ "seed_table_sha256": null,
+ "prereg_manifest_sha256": null,
+ "rounds": [
+  {
+   "round": 0,
+   "epoch": 1069,
+   "part": 1,
+   "anchor_utc": "2026-10-27T00:27:18.317961Z",
+   "anchor_slot": 461867022,
+   "cluster_nodes_file": "cluster-nodes.json",
+   "leader_schedule_file": "leader-schedule.json",
+   "validators_app_file": null,
+   "validators_app_utc": null,
+   "bursts": [
+    {
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "path": "quic",
+     "first_slot": 461867324,
+     "window_len": 4,
+     "selection_class": "AgaveBam",
+     "leader": "2GUnfxZavKoPfS9s3VSEjaWDzB3vNf5RojUhprCS1rSx",
+     "leader_vote": "BU3ZgGBXFJwNTrN6VUJ88k9SJ71SyWfBJTabYqRErm4F",
+     "validators_app": null,
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "cell": 1,
+     "arm": "shared",
+     "timing": "pre300",
+     "path": "quic",
+     "first_slot": 461867484,
+     "window_len": 4,
+     "selection_class": "HarmonicAgave",
+     "leader": "5ZqveVffQPiUbkjBg4KD9kib1MKHLqiFno4ke9jSq9qk",
+     "leader_vote": "EcEowA4GKDsdVBF9PNAZa6c9M4WgYG8y4GnpZSUaqioS",
+     "validators_app": null,
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "cell": 2,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "path": "quic",
+     "first_slot": 461867644,
+     "window_len": 4,
+     "selection_class": "JitoLabs",
+     "leader": "HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU",
+     "leader_vote": "he1iusunGwqrNtafDtLdhsUQDFvo13z9sUa36PauBtk",
+     "validators_app": null,
+     "equal_fee_lamports": 10,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "cell": 3,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "path": "quic",
+     "first_slot": 461867804,
+     "window_len": 4,
+     "selection_class": "AgaveBam",
+     "leader": "6y7V8dL673XFzm9QyC5vvh3itWkp7wztahBd2yDqsyrK",
+     "leader_vote": "7xENfwKCajMB5aVTgmTB6h7d7Su91wTcnfMjoAQCMvKq",
+     "validators_app": null,
+     "equal_fee_lamports": 100,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
