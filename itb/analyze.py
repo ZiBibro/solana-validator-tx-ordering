@@ -102,7 +102,8 @@ def timing_in_band(burst, est_ms, end=None):
     target = prereg.TIMING_TARGET_MS[burst["timing"]]
     if target is None:
         target = slot2_ms(burst, end)
-    return abs(est_ms - target) <= prereg.TIMING_BAND_HALF_MS
+    low, high = prereg.TIMING_BAND_MS[burst["timing"]]
+    return target + low <= est_ms <= target + high
 
 
 def clock_behind(burst):

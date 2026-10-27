@@ -8,11 +8,18 @@
 //!   per instruction (program index u8, num_accounts u8, data_len u16 LE),
 //!   per instruction (account indices, data);
 //! the wire form is the message followed by the signatures.
+//!
+//! The pre-registration anchor (section 10) is a legacy transaction with one Memo v2
+//! instruction: header, compact-u16 key count, keys, blockhash, compact-u16 instruction
+//! count, instructions with compact-u16 lengths; its wire form puts the compact-u16
+//! signature count and the signatures before the message.
 
 use crate::keys::Signer;
 
 pub const SYSTEM_PROGRAM: [u8; 32] = [0u8; 32];
 pub const LAMPORTS_PER_SIGNATURE: u64 = 5000;
+/// SPL Memo v2, the program of the pre-registration anchor (section 10).
+pub const MEMO_PROGRAM: &str = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr";
 const VERSION_1: u8 = 0x81;
 const TRANSFER_TAG: u32 = 2;
 const MASK_PRIORITY_FEE: u32 = 0b11;
@@ -56,6 +63,11 @@ pub fn transfer(from: [u8; 32], to: [u8; 32], lamports: u64) -> Instruction {
     }
 }
 
+/// Memo v2 with no accounts: the fee payer's signature is the only one the memo needs.
+pub fn memo(text: &str) -> Result<Instruction, String> {
+    Ok(Instruction { program: crate::b58::decode32(MEMO_PROGRAM)?, accounts: vec![], data: text.as_bytes().to_vec() })
+}
+
 pub struct Message {
     pub bytes: Vec<u8>,
     /// Required signers in key order; the first is the fee payer.
@@ -69,33 +81,7 @@ pub fn message_v1(
     blockhash: [u8; 32],
     config: Config,
 ) -> Result<Message, String> {
-    // Keys in first-seen order with merged flags; the payer is a writable signer.
-    let mut keys: Vec<AccountMeta> = vec![AccountMeta { key: payer, signer: true, writable: true }];
-    let mut add = |key: [u8; 32], signer: bool, writable: bool| {
-        if let Some(k) = keys.iter_mut().find(|k| k.key == key) {
-            k.signer |= signer;
-            k.writable |= writable;
-        } else {
-            keys.push(AccountMeta { key, signer, writable });
-        }
-    };
-    for ix in instructions {
-        for a in &ix.accounts {
-            add(a.key, a.signer, a.writable);
-        }
-        add(ix.program, false, false);
-    }
-    // Stable partition: writable signers, readonly signers, writable others, readonly others.
-    let group = |k: &AccountMeta| match (k.signer, k.writable) {
-        (true, true) => 0,
-        (true, false) => 1,
-        (false, true) => 2,
-        (false, false) => 3,
-    };
-    keys.sort_by_key(group);
-    if keys.len() > 255 || instructions.len() > 255 {
-        return Err("message has more than 255 keys or instructions".into());
-    }
+    let keys = ordered_keys(payer, instructions)?;
     let index = |key: &[u8; 32]| keys.iter().position(|k| &k.key == key).unwrap() as u8;
     let signers: Vec<[u8; 32]> = keys.iter().filter(|k| k.signer).map(|k| k.key).collect();
     let readonly_signed = keys.iter().filter(|k| k.signer && !k.writable).count();
@@ -133,6 +119,79 @@ pub fn message_v1(
     Ok(Message { bytes: m, signers, write_accounts })
 }
 
+/// Legacy message (section 10): the anchor memo goes out in this form, which the craft
+/// measurement simulated on mainnet for 5000 lamports (research/craft-probe.md, 1.8).
+pub fn legacy_message(payer: [u8; 32], instructions: &[Instruction], blockhash: [u8; 32]) -> Result<Message, String> {
+    let keys = ordered_keys(payer, instructions)?;
+    let index = |key: &[u8; 32]| keys.iter().position(|k| &k.key == key).unwrap() as u8;
+    let signers: Vec<[u8; 32]> = keys.iter().filter(|k| k.signer).map(|k| k.key).collect();
+    let mut m = vec![
+        signers.len() as u8,
+        keys.iter().filter(|k| k.signer && !k.writable).count() as u8,
+        keys.iter().filter(|k| !k.signer && !k.writable).count() as u8,
+    ];
+    short_vec(&mut m, keys.len());
+    for k in &keys {
+        m.extend_from_slice(&k.key);
+    }
+    m.extend_from_slice(&blockhash);
+    short_vec(&mut m, instructions.len());
+    for ix in instructions {
+        m.push(index(&ix.program));
+        short_vec(&mut m, ix.accounts.len());
+        m.extend(ix.accounts.iter().map(|a| index(&a.key)));
+        short_vec(&mut m, ix.data.len());
+        m.extend_from_slice(&ix.data);
+    }
+    let write_accounts = keys.iter().filter(|k| k.writable).map(|k| k.key).collect();
+    Ok(Message { bytes: m, signers, write_accounts })
+}
+
+/// Compact-u16 length: seven bits per byte, the high bit marks a following byte.
+fn short_vec(out: &mut Vec<u8>, mut n: usize) {
+    loop {
+        let low = (n & 0x7f) as u8;
+        n >>= 7;
+        if n == 0 {
+            out.push(low);
+            return;
+        }
+        out.push(low | 0x80);
+    }
+}
+
+/// Keys of a message, ordered as both forms need them; the payer is a writable signer.
+fn ordered_keys(payer: [u8; 32], instructions: &[Instruction]) -> Result<Vec<AccountMeta>, String> {
+    // Keys in first-seen order with merged flags; the payer is a writable signer.
+    let mut keys: Vec<AccountMeta> = vec![AccountMeta { key: payer, signer: true, writable: true }];
+    let mut add = |key: [u8; 32], signer: bool, writable: bool| {
+        if let Some(k) = keys.iter_mut().find(|k| k.key == key) {
+            k.signer |= signer;
+            k.writable |= writable;
+        } else {
+            keys.push(AccountMeta { key, signer, writable });
+        }
+    };
+    for ix in instructions {
+        for a in &ix.accounts {
+            add(a.key, a.signer, a.writable);
+        }
+        add(ix.program, false, false);
+    }
+    // Stable partition: writable signers, readonly signers, writable others, readonly others.
+    let group = |k: &AccountMeta| match (k.signer, k.writable) {
+        (true, true) => 0,
+        (true, false) => 1,
+        (false, true) => 2,
+        (false, false) => 3,
+    };
+    keys.sort_by_key(group);
+    if keys.len() > 255 || instructions.len() > 255 {
+        return Err("message has more than 255 keys or instructions".into());
+    }
+    Ok(keys)
+}
+
 pub struct Signed {
     pub wire: Vec<u8>,
     /// First signature, the transaction id.
@@ -153,6 +212,33 @@ pub fn sign(message: &Message, signers: &[&Signer]) -> Result<Signed, String> {
         wire.extend_from_slice(&sig);
     }
     Ok(Signed { wire, signature: first.ok_or("message without signers")? })
+}
+
+/// Legacy wire form: compact-u16 signature count, the signatures in key order, the message.
+pub fn sign_legacy(message: &Message, signers: &[&Signer]) -> Result<Signed, String> {
+    let mut wire = vec![];
+    short_vec(&mut wire, message.signers.len());
+    let mut first = None;
+    for key in &message.signers {
+        let s = signers
+            .iter()
+            .find(|s| &s.pubkey() == key)
+            .ok_or_else(|| format!("no signer for {}", crate::b58::encode(key)))?;
+        let sig = s.sign(&message.bytes);
+        first.get_or_insert(sig);
+        wire.extend_from_slice(&sig);
+    }
+    wire.extend_from_slice(&message.bytes);
+    Ok(Signed { wire, signature: first.ok_or("message without signers")? })
+}
+
+/// The legacy wire with zeroed signatures, for simulateTransaction with sigVerify off.
+pub fn unsigned_legacy_wire(message: &Message) -> Vec<u8> {
+    let mut wire = vec![];
+    short_vec(&mut wire, message.signers.len());
+    wire.extend(std::iter::repeat_n(0u8, 64 * message.signers.len()));
+    wire.extend_from_slice(&message.bytes);
+    wire
 }
 
 /// Amount of the self-transfer that names the probe: burst_seq*16 + send_rank + 1.
@@ -234,5 +320,43 @@ mod tests {
         assert!(vk.verify_strict(&m.bytes, &sig).is_ok());
         assert_eq!(worst_fee(1, cfg), 5010);
         assert_eq!(probe_amount(5, 3), 84);
+    }
+
+    #[test]
+    fn compact_u16_takes_seven_bits_a_byte() {
+        for (n, want) in [(0usize, vec![0u8]), (127, vec![0x7f]), (128, vec![0x80, 0x01]), (16384, vec![0x80, 0x80, 0x01])] {
+            let mut out = vec![];
+            short_vec(&mut out, n);
+            assert_eq!(out, want, "{n}");
+        }
+    }
+
+    #[test]
+    fn anchor_memo_is_a_legacy_message_signed_ahead_of_it() {
+        let s = Signer::from_seed(&[7u8; 32]);
+        let text = format!("itb-prereg {}", "ab".repeat(32));
+        let m = legacy_message(s.pubkey(), &[memo(&text).unwrap()], [2u8; 32]).unwrap();
+        let program = b58::decode32(MEMO_PROGRAM).unwrap();
+        // Header: one writable signer, no readonly signer, one readonly key (the program).
+        assert_eq!(&m.bytes[..4], &[1, 0, 1, 2]);
+        assert_eq!(&m.bytes[4..36], &s.pubkey());
+        assert_eq!(&m.bytes[36..68], &program);
+        assert_eq!(&m.bytes[68..100], &[2u8; 32]);
+        // One instruction: program index 1, no accounts, 75 data bytes.
+        assert_eq!(&m.bytes[100..104], &[1, 1, 0, 75]);
+        assert_eq!(&m.bytes[104..], text.as_bytes());
+        assert_eq!(m.write_accounts, vec![s.pubkey()]);
+        let signed = sign_legacy(&m, &[&s]).unwrap();
+        assert_eq!(signed.wire[0], 1);
+        assert_eq!(&signed.wire[1..65], &signed.signature[..]);
+        assert_eq!(&signed.wire[65..], &m.bytes[..]);
+        let vk = ed25519_dalek::VerifyingKey::from_bytes(&s.pubkey()).unwrap();
+        assert!(vk.verify_strict(&m.bytes, &ed25519_dalek::Signature::from_bytes(&signed.signature)).is_ok());
+        let blank = unsigned_legacy_wire(&m);
+        assert_eq!(blank.len(), signed.wire.len());
+        assert!(blank[1..65].iter().all(|b| *b == 0));
+        // The v1 form of the same probe keeps its layout after the key ordering moved out.
+        let v1 = message_v1(s.pubkey(), &[memo(&text).unwrap()], [2u8; 32], Config { priority_fee: 0, cu_limit: 1, loaded_data_limit: 1 }).unwrap();
+        assert_eq!(&v1.bytes[..4], &[VERSION_1, 1, 0, 1]);
     }
 }

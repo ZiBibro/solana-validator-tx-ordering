@@ -22,6 +22,11 @@ PUBLIC_GETBLOCK_LIMIT = 6  # x-ratelimit-method-limit of the public node, 2026-1
 FULL_BLOCK_MB = (1.87, 2.69)  # one getBlock full answer on three slots, 2026-10-26
 PREREG_MEMO_PREFIX = "itb-prereg "
 PREREG_STAGES = ("pilot", "campaign")
+# Files the pilot manifest fixes (section 10): the plan text, the seeded table and the
+# analysis constants. Code that carries out the plan stays outside, so a bug fix after
+# the anchor does not break the hash; the plan and its numbers bind that code.
+PILOT_MANIFEST_FILES = ("prereg/ANALYSIS-PLAN.md", "prereg/pilot-table.json", "itb/prereg.py")
+ANCHORS_FILE = "prereg-anchors.json"
 
 
 class Report:
@@ -48,6 +53,37 @@ def sha256_file(path):
         for chunk in iter(lambda: f.read(1 << 16), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def manifest_path(repo_dir, stage):
+    return os.path.join(repo_dir, "prereg", "manifest-%s.json" % stage)
+
+
+def read_anchors(data_dir):
+    """Anchors the probe recorded in data/prereg-anchors.json; no file means none."""
+    path = os.path.join(data_dir, ANCHORS_FILE)
+    if not os.path.exists(path):
+        return []
+    with open(path, "rb") as f:
+        return json.load(f)
+
+
+def build_manifest(repo_dir, stage, files):
+    """Bytes of a stage manifest (section 10): the SHA-256 of each listed repository
+    file. The anchor memo carries the SHA-256 of these bytes as written."""
+    if stage not in PREREG_STAGES:
+        raise ValueError("stage %r; expected %s" % (stage, " or ".join(PREREG_STAGES)))
+    if not files:
+        raise ValueError("a manifest lists at least one file")
+    listed = {}
+    for name in files:
+        parts = name.replace("\\", "/").split("/")
+        path = os.path.join(repo_dir, *parts)
+        if os.path.isabs(name) or ".." in parts or not os.path.isfile(path):
+            raise ValueError("%s is no file inside the repository" % name)
+        listed["/".join(parts)] = sha256_file(path)
+    doc = {"manifest_version": 1, "stage": stage, "files": listed}
+    return (json.dumps(doc, indent=2, sort_keys=True) + "\n").encode("utf-8")
 
 
 def live_runs(runs, network):
@@ -233,17 +269,16 @@ def reverse_check(runs, client, report, histories, panel, wallets):
 
 def prereg_check(runs, client, report, data_dir, repo_dir):
     """Anchors of pre-registration: memo hash equals the file hash, files listed
-    in the manifest hash as recorded, memo lands before the stage's first probe."""
+    in the manifest hash as recorded, every run of the stage was planned against
+    that manifest, memo lands before the stage's first probe."""
     stages = sorted({r.run["stage"] for r in runs} & set(PREREG_STAGES))
     if not stages:
         return
-    path = os.path.join(data_dir, "prereg-anchors.json")
+    path = os.path.join(data_dir, ANCHORS_FILE)
     if not os.path.exists(path):
         report.problem("prereg: %s missing while %s runs exist" % (path, "/".join(stages)))
         return
-    with open(path, "rb") as f:
-        anchors = json.load(f)
-    by_stage = {a["stage"]: a for a in anchors}
+    by_stage = {a["stage"]: a for a in read_anchors(data_dir)}
     for stage in stages:
         anchor = by_stage.get(stage)
         if anchor is None:
@@ -268,6 +303,11 @@ def prereg_check(runs, client, report, data_dir, repo_dir):
                 if have != want:
                     report.problem("prereg %s: %s hashes %s, manifest says %s" % (
                         stage, name, have, want))
+            for r in runs:
+                planned = r.run.get("prereg_manifest_sha256")
+                if r.run["stage"] == stage and planned != digest:
+                    report.problem("prereg %s: run %s was planned against manifest %s, the anchor holds %s" % (
+                        stage, r.run["run_id"], planned, digest))
         times = [i["block_time"] for r in runs if r.run["stage"] == stage
                  for i in r.inclusions.values()
                  if i["status"] == "included" and i["block_time"] is not None]

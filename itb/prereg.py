@@ -29,11 +29,13 @@ DELTA_PAIR = 0.2
 # "No rule visible" needs two taus, so 0.9 each keeps the joint chance near 0.8.
 POWER_PER_TAU = 0.9
 
-# Moment condition bands: estimated arrival (send offset from the first slot
-# start plus half the RTT) within this distance of the target counts as the
-# condition; bursts outside go to a separate group.
+# Moment condition bands, ms from the target as (low, high): an estimated arrival
+# (send offset from the first slot start plus half the RTT) inside the band
+# counts as the condition; bursts outside go to a separate group. Both bands
+# run 100 ms either side of the target; the pair form lets one side move
+# without touching the other.
 TIMING_TARGET_MS = {"pre300": -300.0, "slot2": None}  # slot2 target = start of slot 2, analyze.slot2_ms
-TIMING_BAND_HALF_MS = 100.0
+TIMING_BAND_MS = {"pre300": (-100.0, 100.0), "slot2": (-100.0, 100.0)}
 
 # Section 5.1: slot clock guard. getSlot at processed commitment this many slots
 # or more ahead of the slot the clock gave for the same moment means the burst

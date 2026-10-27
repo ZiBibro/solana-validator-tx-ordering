@@ -8,9 +8,11 @@
 //!   itb-probe close [--live --max-spend-lamports N]
 //!   itb-probe status
 //!   itb-probe clock [--seconds N] [--connections K]
+//!   itb-probe anchor --stage pilot|campaign [--live --max-spend-lamports N]
 //!
 //! Exit codes: 0 done, 1 refused or failed (the message names why), 64 bad arguments.
 
+mod anchor;
 mod b58;
 mod chain;
 mod clock;
@@ -77,6 +79,7 @@ pub enum Command {
     Close { mode: Mode },
     Status,
     Clock { seconds: u64, connections: usize },
+    Anchor { stage: String, mode: Mode },
 }
 
 /// The public node allows 10 subscriptions and each connection of the check takes two.
@@ -84,8 +87,9 @@ const MAX_CLOCK_CONNECTIONS: usize = 5;
 
 /// Split the subcommand and its own flags from the mode flags parse_mode reads.
 pub fn parse_command(args: &[String]) -> Result<Command, String> {
-    let (sub, rest) = args.split_first().ok_or("usage: itb-probe run --plan FILE | close | status | clock")?;
+    let (sub, rest) = args.split_first().ok_or("usage: itb-probe run --plan FILE | close | status | clock | anchor --stage S")?;
     let mut plan = None;
+    let mut stage = None;
     let mut close_after = false;
     let mut seconds: u64 = 180;
     let mut connections: usize = 4;
@@ -102,6 +106,10 @@ pub fn parse_command(args: &[String]) -> Result<Command, String> {
                 i += 1;
             }
             "--close-after" if sub == "run" => close_after = true,
+            "--stage" if sub == "anchor" => {
+                stage = Some(rest.get(i + 1).ok_or("--stage needs pilot or campaign")?.clone());
+                i += 1;
+            }
             "--seconds" if sub == "clock" => {
                 seconds = number("--seconds", rest.get(i + 1))?;
                 i += 1;
@@ -124,7 +132,12 @@ pub fn parse_command(args: &[String]) -> Result<Command, String> {
             Err(format!("clock needs --seconds above 0 and --connections from 1 to {MAX_CLOCK_CONNECTIONS}"))
         }
         "clock" => Ok(Command::Clock { seconds, connections }),
-        other => Err(format!("unknown command {other}; expected run, close, status or clock")),
+        "anchor" => match stage {
+            Some(s) if anchor::STAGES.contains(&s.as_str()) => Ok(Command::Anchor { stage: s, mode: parse_mode(&mode_args)? }),
+            Some(s) => Err(format!("anchor --stage {s}; expected pilot or campaign")),
+            None => Err("anchor needs --stage pilot or --stage campaign".into()),
+        },
+        other => Err(format!("unknown command {other}; expected run, close, status, clock or anchor")),
     }
 }
 
@@ -143,6 +156,7 @@ fn main() -> ExitCode {
         Command::Close { mode } => session::close(&settings, mode),
         Command::Status => session::status(&settings),
         Command::Clock { seconds, connections } => clockcheck::check(&settings, *seconds, *connections),
+        Command::Anchor { stage, mode } => anchor::anchor(&settings, mode, stage),
     };
     match result {
         Ok(()) => ExitCode::SUCCESS,
@@ -215,6 +229,15 @@ mod tests {
         assert!(parse_command(&args(&["clock", "--seconds", "0"])).is_err());
         assert!(parse_command(&args(&["clock", "--live"])).is_err());
         assert!(parse_command(&args(&["run", "--plan", "p.json", "--seconds", "5"])).is_err());
+        assert_eq!(parse_command(&args(&["anchor", "--stage", "pilot"])), Ok(Command::Anchor { stage: "pilot".into(), mode: Mode::DryRun }));
+        assert_eq!(
+            parse_command(&args(&["anchor", "--stage", "campaign", "--live", "--max-spend-lamports", "5000"])),
+            Ok(Command::Anchor { stage: "campaign".into(), mode: Mode::Live { max_spend_lamports: 5000 } })
+        );
+        assert!(parse_command(&args(&["anchor"])).is_err());
+        assert!(parse_command(&args(&["anchor", "--stage", "test"])).is_err());
+        assert!(parse_command(&args(&["anchor", "--stage", "pilot", "--live"])).is_err());
+        assert!(parse_command(&args(&["run", "--plan", "p.json", "--stage", "pilot"])).is_err());
     }
 
     #[test]

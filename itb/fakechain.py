@@ -102,6 +102,22 @@ def crank_entry(memo, n):
             "meta": meta, "version": "legacy"}
 
 
+def anchor_entry(memo, n):
+    """Prereg anchor of section 10: one Memo v2 instruction from the wallet, legacy."""
+    message = {"accountKeys": [synth.key(230, 1), "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"],
+               "header": {"numRequiredSignatures": 1, "numReadonlySignedAccounts": 0,
+                          "numReadonlyUnsignedAccounts": 1},
+               "instructions": [{"programIdIndex": 1, "accounts": [], "data": b58.encode(memo.encode()),
+                                 "stackHeight": 1}],
+               "recentBlockhash": synth.key(3, 5)}
+    meta = {"err": None, "fee": 5000, "costUnits": 1400, "computeUnitsConsumed": 9000,
+            "loadedAddresses": {"writable": [], "readonly": []},
+            "preBalances": [1, 1], "postBalances": [1, 1], "innerInstructions": [],
+            "logMessages": [], "rewards": [], "status": {"Ok": None}}
+    return {"transaction": {"signatures": [synth.sig(800000 + n, 1)], "message": message},
+            "meta": meta, "version": "legacy"}
+
+
 class FakeChain:
     def __init__(self, block_height=440000200):
         self.blocks = {}

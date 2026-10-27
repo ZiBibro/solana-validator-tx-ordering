@@ -1,0 +1,9 @@
+{
+  "files": {
+    "itb/prereg.py": "905898140e50b7596409c4f17ef89066afc119fdcec5eadadb134897625efece",
+    "prereg/ANALYSIS-PLAN.md": "572f2022c812429f8ee139fabf1b667a3a2cb2503c58222ae40e5c012a85144c",
+    "prereg/pilot-table.json": "8213bfd3a6f0f08f4f0d46aeed0541caf6e5e17c22fa6670c3a35921609ac820"
+  },
+  "manifest_version": 1,
+  "stage": "pilot"
+}

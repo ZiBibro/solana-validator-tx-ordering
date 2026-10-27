@@ -45,9 +45,17 @@ const SNAPSHOT_SLOTS_BEFORE: u64 = 8;
 const SNAPSHOT_SLOTS_AFTER: u64 = 160;
 const CLOCK_WAIT: Duration = Duration::from_secs(150);
 const CLOSE_FEE: u64 = tx::LAMPORTS_PER_SIGNATURE;
-const RESOLVE_WAIT: Duration = Duration::from_secs(180);
-/// Moment-condition bands of itb/prereg.py: estimated arrival within 100 ms of the target.
-const BAND_HALF_MS: f64 = 100.0;
+pub(crate) const RESOLVE_WAIT: Duration = Duration::from_secs(180);
+/// Moment-condition targets and bands of itb/prereg.py TIMING_TARGET_MS and TIMING_BAND_MS:
+/// (low, high) in ms from the target; the slot-2 target is the start of slot 2.
+const PRE300_TARGET_MS: f64 = -300.0;
+const PRE300_BAND_MS: (f64, f64) = (-100.0, 100.0);
+const SLOT2_BAND_MS: (f64, f64) = (-100.0, 100.0);
+
+fn in_band(timing: &str, arrival_ms: f64, slot2_ms: f64) -> bool {
+    let (target, (low, high)) = if timing == "pre300" { (PRE300_TARGET_MS, PRE300_BAND_MS) } else { (slot2_ms, SLOT2_BAND_MS) };
+    (target + low..=target + high).contains(&arrival_ms)
+}
 /// The send moment is re-aimed from the freshest slot event until this close to it.
 const AIM_FINAL_NS: i64 = 2_000_000;
 /// Clock guard (section 5.1): a burst is skipped when getSlot at processed commitment is
@@ -64,6 +72,8 @@ pub struct Settings {
     pub data_dir: PathBuf,
     pub log_dir: PathBuf,
     pub state_dir: PathBuf,
+    /// Read-only prereg/ of the repository: the manifests the anchor memo hashes.
+    pub prereg_dir: PathBuf,
     pub key_path: PathBuf,
     pub log_level: Level,
     /// Funded public address the dry-run simulates from (section 13); mainnet default
@@ -84,6 +94,7 @@ impl Settings {
             data_dir: var("ITB_DATA_DIR", "data").into(),
             log_dir: var("ITB_LOG_DIR", "logs").into(),
             state_dir: var("ITB_STATE_DIR", "state").into(),
+            prereg_dir: var("ITB_PREREG_DIR", "prereg").into(),
             key_path: var("ITB_KEY_PATH", "/run/secrets/wallet_key").into(),
             log_level: Level::parse(&var("ITB_LOG_LEVEL", "info")),
             sim_payer: std::env::var("ITB_SIM_PAYER").ok().filter(|s| !s.is_empty()).or(sim_default),
@@ -93,14 +104,14 @@ impl Settings {
         }
     }
 
-    fn journal_path(&self) -> PathBuf {
+    pub(crate) fn journal_path(&self) -> PathBuf {
         self.state_dir.join(format!("spend-journal-{}.jsonl", self.network))
     }
 }
 
 /// Section 11: the probe refuses to measure through a TLS-inspecting proxy. Plain http
 /// and ws (a local test validator) have no certificate to check.
-fn check_tls(s: &Settings, log: &mut Log) -> Result<(), String> {
+pub(crate) fn check_tls(s: &Settings, log: &mut Log) -> Result<(), String> {
     let mut seen = BTreeSet::new();
     for url in [&s.rpc_url, &s.ws_url] {
         let origin = rows::origin(url).replacen("wss://", "https://", 1);
@@ -123,7 +134,7 @@ fn check_tls(s: &Settings, log: &mut Log) -> Result<(), String> {
     Ok(())
 }
 
-fn compact_utc() -> String {
+pub(crate) fn compact_utc() -> String {
     utc_now().replace(['-', ':'], "").split('.').next().unwrap_or("").to_string() + "Z"
 }
 
@@ -246,6 +257,9 @@ fn run_session(s: &Settings, mode: &Mode, plan_path: &Path, close_after: bool, s
         Mode::Live { max_spend_lamports } => *max_spend_lamports,
         Mode::DryRun => SPEND_LIMIT_LAMPORTS,
     };
+    if live {
+        crate::anchor::require_anchor(&s.data_dir, &plan.stage, plan.prereg_manifest_sha256.as_deref())?;
+    }
     let stage = if live { plan.stage.clone() } else { "dry-run".to_string() };
     let run_id = format!("{stage}-{}-{}", s.network, compact_utc());
     let run_dir = s.data_dir.join("runs").join(&run_id);
@@ -592,10 +606,7 @@ impl Session {
         let done = notes.len();
         let in_band = notes
             .iter()
-            .filter(|n| {
-                let target = if n.timing == "pre300" { -300.0 } else { n.slot2_ms };
-                n.arrival_ms.is_some_and(|a| (a - target).abs() <= BAND_HALF_MS)
-            })
+            .filter(|n| n.arrival_ms.is_some_and(|a| in_band(&n.timing, a, n.slot2_ms)))
             .count();
         let mut arrivals: Vec<f64> = notes.iter().filter_map(|n| n.arrival_ms).collect();
         arrivals.sort_by(|a, b| a.total_cmp(b));
@@ -1171,6 +1182,14 @@ pub fn status(s: &Settings) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn bands_match_itb_prereg() {
+        let pre: Vec<f64> = [-450.0, -400.0, -300.0, -200.0, -150.0].into_iter().filter(|a| in_band("pre300", *a, 0.0)).collect();
+        assert_eq!(pre, vec![-400.0, -300.0, -200.0]);
+        assert!(in_band("slot2", 130.0, 42.0));
+        assert!(!in_band("slot2", 130.0, 243.0));
+    }
 
     #[test]
     fn snapshot_copy_takes_only_regular_files_beside_the_plan() {

@@ -11,6 +11,7 @@
     python -m itb panel            pick the leader panel of an epoch by the section 3 rule
     python -m itb table            draw the seeded pilot table (section 6) into prereg/
     python -m itb pilot            put the pilot table into windows of the panel leaders
+    python -m itb manifest         hash the pre-registered files of a stage into prereg/
 
 In Docker: docker compose run --rm reproduce [subcommand ...]
 """
@@ -201,10 +202,18 @@ def cmd_pilot(args):
         raw = f.read()
     table = json.loads(raw)
     problems = pilotmod.table_problems(table)
+    # A live pilot run refuses a plan without the anchored manifest hash (section 10).
+    manifest = args.manifest or verify.manifest_path(REPO_DIR, "pilot")
     manifest_sha = None
-    if args.manifest:
-        with open(args.manifest, "rb") as f:
+    if os.path.exists(manifest):
+        with open(manifest, "rb") as f:
             manifest_sha = pilotmod.sha256_bytes(f.read())
+        print("pilot: plan carries prereg manifest %s sha256 %s" % (manifest, manifest_sha))
+    elif args.manifest:
+        print("pilot: manifest %s not found" % manifest, file=sys.stderr)
+        return EXIT_FAIL
+    else:
+        print("pilot: note: no %s; a live run refuses this plan" % manifest)
     if problems:
         print("pilot: table %s" % "; ".join(problems), file=sys.stderr)
         return EXIT_FAIL
@@ -235,6 +244,32 @@ def cmd_pilot(args):
                                                                        at(first), at(last)))
     for note in notes:
         print("pilot: note: " + note)
+    return EXIT_OK
+
+
+def cmd_manifest(args):
+    files = args.file or (verify.PILOT_MANIFEST_FILES if args.stage == "pilot" else None)
+    if not files:
+        print("manifest: stage %s lists its files with --file" % args.stage, file=sys.stderr)
+        return EXIT_FAIL
+    done = [a for a in verify.read_anchors(_data_dir(args)) if a["stage"] == args.stage]
+    if done:
+        print("manifest: stage %s is anchored by %s; its manifest is never drawn again"
+              % (args.stage, done[0]["signature"]), file=sys.stderr)
+        return EXIT_FAIL
+    try:
+        data = verify.build_manifest(REPO_DIR, args.stage, files)
+    except ValueError as e:
+        print("manifest: %s" % e, file=sys.stderr)
+        return EXIT_FAIL
+    path = verify.manifest_path(REPO_DIR, args.stage)
+    with open(path, "wb") as f:
+        f.write(data)
+    digest = pilotmod.sha256_bytes(data)
+    print("manifest: %s sha256 %s" % (path, digest))
+    for name, h in sorted(json.loads(data)["files"].items()):
+        print("  %s  %s" % (h, name))
+    print('manifest: anchor memo "%s%s"' % (verify.PREREG_MEMO_PREFIX, digest))
     return EXIT_OK
 
 
@@ -309,19 +344,25 @@ def main(argv=None):
     p = sub.add_parser("pilot", help="put the pilot table into windows of the panel leaders")
     p.add_argument("--panel", required=True, help="panel.json from itb panel")
     p.add_argument("--table", help="pilot table (default: prereg/pilot-table.json)")
-    p.add_argument("--manifest", help="prereg manifest whose sha256 the plan carries")
+    p.add_argument("--manifest", help="prereg manifest whose sha256 the plan carries "
+                                      "(default: prereg/manifest-pilot.json when it exists)")
     p.add_argument("--lead-slots", type=int, default=900, help="first window at least this many slots ahead")
     p.add_argument("--data", help="data directory (default: repo data/)")
     p = sub.add_parser("panel", help="pick the leader panel of an epoch")
     p.add_argument("--network", help="network (default: ITB_NETWORK or mainnet)")
     p.add_argument("--epoch", type=int, help="current epoch (default) or the next one")
     p.add_argument("--data", help="data directory (default: repo data/)")
+    p = sub.add_parser("manifest", help="hash the pre-registered files of a stage into prereg/")
+    p.add_argument("--stage", required=True, choices=verify.PREREG_STAGES)
+    p.add_argument("--file", action="append",
+                   help="repository file to list (repeatable; pilot default: PILOT_MANIFEST_FILES of verify.py)")
+    p.add_argument("--data", help="data directory with prereg-anchors.json (default: repo data/)")
     args = parser.parse_args(argv)
     handlers = {
         "reproduce": cmd_reproduce, "selftest": cmd_selftest, "verify": cmd_verify,
         "analyze": cmd_analyze, "claim": cmd_claim, "collect": cmd_collect,
         "check-raw": cmd_check_raw, "plan": cmd_plan, "panel": cmd_panel, "table": cmd_table,
-        "pilot": cmd_pilot, None: cmd_reproduce,
+        "pilot": cmd_pilot, "manifest": cmd_manifest, None: cmd_reproduce,
     }
     return handlers[args.cmd](args)
 

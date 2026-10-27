@@ -446,6 +446,77 @@ def chain_checks():
     return out
 
 
+class _StageRun:
+    """The fields of a loaded run that prereg_check reads: one probe at block time 2000."""
+
+    def __init__(self, stage, manifest_sha):
+        self.run = {"run_id": "fake-%s" % stage, "stage": stage, "prereg_manifest_sha256": manifest_sha}
+        self.inclusions = {"probe": {"status": "included", "block_time": 2000}}
+
+
+def _anchor_check(memo_hash=None, memo_time=1000, run_hash=None, record=True, edit_after=None):
+    """prereg_check over a repository with the pilot manifest and its anchor on a fake chain.
+    Returns the problems; each argument breaks one link of the section 10 chain."""
+    with tempfile.TemporaryDirectory() as tmp:
+        repo, data = os.path.join(tmp, "repo"), os.path.join(tmp, "data")
+        for d in ("prereg", "itb"):
+            os.makedirs(os.path.join(repo, d))
+        os.makedirs(data)
+        for rel in verify.PILOT_MANIFEST_FILES:
+            with open(os.path.join(repo, *rel.split("/")), "w", encoding="utf-8", newline="\n") as f:
+                f.write("selftest copy of %s\n" % rel)
+        manifest = verify.build_manifest(repo, "pilot", verify.PILOT_MANIFEST_FILES)
+        with open(verify.manifest_path(repo, "pilot"), "wb") as f:
+            f.write(manifest)
+        digest = pilot.sha256_bytes(manifest)
+        entry = fakechain.anchor_entry(verify.PREREG_MEMO_PREFIX + (memo_hash or digest), 1)
+        world = fakechain.FakeChain()
+        world.add_block(500, [entry], synth.key(5, 1), memo_time)
+        anchors = [{"stage": "pilot", "file": "prereg/manifest-pilot.json", "manifest": True,
+                    "signature": entry["transaction"]["signatures"][0], "sha256": digest}]
+        with open(os.path.join(data, verify.ANCHORS_FILE), "w", encoding="utf-8") as f:
+            json.dump(anchors if record else [], f)
+        if edit_after:
+            with open(os.path.join(repo, *edit_after.split("/")), "a", encoding="utf-8") as f:
+                f.write("changed after the anchor\n")
+        report = verify.Report(_quiet)
+        verify.prereg_check([_StageRun("pilot", run_hash or digest)], world, report, data, repo)
+        return report.problems
+
+
+def prereg_checks():
+    """Pre-registration anchor of section 10: the manifest and what verify asks of it."""
+    out = []
+    problems = _anchor_check()
+    out.append(("prereg: verify accepts an anchor whose memo, files, plan and time agree",
+                not problems, "%s" % problems[:1]))
+    mutations = (
+        ("the memo carries another hash", {"memo_hash": "0" * 64}),
+        ("the memo lands after the first probe", {"memo_time": 2500}),
+        ("the run was planned against another manifest", {"run_hash": "f" * 64}),
+        ("no anchor is recorded for the stage", {"record": False}),
+    ) + tuple(("%s changed after the anchor" % rel, {"edit_after": rel}) for rel in verify.PILOT_MANIFEST_FILES)
+    for name, kwargs in mutations:
+        problems = _anchor_check(**kwargs)
+        out.append(("prereg mutation: %s fails verify" % name, len(problems) == 1,
+                    problems[0][:90] if problems else "no problem found"))
+    refused = 0
+    with tempfile.TemporaryDirectory() as tmp:
+        with open(os.path.join(tmp, "a.txt"), "w") as f:
+            f.write("a")
+        for stage, files in (("pilot", []), ("test", ["a.txt"]), ("pilot", ["../a.txt"]),
+                             ("pilot", ["missing.txt"])):
+            try:
+                verify.build_manifest(tmp, stage, files)
+            except ValueError:
+                refused += 1
+        doc = json.loads(verify.build_manifest(tmp, "campaign", ["a.txt"]))
+    out.append(("prereg: a manifest refuses no files, an unknown stage and paths outside the repository",
+                refused == 4 and doc["files"] == {"a.txt": pilot.sha256_bytes(b"a")},
+                "%d of 4 refused" % refused))
+    return out
+
+
 class _PlanCluster:
     """Answers the four calls plan.draw makes: two leaders over 4000 slots."""
 
@@ -730,6 +801,10 @@ def timing_checks():
     out.append(("timing: arrival takes half the RTT of the final aim", est == 130.0, str(est)))
     out.append(("timing: 130 ms is in the band of a slot 2 seen at 42 ms, out of one at 243 ms",
                 analyze.timing_in_band(burst, est, seen) and not analyze.timing_in_band(burst, est, None), ""))
+    pre = dict(burst, timing="pre300")
+    inside = [ms for ms in (-450.0, -400.0, -300.0, -200.0, -150.0) if analyze.timing_in_band(pre, ms)]
+    out.append(("timing: the pre-window band runs from 400 ms to 200 ms before the first slot",
+                inside == [-400.0, -300.0, -200.0], str(inside)))
     # Schema version 2: the node timestamps hold when a WebSocket backlog delays receipt.
     late = dict(seen, first_shred_ns=[3_000_000_000, 3_400_000_000], first_send_offset_ns=-1_890_000_000,
                 node_ts_ms=[1_793_044_800_000, 1_793_044_800_044], first_send_node_offset_ns=110_000_000)
@@ -775,7 +850,8 @@ def clock_guard_checks():
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
-              + end_to_end_checks() + chain_checks() + plan_checks() + panel_checks() + pilot_checks()
+              + end_to_end_checks() + chain_checks() + prereg_checks() + plan_checks() + panel_checks()
+              + pilot_checks()
               + timing_checks()
               + clock_guard_checks())
     lines = []

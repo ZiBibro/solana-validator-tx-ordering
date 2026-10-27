@@ -10,6 +10,9 @@
 #                                                    (dry-run, the default)
 #           docker compose --profile measure run --rm probe run --plan ... --live --max-spend-lamports N
 #           docker compose --profile measure run --rm probe status | close
+#           python -m itb manifest --stage pilot   (on the host: containers mount prereg/ read-only)
+#           docker compose --profile measure run --rm probe anchor --stage pilot   (dry-run; live
+#                                                    with --live --max-spend-lamports N, once per stage)
 #
 # Services without profiles always start (compose-spec, profiles), so a plain
 # `docker compose up` runs reproduce only and never builds the probe image.
@@ -76,10 +79,13 @@ services:
       ITB_DATA_DIR: /data
       ITB_LOG_DIR: /logs
       ITB_STATE_DIR: /state
+      ITB_PREREG_DIR: /prereg
       ITB_KEY_PATH: /run/secrets/wallet_key
     volumes:
       - ./data:/data
       - ./logs:/logs
+      # Manifests the anchor memo hashes (section 10); the probe only reads them.
+      - ./prereg:/prereg:ro
       # Spend journal (section 11): survives restarts, reconciled with the chain on start.
       - itb-state:/state
     # Compose v5.6.1 ignores uid, gid and mode of a file secret outside Swarm and
