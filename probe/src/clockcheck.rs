@@ -8,6 +8,8 @@
 //! falls behind shows a growing gap, and the fused gap shows what the earliest of the
 //! K connections would give. Delivery is the local wall time of receipt minus the
 //! node's own timestamp of the event; it moves when the path from the node lags.
+//! Every second connection subscribes to slotSubscribe alone, so one run shows whether
+//! a connection kept apart from the heavy slotsUpdates stream keeps up with the cluster.
 //!
 //!   itb-probe clock [--seconds N] [--connections K]
 
@@ -58,7 +60,10 @@ fn spread(v: &mut [f64]) -> Value {
 
 pub fn check(settings: &Settings, seconds: u64, connections: usize) -> Result<(), String> {
     let mut rpc = Rpc::new(&settings.rpc_url);
-    let clocks: Vec<slots::Shared> = (0..connections).map(|_| slots::start(settings.ws_url.clone())).collect();
+    let subscriptions: Vec<&'static [&'static str]> =
+        (0..connections).map(|i| if i % 2 == 0 { slots::BOTH } else { slots::SLOT_ONLY }).collect();
+    let clocks: Vec<slots::Shared> =
+        subscriptions.iter().map(|m| slots::start_with(settings.ws_url.clone(), m)).collect();
     println!(
         "clock check {}: {connections} WebSocket connections to {}, getSlot processed over {} once a second for {seconds} s",
         utc_now(),
@@ -104,7 +109,9 @@ pub fn check(settings: &Settings, seconds: u64, connections: usize) -> Result<()
                            "delivery_ms": n.delivery_ms, "slot_gap": n.slot_slot.map(|s| h as i64 - s as i64),
                            "reconnects": n.reconnects}));
         }
-        let best = rows.iter().filter_map(|n| n.shred_slot).max();
+        // The clock falls back to slotSubscribe when a node sends no firstShredReceived,
+        // so the fused gap takes the newest event of either kind.
+        let best = rows.iter().filter_map(|n| n.shred_slot.max(n.slot_slot)).max();
         if let Some(b) = best {
             fused.push(h as f64 - b as f64);
         }
@@ -112,19 +119,25 @@ pub fn check(settings: &Settings, seconds: u64, connections: usize) -> Result<()
         println!("{}", json!({"utc": utc_now(), "http_slot": h, "http_ms": (t1 - t0) as f64 / 1e6,
                               "fused_gap": best.map(|b| h as i64 - b as i64), "ws": ws}));
     }
-    if fused.is_empty() {
-        return Err("clock check: no sample had both an HTTP slot and a firstShredReceived event".into());
-    }
+    let empty = fused.is_empty();
     let share = |v: &[f64]| v.iter().filter(|g| **g >= LAG_SLOTS as f64).count() as f64 / v.len().max(1) as f64;
     let mut per = vec![];
     for i in 0..connections {
         let errors = clocks[i].lock().unwrap().last_error.clone();
-        per.push(json!({"connection": i, "samples": gaps[i].len(), "lagging_share": share(&gaps[i]),
+        // A slotSubscribe-only connection has no shred events: its lag is the slot gap.
+        let own = if gaps[i].is_empty() { &slot_gaps[i] } else { &gaps[i] };
+        let (samples, lagging) = (own.len(), share(own));
+        per.push(json!({"connection": i, "subscriptions": subscriptions[i], "samples": samples,
+                        "lagging_share": lagging,
                         "gap_slots": spread(&mut gaps[i]), "slot_subscribe_gap_slots": spread(&mut slot_gaps[i]),
                         "delivery_ms": spread(&mut delivery[i]), "last_error": errors}));
     }
     let summary = json!({"samples": fused.len(), "lag_from_slots": LAG_SLOTS, "fused_lagging_share": share(&fused),
                          "fused_gap_slots": spread(&mut fused), "http_ms": spread(&mut http_ms), "connections": per});
+    // The summary goes out either way: with no events it carries the connection errors.
     println!("summary: {summary}");
+    if empty {
+        return Err("clock check: no sample had both an HTTP slot and a slot event".into());
+    }
     Ok(())
 }

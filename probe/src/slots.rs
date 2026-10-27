@@ -167,14 +167,24 @@ impl State {
 
 pub type Shared = Arc<Mutex<State>>;
 
-/// Run the subscriptions on their own thread, reconnecting on any error.
+/// firstShredReceived drives the clock and slotSubscribe is its fallback.
+pub const BOTH: &[&str] = &["slotsUpdatesSubscribe", "slotSubscribe"];
+/// slotSubscribe alone: one light event a slot, kept apart from the slotsUpdates stream.
+pub const SLOT_ONLY: &[&str] = &["slotSubscribe"];
+
+/// Run both subscriptions on their own thread, reconnecting on any error.
 pub fn start(ws_url: String) -> Shared {
+    start_with(ws_url, BOTH)
+}
+
+/// Run the given subscriptions on one connection on their own thread.
+pub fn start_with(ws_url: String, methods: &'static [&'static str]) -> Shared {
     let state: Shared = Arc::new(Mutex::new(State::default()));
     let s = state.clone();
     std::thread::Builder::new()
         .name("slot-clock".into())
         .spawn(move || loop {
-            if let Err(e) = run_once(&ws_url, &s) {
+            if let Err(e) = run_once(&ws_url, methods, &s) {
                 let mut st = s.lock().unwrap();
                 st.reconnects += 1;
                 // The log gets the origin only: a paid WebSocket URL carries an API key.
@@ -186,10 +196,10 @@ pub fn start(ws_url: String) -> Shared {
     state
 }
 
-fn run_once(ws_url: &str, state: &Shared) -> Result<(), String> {
+fn run_once(ws_url: &str, methods: &[&str], state: &Shared) -> Result<(), String> {
     let (mut ws, _) = tungstenite::connect(ws_url).map_err(|e| format!("ws connect: {e}"))?;
-    for (id, method) in [(1, "slotsUpdatesSubscribe"), (2, "slotSubscribe")] {
-        let req = json!({"jsonrpc": "2.0", "id": id, "method": method});
+    for (id, method) in methods.iter().enumerate() {
+        let req = json!({"jsonrpc": "2.0", "id": id + 1, "method": method});
         ws.send(tungstenite::Message::Text(req.to_string())).map_err(|e| format!("ws send: {e}"))?;
     }
     loop {
