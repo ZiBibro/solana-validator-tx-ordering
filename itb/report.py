@@ -27,7 +27,7 @@ import re
 import statistics
 from collections import namedtuple
 
-from . import analyze, chain, prereg, rawformat, stats, verdict
+from . import analyze, chain, panel, prereg, rawformat, stats, verdict
 
 BEGIN = re.compile(r"^<!-- itb:begin ([a-z0-9-]+) -->$")
 END = "<!-- itb:end %s -->"
@@ -177,6 +177,40 @@ def panel_block(runs):
     return (_table(["Leader identity", "Class at selection", "gossip clientId and version at the bursts",
                     "validators.app label", "Stages", "Bursts", "Probes in window"], rows)
             + "\n\n%d validators, %d classes by gossip clientId." % (len(leaders), len(clients)))
+
+
+def neighbours_block(data_dir):
+    """Passing windows of each panel's leaders that follow another leader on the same tpuQuic IP with
+    a different port (section 8): the panel rule compares the whole address, so these windows stay in."""
+    root = os.path.join(data_dir, "panels")
+    rows = []
+    for name in sorted(os.listdir(root)) if os.path.isdir(root) else []:
+        files = [os.path.join(root, name, f) for f in ("panel.json", "cluster-nodes.json", "leader-schedule.json")]
+        if not all(os.path.exists(f) for f in files):
+            continue
+        loaded = []
+        for f in files:
+            with open(f, encoding="utf-8") as fh:
+                loaded.append(json.load(fh))
+        drawn, nodes, schedule = loaded
+        tpu = {n["pubkey"]: n.get("tpuQuic") for n in nodes["nodes"]}
+        first = schedule["first_slot"]
+        owner = {i: leader for leader, indices in schedule["schedule"].items() for i in indices}
+        windows = [w for w in panel.scan(schedule["schedule"], first, tpu) if w[3]]
+        for cls in prereg.CLASSES:
+            ids = {l["identity"] for l in drawn["classes"].get(cls, {}).get("leaders", [])}
+            mine = [w for w in windows if w[2] in ids]
+            near = 0
+            for start, _, leader, _ in mine:
+                prev = owner.get(start - first - 1)
+                host = panel.host_port(tpu.get(prev))[0] if prev not in (None, leader) else None
+                near += host is not None and host == panel.host_port(tpu.get(leader))[0]
+            if mine:
+                rows.append(["`%s`" % name, cls, len(mine), near, "%.3f" % (near / len(mine))])
+    if not rows:
+        return "No panel yet."
+    return _table(["Panel", "Class", "Passing windows of its panel leaders",
+                   "After a leader on the same IP with another port", "Share"], rows)
 
 
 def bursts_block(runs):
@@ -823,7 +857,7 @@ def blocks(data_dir, repo_dir):
             anchors = json.load(f)
     logs_dir = os.path.join(repo_dir, "logs")
     out = {"runs": runs_block(runs), "spend": spend_block(runs, anchors, logs_dir), "panel": panel_block(runs),
-           "bursts": bursts_block(runs), "tick-runs": tick_runs_block(runs),
+           "bursts": bursts_block(runs), "neighbours": neighbours_block(data_dir), "tick-runs": tick_runs_block(runs),
            "tick-epoch": tick_epoch_block(repo_dir), "minimum": minimum_block(repo_dir),
            "what-went-wrong": wrong_block(runs, data_dir, logs_dir)}
     for stage in STAGES:

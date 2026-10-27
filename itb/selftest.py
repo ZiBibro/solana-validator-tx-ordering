@@ -1255,6 +1255,22 @@ def report_checks():
                 [r[0] for r in by_class] == ["FireBAM"]
                 and [int(c) for c in by_class[0][1:]] == [sum(int(r[i]) for r in parts[0]) for i in range(2, 7)],
                 repr(by_class)))
+    # Leader A holds two windows: the first follows N on A's IP with another port, the second follows O
+    # on another IP. The whole-address rule keeps both, and the table counts only the first.
+    with tempfile.TemporaryDirectory() as tmp:
+        d = os.path.join(tmp, "panels", "p")
+        os.makedirs(d)
+        for name, body in (("panel.json", {"classes": {"HarmonicAgave": {"leaders": [{"identity": "A"}]}}}),
+                           ("cluster-nodes.json", {"nodes": [{"pubkey": "A", "tpuQuic": "10.0.0.1:8009"},
+                                                             {"pubkey": "N", "tpuQuic": "10.0.0.1:9007"},
+                                                             {"pubkey": "O", "tpuQuic": "10.0.0.2:8009"}]}),
+                           ("leader-schedule.json", {"first_slot": 1000, "schedule": {
+                               "N": [0, 1, 2, 3], "A": [4, 5, 6, 7, 12, 13, 14, 15], "O": [8, 9, 10, 11]}})):
+            with open(os.path.join(d, name), "w", encoding="utf-8") as f:
+                json.dump(body, f)
+        near = report.neighbours_block(tmp)
+    out.append(("report: a neighbour on the same IP with another port is counted, one on another IP is not",
+                "| `p` | HarmonicAgave | 2 | 1 | 0.500 |" in near, near.split("\n")[-1]))
     return out
 
 
