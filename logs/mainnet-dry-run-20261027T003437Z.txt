@@ -1,0 +1,82 @@
+commit d8699aaa745f1cbbb693e1c141d91842080df140, 2026-10-27T00:34:37Z
+total 4
+drwxr-xr-x 1 ZiBibroMain 197121 0 Oct 26 22:31 .
+drwxr-xr-x 1 ZiBibroMain 197121 0 Oct 27 01:10 ..
+drwxr-xr-x 1 ZiBibroMain 197121 0 Oct 26 22:31 wallet-key.json
+== plan
+ Container inside-the-block-plan-run-9991445c5a76 Creating 
+ Container inside-the-block-plan-run-9991445c5a76 Created 
+plan: /repo/data/plans/test-mainnet-20261027T003440Z/plan.json
+plan: seed c6e20096f3ec7c6cde163eb2687af1d9, 4 bursts from slot 461869396 (anchor 461869096)
+  slot 461869396 7CR3Jq4ny2tsr3DX3DvyjoU8TYs776MGkU6nLMWjAqCT shared pre300 quic fee None
+  slot 461869556 ChorusmmK7i1AxXeiTtQgQZhQNiXYU84ULeaYF1EH15n independent pre300 quic fee None
+  slot 461869716 Fc6NNdS2j3EmrWbU6Uqt6wsKB5ef72NjaWfNxKYbULGD shared slot2 quic fee None
+  slot 461869876 BSVckjdW2f8kcXPGcrPPtV9kUDBZ8w8PjrrGVnxgEdwq equal_fee pre300 quic fee 0
+== the key mount as the probe sees it
+ Container inside-the-block-probe-run-49d1caa4bd77 Creating 
+ Container inside-the-block-probe-run-49d1caa4bd77 Created 
+total 8
+drwxr-xr-x 3 root root 4096 Oct 27 00:34 .
+drwxr-xr-x 1 root root 4096 Oct 27 00:34 ..
+drwxrwxrwx 1 root root 4096 Oct 26 20:31 wallet_key
+wallet_key: directory
+== dry-run
+ Container inside-the-block-probe-run-3d3c379466fc Creating 
+ Container inside-the-block-probe-run-3d3c379466fc Created 
+itb-probe info start {"bursts":4,"code_limit_lamports":50000000,"mode":"dry-run","network":"mainnet","plan":"/data/plans/test-mainnet-20261027T003440Z/plan.json","rpc":"https://api.mainnet-beta.solana.com","spend_limit_lamports":50000000,"ws":"wss://api.mainnet-beta.solana.com"}
+itb-probe dry-run run dry-run-mainnet-20261027T003443Z: 4 bursts, spend limit 50000000 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.mainnet-beta.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.mainnet-beta.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+itb-probe info plan_cost {"committed":0,"limit":50000000,"overhead_lamports":5000,"worst_fee_lamports":249990}
+plan worst-case fees 249990 lamports plus 5000 for funding and closing; committed 0; limit 50000000 (0.5% used after the plan)
+itb-probe info slot_clock_ready {"anchor_slot":461869271,"basis":"node_ts","slot_ms":208.83165207526025,"source":"first_shred","step_ms_by_window_position":[149.0,200.0,200.0,268.0]}
+slot clock: first_shred at 208.8 ms per slot
+itb-probe info quic_connected {"rtt_ns":38435653,"tpu_quic":"63.254.167.199:5010"}
+itb-probe info burst_done {"arm":"shared","arrival_ms":-264.99959,"first_slot":461869396,"leader":"7CR3Jq4ny2tsr3DX3DvyjoU8TYs776MGkU6nLMWjAqCT","path":"quic","results":null,"rtt_ms":37.274215,"timing":"pre300"}
+burst 12 slot 461869396 shared pre300 quic: est. arrival -265.0 ms from slot start, rtt 37.3 ms
+itb-probe info quic_connected {"rtt_ns":47737777,"tpu_quic":"185.229.190.123:11228"}
+itb-probe info burst_done {"arm":"independent","arrival_ms":-469.999565,"first_slot":461869556,"leader":"ChorusmmK7i1AxXeiTtQgQZhQNiXYU84ULeaYF1EH15n","path":"quic","results":null,"rtt_ms":46.98907,"timing":"pre300"}
+burst 13 slot 461869556 independent pre300 quic: est. arrival -470.0 ms from slot start, rtt 47.0 ms
+itb-probe info quic_connected {"rtt_ns":180661969,"tpu_quic":"198.13.130.9:5010"}
+itb-probe info burst_done {"arm":"shared","arrival_ms":7.012304,"first_slot":461869716,"leader":"Fc6NNdS2j3EmrWbU6Uqt6wsKB5ef72NjaWfNxKYbULGD","path":"quic","results":null,"rtt_ms":180.207273,"timing":"slot2"}
+burst 14 slot 461869716 shared slot2 quic: est. arrival 7.0 ms from slot start, rtt 180.2 ms
+itb-probe info quic_connected {"rtt_ns":44518924,"tpu_quic":"88.216.192.50:5010"}
+itb-probe info burst_done {"arm":"equal_fee","arrival_ms":-300.99976,"first_slot":461869876,"leader":"BSVckjdW2f8kcXPGcrPPtV9kUDBZ8w8PjrrGVnxgEdwq","path":"quic","results":null,"rtt_ms":43.994143,"timing":"pre300"}
+burst 15 slot 461869876 equal_fee pre300 quic: est. arrival -301.0 ms from slot start, rtt 44.0 ms
+itb-probe info summary {"arrival_ms_min_median_max":[-469.999565,-264.99959,7.012304],"bursts_done":4,"handshakes":4,"handshakes_ok":4,"in_timing_band":2,"rtt_ms_min_median_max":[37.274215,46.98907,180.207273]}
+summary: {"arrival_ms_min_median_max":[-469.999565,-264.99959,7.012304],"bursts_done":4,"handshakes":4,"handshakes_ok":4,"in_timing_band":2,"rtt_ms_min_median_max":[37.274215,46.98907,180.207273]}
+dry-run: no key read, nothing sent, payers of the dry-run wallet hold no funds
+payer  1 DbdDvynpgtj2paZnVbFbpJbVGnQehTEc3qJisvyrwH5N: 0 lamports
+payer  2 D67gWjV3Q2zfz11oagc9jxFKZSfKQq58qWz4eS43ssgB: 0 lamports
+payer  3 Hw3BH2rLZrp13VrYKwNqkhZH1reKYoZu8uhUhxYQgMdJ: 0 lamports
+payer  4 FmCo72GB83X7KaKwyc755AxRA4fS1CSkHDbsqoxSFkx5: 0 lamports
+payer  5 9pYdZmK3SCxFnAtBryTW3QvGGGAWunnjbbgwszWE6aZw: 0 lamports
+payer  6 8pQmYJ9BYJrzkKGvaAiKNM9AW69FHW8GGjLVhjD1Kxp2: 0 lamports
+payer  7 DfMx86XEUDhtb8m27wbzroyWGygsPXRbPLMBx8ua7due: 0 lamports
+payer  8 H2NfwpxpNZYM8K77gcoNbWKhPuCPBpyeqkLgrSiVsFCY: 0 lamports
+payer  9 FHPKDbC2xPfraCMho4bwGSRHEefdwbxxxnDDfpmK9BtJ: 0 lamports
+payer 10 ExebbAEPWwBA477kgsegSW1xAoL2YcaSDwSTC9Yn3ZCh: 0 lamports
+payer 11 3u4Y1LjbkekTNdVRn3vxFmcWFjBp4uautVbzEu1Xmcut: 0 lamports
+payer 12 Da4qMiaC8ECU989FS36TRQV6qNAancL3XYdbkirDcUoj: 0 lamports
+payers total: 0 lamports
+dry-run exit 0
+== status
+ Container inside-the-block-probe-run-89e83f4a1457 Creating 
+ Container inside-the-block-probe-run-89e83f4a1457 Created 
+no wallet key at /run/secrets/wallet_key; showing the payers of the public dry-run wallet
+spend journal /state/spend-journal-mainnet.jsonl: none yet
+raw data /data: 192 probes, next burst_seq from data 16
+wallet vKUwqPqqt4Yh5piBYzKH8t1o6NmhHtnkg9Wb3bvPYPp
+payer  1 DbdDvynpgtj2paZnVbFbpJbVGnQehTEc3qJisvyrwH5N: 0 lamports
+payer  2 D67gWjV3Q2zfz11oagc9jxFKZSfKQq58qWz4eS43ssgB: 0 lamports
+payer  3 Hw3BH2rLZrp13VrYKwNqkhZH1reKYoZu8uhUhxYQgMdJ: 0 lamports
+payer  4 FmCo72GB83X7KaKwyc755AxRA4fS1CSkHDbsqoxSFkx5: 0 lamports
+payer  5 9pYdZmK3SCxFnAtBryTW3QvGGGAWunnjbbgwszWE6aZw: 0 lamports
+payer  6 8pQmYJ9BYJrzkKGvaAiKNM9AW69FHW8GGjLVhjD1Kxp2: 0 lamports
+payer  7 DfMx86XEUDhtb8m27wbzroyWGygsPXRbPLMBx8ua7due: 0 lamports
+payer  8 H2NfwpxpNZYM8K77gcoNbWKhPuCPBpyeqkLgrSiVsFCY: 0 lamports
+payer  9 FHPKDbC2xPfraCMho4bwGSRHEefdwbxxxnDDfpmK9BtJ: 0 lamports
+payer 10 ExebbAEPWwBA477kgsegSW1xAoL2YcaSDwSTC9Yn3ZCh: 0 lamports
+payer 11 3u4Y1LjbkekTNdVRn3vxFmcWFjBp4uautVbzEu1Xmcut: 0 lamports
+payer 12 Da4qMiaC8ECU989FS36TRQV6qNAancL3XYdbkirDcUoj: 0 lamports
+payers total: 0 lamports
