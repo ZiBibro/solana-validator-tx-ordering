@@ -4,7 +4,8 @@
     python -m itb selftest         known-answer checks only
     python -m itb verify           re-read every recorded signature from the chain
     python -m itb analyze          recompute every REPORT table from raw data
-    python -m itb claim <id>       recompute one REPORT claim and re-check its slots
+    python -m itb report           write the generated tables into REPORT.md; --check only compares
+    python -m itb claim <block>    print one generated REPORT block, recomputed from raw data
     python -m itb collect [run]    write inclusion and slot rows of runs from the chain
     python -m itb check-raw FILE   validate raw files against schema/raw-format.json
     python -m itb plan             draw a test plan for the probe from the live leader schedule
@@ -26,7 +27,7 @@ import json
 import os
 import sys
 
-from . import __version__, analyze, channel, collect, rawformat, rpc, selftest, verify
+from . import __version__, analyze, channel, collect, rawformat, report, rpc, selftest, verify
 from . import campaign as campaignmod
 from . import panel as panelmod
 from . import pilot as pilotmod
@@ -42,6 +43,7 @@ DEFAULT_RPC = "https://api.mainnet-beta.solana.com"
 DEFAULT_TABLE = os.path.join(REPO_DIR, "prereg", "pilot-table.json")
 DEFAULT_CAMPAIGN_TABLE = os.path.join(REPO_DIR, "prereg", "campaign-table.json")
 DEFAULT_MINIMUM = os.path.join(REPO_DIR, "prereg", "campaign-minimum.json")
+DEFAULT_REPORT = os.path.join(REPO_DIR, "REPORT.md")
 
 
 def _not_ready(name, when):
@@ -104,8 +106,48 @@ def cmd_analyze(args):
     return EXIT_OK
 
 
+def _report_file(args):
+    return getattr(args, "file", None) or DEFAULT_REPORT
+
+
+def cmd_report(args):
+    path = _report_file(args)
+    if not os.path.exists(path):
+        print("report: no " + path, file=sys.stderr)
+        return EXIT_NOT_READY
+    with open(path, encoding="utf-8") as f:
+        text = f.read()
+    try:
+        new, changed = report.fill(text, report.blocks(_data_dir(args), REPO_DIR))
+    except ValueError as e:
+        print("report: " + str(e), file=sys.stderr)
+        return EXIT_FAIL
+    if getattr(args, "check", False):
+        if changed:
+            print("report: blocks differ from the raw data: " + ", ".join(changed), file=sys.stderr)
+            return EXIT_FAIL
+        print("report: every generated block of %s matches the raw data" % os.path.basename(path))
+        return EXIT_OK
+    if changed:
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write(new)
+    print("report: rewrote %s" % (", ".join(changed) if changed else "nothing, every block was current"))
+    return EXIT_OK
+
+
+def cmd_report_check(args):
+    args.check = True
+    return cmd_report(args)
+
+
 def cmd_claim(args):
-    return _not_ready("claim", "comes with the REPORT writer, which needs the pilot data")
+    generated = report.blocks(_data_dir(args), REPO_DIR)
+    if args.claim_id not in generated:
+        print("claim: no block %s; blocks: %s" % (args.claim_id, ", ".join(sorted(generated))),
+              file=sys.stderr)
+        return EXIT_FAIL
+    print(generated[args.claim_id])
+    return EXIT_OK
 
 
 def cmd_collect(args):
@@ -130,7 +172,7 @@ def cmd_collect(args):
 
 def cmd_reproduce(args):
     for name, step in (("selftest", cmd_selftest), ("verify", cmd_verify),
-                       ("analyze", cmd_analyze)):
+                       ("analyze", cmd_analyze), ("report --check", cmd_report_check)):
         print("== reproduce: %s" % name, flush=True)
         code = step(args)
         if code != EXIT_OK:
@@ -463,7 +505,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(prog="itb", description=__doc__.split("\n")[0])
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="cmd")
-    sub.add_parser("reproduce", help="selftest, verify, analyze")
+    sub.add_parser("reproduce", help="selftest, verify, analyze, report --check")
     sub.add_parser("selftest", help="known-answer checks")
     p = sub.add_parser("verify", help="re-read every recorded signature from the chain")
     p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
@@ -472,8 +514,13 @@ def main(argv=None):
     p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
     p.add_argument("--stage", action="append", help="run stage to include (default: campaign)")
     p.add_argument("--out", help="write the full result as JSON here")
-    p = sub.add_parser("claim", help="recompute one REPORT claim")
-    p.add_argument("claim_id")
+    p = sub.add_parser("report", help="write the generated tables into REPORT.md")
+    p.add_argument("--check", action="store_true", help="compare only; exit 1 when a block differs")
+    p.add_argument("--file", help="report file (default: REPORT.md)")
+    p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
+    p = sub.add_parser("claim", help="print one generated REPORT block, recomputed from raw data")
+    p.add_argument("claim_id", help="block name, as in <!-- itb:begin NAME -->")
+    p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
     p = sub.add_parser("collect", help="write inclusion and slot rows of runs from the chain")
     p.add_argument("run_ids", nargs="*", help="runs to collect (default: every run of the network)")
     p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
@@ -551,7 +598,7 @@ def main(argv=None):
             stream.reconfigure(errors="backslashreplace")
     handlers = {
         "reproduce": cmd_reproduce, "selftest": cmd_selftest, "verify": cmd_verify,
-        "analyze": cmd_analyze, "claim": cmd_claim, "collect": cmd_collect,
+        "analyze": cmd_analyze, "report": cmd_report, "claim": cmd_claim, "collect": cmd_collect,
         "check-raw": cmd_check_raw, "plan": cmd_plan, "panel": cmd_panel, "table": cmd_table,
         "pilot": cmd_pilot, "minimum": cmd_minimum, "campaign-table": cmd_campaign_table,
         "campaign": cmd_campaign, "manifest": cmd_manifest, "channel": cmd_channel, None: cmd_reproduce,

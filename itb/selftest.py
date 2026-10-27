@@ -6,6 +6,7 @@ verify starts.
 
 import copy
 import gzip
+import http.client
 import itertools
 import json
 import math
@@ -14,8 +15,8 @@ import random
 import tempfile
 from fractions import Fraction
 
-from . import (analyze, b58, campaign, channel, collect, fakechain, panel, pilot, plan, prereg, rawformat, rpc,
-               stats, synth, verdict, verify)
+from . import (analyze, b58, campaign, chain, channel, collect, fakechain, panel, pilot, plan, prereg, rawformat,
+               report, rpc, stats, synth, verdict, verify)
 
 
 def sample_run(burst_seq=7, n=12):
@@ -1135,6 +1136,121 @@ def channel_checks():
     return out
 
 
+class _Reply:
+    def __init__(self, body, error=None):
+        self.body, self.error, self.headers = body, error, {}
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def read(self):
+        if self.error is not None:
+            raise self.error
+        return self.body
+
+
+def rpc_checks():
+    """A reply cut short or a dropped connection is retried, an RPC error is not."""
+    out = []
+    good = json.dumps({"jsonrpc": "2.0", "id": 1, "result": 7}).encode()
+    cases = (("a body cut short", _Reply(b"", http.client.IncompleteRead(b"x" * 10)), 7),
+             ("a dropped connection", ConnectionResetError("reset"), 7),
+             ("a broken gzip stream", EOFError("compressed file ended"), 7))
+    saved = rpc.urllib.request.urlopen
+    try:
+        for name, error, want in cases:
+            replies = [error, _Reply(good)]
+
+            def fake(request, timeout=None):
+                r = replies.pop(0)
+                if isinstance(r, BaseException):
+                    raise r
+                return r
+            rpc.urllib.request.urlopen = fake
+            client = rpc.Client("https://rpc.example", sleep=lambda s: None)
+            try:
+                got = client.call("getSlot", [])
+            except Exception as e:  # an escaping error is the failure this check looks for
+                got = "%s: %s" % (type(e).__name__, e)
+            out.append(("rpc: %s is retried" % name, got == want, "got %r" % (got,)))
+        replies = [_Reply(json.dumps({"jsonrpc": "2.0", "id": 1, "error": {"code": -32004}}).encode()),
+                   _Reply(good)]
+        rpc.urllib.request.urlopen = lambda request, timeout=None: replies.pop(0)
+        try:
+            rpc.Client("https://rpc.example", sleep=lambda s: None).call("getBlock", [1])
+            code = None
+        except rpc.RpcError as e:
+            code = e.code
+        out.append(("rpc: an RPC error answer is not retried", code == -32004 and len(replies) == 1,
+                    "code %s, %d replies left" % (code, len(replies))))
+    finally:
+        rpc.urllib.request.urlopen = saved
+    return out
+
+
+def report_checks():
+    """Generated REPORT blocks: fill rewrites only the blocks, the control-path
+    label test is exact on a small case, and every per-stage table runs on a
+    synthetic run with control-path bursts, which the pilot did not have."""
+    out = []
+    text = ("# T\n\nprose\n<!-- itb:begin a -->\nold\n<!-- itb:end a -->\nmore\n"
+            "<!-- itb:begin b -->\nsame\n<!-- itb:end b -->\n")
+    fresh = {"a": "new\nrows", "b": "same"}
+    new, changed = report.fill(text, fresh)
+    out.append(("report: fill rewrites a stale block and keeps the prose and a current block",
+                changed == ["a"] and new == text.replace("old", "new\nrows"), "changed %s" % changed))
+    again, changed = report.fill(new, fresh)
+    out.append(("report: a second fill changes nothing", again == new and not changed, "changed %s" % changed))
+    for name, bad in (("a block without its end line", "<!-- itb:begin a -->\nx\n"),
+                      ("an unknown block", "<!-- itb:begin zz -->\n<!-- itb:end zz -->\n")):
+        try:
+            report.fill(bad, fresh)
+            got = "no error"
+        except ValueError as e:
+            got = str(e)
+        out.append(("report: %s is an error" % name, got != "no error", got))
+    p, method = report._path_label_p([([1.0, 2.0, 3.0, 4.0], 2)])
+    out.append(("report: the path label test is exact on a small stratum", p == 2 / 6 and method == "exact over 6",
+                "p %s, %s" % (p, method)))
+    tx = {"signatures": ["s"], "write_accounts": ["w", "w"], "ix_data_bytes": 12, "cu_limit": 1000,
+          "loaded_data_limit": None}
+    got = report._requested_cost(tx) - chain.agave_cost(1, 1, 12, 1000, 0)
+    out.append(("report: a transaction without a loaded-data limit pays the 64 MiB allowance", got == 16384,
+                "%d units over a zero allowance" % got))
+    spec = [{"class": "FireBAM", "rule": "fifo", "arm": "independent", "timing": "pre300", "round": rnd,
+             "fields": {"path": path}} for rnd in range(3) for path in ("quic", "rpc")]
+    with tempfile.TemporaryDirectory() as tmp:
+        run_dir = os.path.join(tmp, "runs", "selftest-report")
+        os.makedirs(run_dir)
+        prows, crows = synth.campaign_rows("selftest-report", spec, "itb-selftest:report")
+        _write(os.path.join(run_dir, "probes.jsonl"), prows)
+        _write(os.path.join(run_dir, "collect.jsonl"), crows)
+        runs = analyze.load_runs(tmp)
+        items = report._items(runs)
+        tables = {}
+        try:
+            for name, make in (("timing", report.timing_block), ("labels", report.labels_block),
+                               ("latency", report.latency_block), ("loads", report.loads_block),
+                               ("first-slot", report.first_slot_block), ("strategy", report.strategy_block),
+                               ("epochs", report.epochs_block), ("control", report.control_block)):
+                tables[name] = make(items)
+            tables["elsewhere"] = report.elsewhere_block(runs)
+            tables["competition"] = report.competition_block(items, tmp)
+            error = None
+        except Exception as e:  # a table that cannot be built is the failure this check looks for
+            error = "%s: %s" % (type(e).__name__, e)
+    out.append(("report: every per-stage table builds on a synthetic run", error is None and len(tables) == 10,
+                error or "%d tables" % len(tables)))
+    control = tables.get("control", "")
+    out.append(("report: the control table compares both measures in one leader-epoch stratum",
+                "| tau fee | 1 |" in control and "| inclusion share | 1 | 0.000 | 1 |" in control,
+                repr(control.split("\n")[2:4])))
+    return out
+
+
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
@@ -1144,7 +1260,9 @@ def run_all():
               + rounds_checks()
               + timing_checks()
               + clock_guard_checks()
-              + channel_checks())
+              + channel_checks()
+              + rpc_checks()
+              + report_checks())
     lines = []
     failed = 0
     for name, ok, detail in checks:

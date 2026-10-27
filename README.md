@@ -2,7 +2,7 @@
 
 A measurement kit for one question about Solana mainnet: by what rule each leader orders transactions inside its block, and how strictly that rule holds. "No rule" is one of the possible answers and has a test of its own. The kit sends small bursts of its own probe transactions into chosen leader windows and reads the blocks back. The ordering is then tested against rules fixed before any live data.
 
-Status: the tool and the analysis plan are finished and have passed dry-runs on mainnet. The live measurement and its REPORT come next.
+Status: the pilot ran on mainnet on 2026-10-27 and stands in [REPORT.md](REPORT.md); the campaign over four epochs comes next.
 
 ## Why this design
 
@@ -120,7 +120,7 @@ These stay out of reach from outside the leader, and REPORT names them next to t
 docker compose run --rm reproduce
 ```
 
-It needs no key and no Rust build. Before touching any data it runs the known-answer selftest. Then verify re-reads every recorded signature from the chain. Last, analyze recomputes every REPORT number from the raw data, and the first mismatch fails the run. A single step runs alone with `docker compose run --rm reproduce verify` or `analyze`.
+It needs no key and no Rust build. Before touching any data it runs the known-answer selftest. Then verify re-reads every recorded signature from the chain. Last, analyze recomputes the verdicts from the raw data and `report --check` compares every generated table of REPORT.md with them, and the first mismatch fails the run. A single step runs alone with `docker compose run --rm reproduce verify` or `analyze`.
 
 ## Measuring
 
@@ -184,7 +184,8 @@ The plan step reads the second client label from validators.app, and a web shiel
 |---|---|
 | `compose.yaml` | four services: `reproduce`, `plan`, `collect`, `probe`; all but the first need the profile `measure` |
 | `probe/` | the sender, Rust on Agave's QUIC stack; dry-run by default, live sending only with `--live --max-spend-lamports N` under a compiled 0.05 SOL cap |
-| `itb/` | panel, plan, collect, verify, analyze and selftest, Python standard library only |
+| `itb/` | panel, plan, collect, verify, analyze, report and selftest, Python standard library only |
+| `REPORT.md` | the results: prose around tables that `python -m itb report` writes from `data/` and `logs/` |
 | `prereg/` | everything fixed before live data: the analysis plan, the seeded pilot and campaign tables, the minimum from the pilot, and the manifests whose hashes go on chain |
 | `schema/raw-format.json` | the format of every raw row, shared by both languages |
 | `data/` | inputs and raw data of every run, failed ones included |

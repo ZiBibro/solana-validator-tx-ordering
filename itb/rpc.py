@@ -11,6 +11,7 @@ long verify paces itself instead of collecting 429 answers.
 """
 
 import gzip
+import http.client
 import json
 import time
 import urllib.error
@@ -111,8 +112,11 @@ class Client:
                     self.sleep(_retry_after(e.headers) or min(30.0, 2.0 ** attempt))
                     continue
                 raise RpcError(method, {"message": "HTTP %d" % e.code})
-            except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
-                last = str(e)
+            except (OSError, EOFError, http.client.HTTPException) as e:
+                # OSError covers URLError, timeouts, resets and a broken gzip stream;
+                # HTTPException covers a body cut short (IncompleteRead), which the
+                # public node sent on a 0.9 MB getBlock on 2026-10-27.
+                last = "%s: %s" % (type(e).__name__, str(e)[:120])
                 self.sleep(min(30.0, 2.0 ** attempt))
                 continue
             self.calls[method] = self.calls.get(method, 0) + 1
