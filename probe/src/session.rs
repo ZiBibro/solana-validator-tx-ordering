@@ -34,6 +34,11 @@ const LATEST_BLOCKHASH_SLOTS: u64 = 4;
 const PRE300_NS: i64 = 300_000_000;
 /// Waiting after the predicted window end before burst_end is written.
 const WINDOW_TAIL_NS: i64 = 300_000_000;
+/// Further waiting for the firstShredReceived events of the first two window slots. The
+/// public mainnet WebSocket delivered events up to 36 slots late on 2026-10-26, about
+/// 7.6 s; windows of a round stand MIN_GAP_SLOTS apart, so the next burst keeps its time.
+const SHRED_WAIT_NS: i64 = 10_000_000_000;
+const SHRED_POLL: Duration = Duration::from_millis(20);
 /// Gossip entries kept per burst: leaders from a few slots before the window to the end
 /// of the blockhash lifetime, where a late probe could still land (section 8).
 const SNAPSHOT_SLOTS_BEFORE: u64 = 8;
@@ -158,6 +163,9 @@ struct Built {
     signature: String,
     worst_fee: u64,
 }
+
+/// firstShredReceived of a slot: local receipt ns, node timestamp ms, node time ns.
+type FirstShred = (Option<i64>, Option<u64>, Option<i64>);
 
 /// What a burst left for the dry-run summary.
 struct BurstNote {
@@ -607,9 +615,25 @@ impl Session {
         self.clock.lock().unwrap().model()
     }
 
+    /// Wait up to SHRED_WAIT_NS for the firstShredReceived events of the first two window
+    /// slots, which a WebSocket backlog delivers seconds late; a skipped slot has none.
+    fn wait_first_shreds(&self, first_slot: u64) {
+        let deadline = mono_ns() + SHRED_WAIT_NS;
+        loop {
+            let seen = {
+                let st = self.clock.lock().unwrap();
+                st.first_shred.contains_key(&first_slot) && st.first_shred.contains_key(&(first_slot + 1))
+            };
+            if seen || mono_ns() >= deadline {
+                return;
+            }
+            std::thread::sleep(SHRED_POLL);
+        }
+    }
+
     /// firstShredReceived of a slot: local receipt, node timestamp, and node time on the
     /// local clock, which is the receipt the event would have had without backlog.
-    fn first_shred(&self, slot: u64) -> (Option<i64>, Option<u64>, Option<i64>) {
+    fn first_shred(&self, slot: u64) -> FirstShred {
         let st = self.clock.lock().unwrap();
         let node = st.node_time(slot, st.node_offset_ns());
         match st.first_shred.get(&slot) {
@@ -828,6 +852,7 @@ impl Session {
         }
 
         sleep_until_ns(self.model().unwrap_or(model).predict(b.first_slot + b.window_len) + WINDOW_TAIL_NS);
+        self.wait_first_shreds(b.first_slot);
         for (i, p) in built.iter().enumerate() {
             let o = &outcomes[i];
             let (result, simulate, error) = if self.live {
@@ -850,7 +875,9 @@ impl Session {
         }
         let first_send = outcomes.first().and_then(|o| o.send_end_ns);
         let sends: Vec<i64> = outcomes.iter().filter_map(|o| o.send_end_ns).collect();
-        self.end_row(seq, conn.as_ref(), b, predicted, Some(&aim), &sends, reconnects)?;
+        // The log line and the summary read the same events as burst_end, so they agree
+        // with itb/analyze.py.
+        let [(fs1, ts1, n1), (fs2, ts2, _)] = self.end_row(seq, conn.as_ref(), b, predicted, Some(&aim), &sends, reconnects)?;
         if let Some(c) = conn.as_ref() {
             if self.live {
                 quic::close(c, b"burst end");
@@ -858,8 +885,6 @@ impl Session {
         }
         self.rows.sync()?;
 
-        let (fs1, ts1, n1) = self.first_shred(b.first_slot);
-        let (fs2, ts2, _) = self.first_shred(b.first_slot + 1);
         let base = n1.or(fs1).unwrap_or(aim.predicted);
         let arrival_ms = first_send.map(|t| (t - base + aim.rtt_ns.unwrap_or(0) / 2) as f64 / 1e6);
         let note = BurstNote {
@@ -978,7 +1003,7 @@ impl Session {
         aim: Option<&Aim>,
         sends: &[i64],
         reconnects: u64,
-    ) -> Result<(), String> {
+    ) -> Result<[FirstShred; 2], String> {
         let (fs1, ts1, n1) = self.first_shred(b.first_slot);
         let (fs2, ts2, n2) = self.first_shred(b.first_slot + 1);
         let offset = self.clock.lock().unwrap().node_offset_ns();
@@ -997,7 +1022,8 @@ impl Session {
                    "send_predicted_first_slot_ns": aim.map(|a| a.predicted),
                    "send_target_arrival_ns": aim.map(|a| a.target), "send_rtt_ns": aim.and_then(|a| a.rtt_ns),
                    "reconnects": reconnects, "utc_end": utc_now()}),
-        )
+        )?;
+        Ok([(fs1, ts1, n1), (fs2, ts2, n2)])
     }
 
     /// Gossip entries of the leaders a probe of this burst could land with.
