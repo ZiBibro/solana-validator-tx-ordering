@@ -27,16 +27,15 @@ import re
 import statistics
 from collections import namedtuple
 
-from . import analyze, chain, panel, prereg, rawformat, stats, verdict
+from . import analyze, chain, panel, plan, prereg, rawformat, stats, verdict
 
 BEGIN = re.compile(r"^<!-- itb:begin ([a-z0-9-]+) -->$")
 END = "<!-- itb:end %s -->"
 LAMPORTS_PER_SOL = 1_000_000_000
 ANCHOR_FEE_LAMPORTS = 5000
-BAM_SIGNER = "BAMgx3XPWrXkNUuQiVWUZU6eB2HQZdwz9HNnT4tpo8LG"
-HARMONIC_SIGNER = "Harmonic8SoAfZixJqUxxdSeyWzr6q7XFjuiXS5Z2zPg"
-EXPECTED_SIGNER = {"AgaveBam": BAM_SIGNER, "FireBAM": BAM_SIGNER,
-                   "HarmonicAgave": HARMONIC_SIGNER, "HarmonicFiredancer": HARMONIC_SIGNER}
+BAM_SIGNER = analyze.BAM_SIGNER
+HARMONIC_SIGNER = analyze.HARMONIC_SIGNER
+EXPECTED_SIGNER = analyze.BUILDER_SIGNER
 STAGES = ("pilot", "campaign")
 NO_RUNS = "No runs of this stage yet."
 DIFFERENT_FEE = ("independent", "shared")
@@ -180,8 +179,9 @@ def panel_block(runs):
 
 
 def neighbours_block(data_dir):
-    """Passing windows of each panel's leaders that follow another leader on the same tpuQuic IP with
-    a different port (section 8): the panel rule compares the whole address, so these windows stay in."""
+    """Full windows of each panel's leaders that pass the pilot's rule (no other validator on the
+    whole tpuQuic address right before), and among them those after another leader on the same IP
+    with a different port (section 8): the windows the campaign's IP rule in panel.py turns away."""
     root = os.path.join(data_dir, "panels")
     rows = []
     for name in sorted(os.listdir(root)) if os.path.isdir(root) else []:
@@ -196,20 +196,24 @@ def neighbours_block(data_dir):
         tpu = {n["pubkey"]: n.get("tpuQuic") for n in nodes["nodes"]}
         first = schedule["first_slot"]
         owner = {i: leader for leader, indices in schedule["schedule"].items() for i in indices}
-        windows = [w for w in panel.scan(schedule["schedule"], first, tpu) if w[3]]
+        windows = []
+        for start, length, leader in plan.windows(schedule["schedule"], first):
+            prev = owner.get(start - first - 1)
+            other = prev not in (None, leader)
+            if length != plan.SLOTS_PER_WINDOW or (other and tpu.get(prev) is not None
+                                                   and tpu.get(prev) == tpu.get(leader)):
+                continue
+            host = panel.host_port(tpu.get(prev))[0] if other else None
+            windows.append((leader, host is not None and host == panel.host_port(tpu.get(leader))[0]))
         for cls in prereg.CLASSES:
             ids = {l["identity"] for l in drawn["classes"].get(cls, {}).get("leaders", [])}
-            mine = [w for w in windows if w[2] in ids]
-            near = 0
-            for start, _, leader, _ in mine:
-                prev = owner.get(start - first - 1)
-                host = panel.host_port(tpu.get(prev))[0] if prev not in (None, leader) else None
-                near += host is not None and host == panel.host_port(tpu.get(leader))[0]
+            mine = [w for w in windows if w[0] in ids]
+            near = sum(1 for _, same_ip in mine if same_ip)
             if mine:
                 rows.append(["`%s`" % name, cls, len(mine), near, "%.3f" % (near / len(mine))])
     if not rows:
         return "No panel yet."
-    return _table(["Panel", "Class", "Passing windows of its panel leaders",
+    return _table(["Panel", "Class", "Windows of its panel leaders passing the whole-address rule",
                    "After a leader on the same IP with another port", "Share"], rows)
 
 
@@ -352,7 +356,10 @@ def pairs_block(result):
         return NO_RUNS
     rows = []
     for r in result["pairs"]:
-        if not r["strata"]:
+        if r.get("without_label"):
+            rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"] + ", builder blocks without its tick",
+                         r["strata"], "%.3f" % r["mean_diff"], "-", "-", r["form"]])
+        elif not r["strata"]:
             rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"], 0, "-", "-", "-", r["form"]])
         else:
             rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"], r["strata"], "%.3f" % r["mean_diff"],
@@ -655,7 +662,10 @@ def competition_block(items, data_dir):
 def _path_label_p(strata):
     """Two-sided p of the summed RPC-minus-QUIC difference under swaps of path
     labels within each stratum; strata: [(values, k)] with the first k values
-    from the RPC path. Exact up to LABEL_TEST_B arrangements, else seeded draws."""
+    from the RPC path. Exact up to LABEL_TEST_B arrangements, else LABEL_TEST_B
+    draws, each stratum's RPC labels taken as the first k of stats.fisher_yates
+    on random() (analysis plan line 39). Returns (p, method, smallest p the
+    arrangements allow)."""
     options = [list(itertools.combinations(range(len(v)), k)) for v, k in strata]
 
     def total(choice):
@@ -670,29 +680,42 @@ def _path_label_p(strata):
     eps = 1e-12 * max(1.0, obs)
     size = math.prod(len(o) for o in options)
     if size <= prereg.LABEL_TEST_B + 1:
-        hits = sum(1 for choice in itertools.product(*options) if abs(total(choice)) >= obs - eps)
-        return hits / size, "exact over %d" % size
+        totals = [abs(total(choice)) for choice in itertools.product(*options)]
+        top = max(totals)
+        smallest = sum(1 for t in totals if t >= top - 1e-12 * max(1.0, top)) / size
+        return sum(1 for t in totals if t >= obs - eps) / size, "exact over %d" % size, smallest
     rnd = random.Random(prereg.LABEL_TEST_SEED)
-    hits = sum(1 for _ in range(prereg.LABEL_TEST_B) if abs(total([rnd.choice(o) for o in options])) >= obs - eps)
-    return (hits + 1) / (prereg.LABEL_TEST_B + 1), "%d draws" % prereg.LABEL_TEST_B
+
+    def draw():
+        return [tuple(sorted(stats.fisher_yates(list(range(len(v))), rnd)[:k])) for v, k in strata]
+
+    hits = sum(1 for _ in range(prereg.LABEL_TEST_B) if abs(total(draw())) >= obs - eps)
+    return ((hits + 1) / (prereg.LABEL_TEST_B + 1), "%d draws" % prereg.LABEL_TEST_B,
+            1 / (prereg.LABEL_TEST_B + 1))
+
+
+# Exclusion reasons a burst may carry and still enter each control-path measure (campaign
+# addendum section 9). The inclusion share keeps a burst with fewer than two probes in one
+# block of the window, since leaving it out would select on the outcome; tau fee needs two.
+CONTROL_KEEPS = {"tau fee": {"control-path"}, "inclusion share": {"control-path", "fewer-than-two-in-a-block"}}
 
 
 def control_block(items):
-    """Control path against the direct path within leader and epoch (plan section 9)."""
-    usable = [it for it in items if set(it.unit.reasons) <= {"control-path"}]
-    per = {}
-    for it in usable:
-        b = it.unit.burst
-        per.setdefault((b["leader"], b["epoch"]), []).append(it)
+    """Control path against the direct path within leader and epoch, in the same arm and moment
+    condition (analysis plan section 9, campaign addendum section 9). A measure whose label test cannot
+    reach p <= ALPHA even at its most extreme arrangement is descriptive and prints no p."""
+    allowed = CONTROL_KEEPS
+    value_of = {"tau fee": lambda it: verdict.burst_tau(it.unit.blocks, "fee"), "inclusion share": _window_share}
+    usable = [it for it in items if set(it.unit.reasons) <= allowed["inclusion share"]]
     measures = {}
-    for key, group in per.items():
-        rpc_side = [it for it in group if it.unit.burst["path"] == "rpc"]
-        quic_side = [it for it in group if it.unit.burst["path"] == "quic"]
-        if not rpc_side or not quic_side:
-            continue
-        for name, value in (("tau fee", lambda it: verdict.burst_tau(it.unit.blocks, "fee")),
-                            ("inclusion share", lambda it: _window_share(it))):
-            vals = [(value(it), True) for it in rpc_side] + [(value(it), False) for it in quic_side]
+    for name in ("tau fee", "inclusion share"):
+        per = {}
+        for it in usable:
+            if set(it.unit.reasons) <= allowed[name]:
+                b = it.unit.burst
+                per.setdefault((b["leader"], b["epoch"], b["arm"], b["timing"]), []).append(it)
+        for group in per.values():
+            vals = [(value_of[name](it), it.unit.burst["path"] == "rpc") for it in group]
             vals = [(v, r) for v, r in vals if v is not None]
             k = sum(1 for _, r in vals if r)
             if 0 < k < len(vals):
@@ -703,8 +726,12 @@ def control_block(items):
     rows = []
     for name, strata in sorted(measures.items()):
         diff = sum(sum(v[:k]) / k - sum(v[k:]) / (len(v) - k) for v, k in strata) / len(strata)
-        p, method = _path_label_p(strata)
-        rows.append([name, len(strata), "%.3f" % diff, _p(p), method])
+        p, method, smallest = _path_label_p(strata)
+        if smallest > stats.ALPHA:
+            rows.append([name, len(strata), "%.3f" % diff, "-",
+                         "descriptive: smallest attainable p %s, %s" % (_p(smallest), method)])
+        else:
+            rows.append([name, len(strata), "%.3f" % diff, _p(p), method])
     latency = {}
     for it in usable:
         for inc in it.run.inclusions.values():
@@ -712,7 +739,7 @@ def control_block(items):
                 latency.setdefault(it.unit.burst["path"], []).append(inc["slot"] - it.unit.burst["first_slot"])
     lat = "; ".join("%s median %s slots after the window's first slot (%d probes)" % (
         path, _median(v), len(v)) for path, v in sorted(latency.items()))
-    return (_table(["Measure", "Leader-epoch strata", "Mean RPC minus QUIC", "p", "Label test"], rows)
+    return (_table(["Measure", "Strata (leader, epoch, arm, condition)", "Mean RPC minus QUIC", "p", "Label test"], rows)
             + "\n\nPath latency: " + (lat or "-") + ".")
 
 

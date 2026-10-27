@@ -56,7 +56,7 @@ The class comes from `clientId` in `getClusterNodes` at the moment of each burst
 
 Jito-Solana switches its `clientId` between JitoLabs and AgaveBam with the state of its BAM connection. A verdict therefore uses only bursts whose leader showed the selection class at the moment of the burst; the rest form a separate group, and REPORT gives its share per class.
 
-Windows come from the leader schedule in rounds. Each round fixes a random reference time. Leaders then take windows in random order, each getting the window nearest to that time that passes the filters and lies at least 160 slots from the windows already taken. Many validators share one builder address (198.13.141.173:5010 serves 100 staked nodes), and BAM documentation does not say what its receiver does with a transaction that arrives during the window of another validator behind the same address. Windows right after such a window are skipped.
+Windows come from the leader schedule in rounds. Each round fixes a random reference time. Leaders then take windows in random order, each getting the window nearest to that time that passes the filters and lies at least 160 slots from the windows already taken. Many validators share one builder receiver (198.13.141.173:5010 serves 100 staked nodes), and no documentation says what such a receiver does with a transaction that arrives during the window of another validator it serves. In the pilot one burst landed in full with the leader right before its target, whose tpuQuic stood on the same IP with another port. The campaign therefore skips each window that comes right after a window of another validator on the same IP, whatever the port.
 
 Raiku (0.08% of stake) and Frankendancer (no voting nodes) are not in the panel. The collector still labels them, together with any `Unknown(n)` value, so no leader of an observed slot stays unlabelled.
 
@@ -98,7 +98,7 @@ The equal-fee arm isolates tie-breaking. Code gives two hypotheses before any da
 
 Each measure is a Kendall tau-b against block position. Every within-burst test uses an exact null distribution: Mahonian numbers and their q-multinomial form for tied fee levels, and for tau cross a dynamic program over subsets of the 12 probes. Every p is therefore an exact fraction that comes out the same on any Python version. Verdicts run through Holm families at alpha 0.05, 96 tests in the verdict family, and every class and condition gets one of six forms: inverted fee sign, mixed rule, fee rule, arrival rule, no rule visible, or undetermined. "No rule visible" is a claim with its own test: both tau fee and tau cross must pass a TOST that bounds them within 0.2 of zero, in a 96-test equivalence family. A cell without enough power reads undetermined.
 
-Strictness is the share of violated pairs among probe pairs with a different predicted position, with a jackknife interval over bursts and the share of bursts without a single violation beside it. Two leaders per class show whether a rule belongs to the client or to one operator, and four epochs show whether it holds over time. The whole plan sits in [prereg/ANALYSIS-PLAN.md](prereg/ANALYSIS-PLAN.md) and is anchored on chain before the first live probe.
+Strictness is the share of violated pairs among probe pairs with a different predicted position, with a jackknife interval over bursts and the share of bursts without a single violation beside it. Two leaders per class show whether a rule belongs to the client or to one operator, and four epochs show whether it holds over time. The whole plan sits in [prereg/ANALYSIS-PLAN.md](prereg/ANALYSIS-PLAN.md) and is anchored on chain before the first live probe; [prereg/CAMPAIGN-ADDENDUM.md](prereg/CAMPAIGN-ADDENDUM.md) states the rules the campaign adds to it and goes on chain before the first campaign probe.
 
 ## What it does NOT separate
 
@@ -135,7 +135,7 @@ docker compose --profile measure run --rm probe run --plan /data/plans/<id>/plan
 
 The commands draw the panel, place the seeded pilot table into its windows, simulate the anchor memo, and dry-run the plan. The live form of the last two adds `--live --max-spend-lamports N`.
 
-The campaign follows the same steps. On the host, `python -m itb minimum` reads the collected pilot runs and `python -m itb manifest --stage campaign` hashes the campaign files; containers mount `prereg/` read-only. Each epoch gets its own plan, drawn once the leader schedule of that epoch is known:
+The campaign follows the same steps. On the host, `python -m itb minimum` reads the collected pilot runs and `python -m itb manifest --stage campaign --panel data/panels/<id>/panel.json` hashes the campaign files together with the panel the campaign runs on; containers mount `prereg/` read-only. Each epoch gets its own plan, drawn once the leader schedule of that epoch is known:
 
 ```bash
 docker compose --profile measure run --rm plan campaign --panel data/panels/<id>/panel.json --epoch-index 0 --epoch <epoch>

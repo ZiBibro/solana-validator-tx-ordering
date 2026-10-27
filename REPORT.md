@@ -48,11 +48,10 @@ The bounty asks for at least 6 validators on at least 3 client or fork versions.
 | `dry-run-mainnet-20261027T003443Z` | dry-run | mainnet | dry-run | 2026-10-27 00:35:15 | 4 | 48 | 0 | - | - | `d8699aa` |
 | `dry-run-mainnet-20261027T010659Z` | dry-run | mainnet | dry-run | 2026-10-27 01:07:38 | 17 | 204 | 0 | - | - | `d4f2cca` |
 | `dry-run-mainnet-20261027T130541Z` | dry-run | mainnet | dry-run | 2026-10-27 13:06:16 | 12 | 144 | 0 | - | - | `5ffb53a` |
-| `dry-run-mainnet-20261027T223535Z` | dry-run | mainnet | dry-run | 2026-10-27 22:36:07 | 0 | 0 | 0 | - | - | `f9fb959` |
 | `pilot-mainnet-20261027T085253Z` | pilot | mainnet | live | 2026-10-27 08:53:32 | 68 | 816 | 811 | 811 | 799 | `ef77ca3` |
 <!-- itb:end runs -->
 
-Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no measurement mixes the two sides of it. The devnet runs test the pipeline and feed no result. The dry-run `dry-run-mainnet-20261027T223535Z` checks the campaign plan of epoch 1071 and stopped after 150 s, about 28 hours before the plan's first round, so it holds the cost check and the slot clock and no burst. Appendix A dates every burst by the `blockTime` of its first included probe.
+Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no measurement mixes the two sides of it. The devnet runs test the pipeline and feed no result. Appendix A dates every burst by the `blockTime` of its first included probe.
 
 ## 4. Spend
 
@@ -437,7 +436,7 @@ The minimum is the number of bursts per class and cell that an equivalence verdi
 
 ## 6. Campaign
 
-The campaign measures the panel over four epochs from 1071 with 8 bursts per class and cell, plus 64 control-path bursts. Verdicts run through the Holm families of the analysis plan.
+The campaign measures the panel over four epochs from 1071 with 8 bursts per class and cell, plus 64 control-path bursts. Verdicts run through the Holm families of the analysis plan. The [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md) goes on chain with the campaign manifest and states what the plan leaves to the code: the exclusion reasons, the hypotheses H3 and H4, lost epoch indexes, the builder label and the control path.
 
 ### 6.1 Bursts left out of the order tests
 
@@ -553,11 +552,11 @@ The README lists what stays out of reach from outside the leader ([What it does 
 
 - The arrival estimate rests on the first-shred event as the RPC node sees it, so shred propagation from the leader enters the timing tables (sections 5.6 and 6.6) as error of unknown source.
 - For the builder classes the round-trip time ends at the builder's receiver (sections 5.8 and 6.8).
-- Burst 52 shows that a builder can hand probes to another leader behind it (section 5.5). In the gossip snapshot of the panel, `JUPiTERr...` and `nymsGg7Z...` advertise `tpuQuic` on the same IP with different ports (`198.13.140.105:12349` and `:9007`), and the panel rule drops a window only when the leader before it shares the whole address. The table below counts the windows that keep such a neighbour, and in epoch 1069 they all fall in the two Harmonic classes. Which builder node handed the probes on stays unknown, because every Harmonic builder shares one tick signer.
+- Burst 52 shows that a builder can hand probes to another leader behind it (section 5.5). In the gossip snapshot of the panel, `JUPiTERr...` and `nymsGg7Z...` advertise `tpuQuic` on the same IP with different ports (`198.13.140.105:12349` and `:9007`), and the pilot's rule dropped a window only when the leader before it shared the whole address. The campaign panel drops every window that follows another validator on the same IP ([campaign addendum, section 8](prereg/CAMPAIGN-ADDENDUM.md)). The table below counts the windows the pilot's rule keeps and the campaign's rule turns away, and in epoch 1069 they all fall in the two Harmonic classes. Which builder node handed the probes on stays unknown, because every Harmonic builder shares one tick signer.
 - The competition ranks assume Agave's priority rule for every class (sections 5.13 and 6.13).
 
 <!-- itb:begin neighbours -->
-| Panel | Class | Passing windows of its panel leaders | After a leader on the same IP with another port | Share |
+| Panel | Class | Windows of its panel leaders passing the whole-address rule | After a leader on the same IP with another port | Share |
 |---|---|---|---|---|
 | `mainnet-e1069-20261027T005744Z` | AgaveBam | 4499 | 0 | 0.000 |
 | `mainnet-e1069-20261027T005744Z` | JitoLabs | 6654 | 0 | 0.000 |
@@ -567,17 +566,9 @@ The README lists what stays out of reach from outside the leader ([What it does 
 | `mainnet-e1069-20261027T005744Z` | FireBAM | 1101 | 0 | 0.000 |
 | `mainnet-e1069-20261027T005744Z` | Rakurai | 758 | 0 | 0.000 |
 | `mainnet-e1069-20261027T005744Z` | Agave | 766 | 0 | 0.000 |
-| `mainnet-e1071-20261027T223523Z` | AgaveBam | 4607 | 0 | 0.000 |
-| `mainnet-e1071-20261027T223523Z` | JitoLabs | 6765 | 0 | 0.000 |
-| `mainnet-e1071-20261027T223523Z` | HarmonicAgave | 6609 | 510 | 0.077 |
-| `mainnet-e1071-20261027T223523Z` | HarmonicFiredancer | 4136 | 533 | 0.129 |
-| `mainnet-e1071-20261027T223523Z` | Firedancer | 329 | 0 | 0.000 |
-| `mainnet-e1071-20261027T223523Z` | FireBAM | 1157 | 0 | 0.000 |
-| `mainnet-e1071-20261027T223523Z` | Rakurai | 800 | 0 | 0.000 |
-| `mainnet-e1071-20261027T223523Z` | Agave | 770 | 0 | 0.000 |
 <!-- itb:end neighbours -->
 
-The table comes from the gossip snapshot and the leader schedule stored with each panel in `data/panels/`, through the same window rule the panel uses.
+The table comes from the gossip snapshot and the leader schedule stored with each panel in `data/panels/`. It applies the pilot's whole-address rule and counts, among the windows that pass it, those after another leader on the same IP, which no campaign plan draws.
 
 ## 9. What went wrong
 
@@ -589,7 +580,7 @@ The table comes from the gossip snapshot and the leader schedule stored with eac
 
 - **2026-10-26 23:25 UTC, mainnet dry-run `dry-run-mainnet-20261026T232506Z`.** The slot clock ran on WebSocket events of the public node, which queued them 5 to 24 slots behind the cluster. The arrival estimate used the same late events, so the run showed 2 of 4 bursts in the band while all four missed. The clock moved onto the node's own timestamps, with a guard that skips a burst when `getSlot` runs 2 or more slots ahead of it (commit 2bacfa2), and the sender now waits for the first-shred events of the window before it closes a burst (commit d8699aa). No later run skipped a burst for the clock.
 - **2026-10-27 01:06 UTC, dry-run of the pilot plan.** Within 100 ms of the target stood 4 of 8 pre-window bursts, and all four misses were early. Before any live probe the pre-window band became 200 ms early and 100 ms late of the target. That change and a neutral rewording of the analysis plan redrew the manifest twice. The anchor went on chain from the third manifest, `9a9c92c2...`; the two earlier ones, `74149b29...` and `cf3c768e...`, were simulated and never sent. The seven pilot anchor logs in `logs/` hold six simulations and the one live send at 08:52 UTC.
-- **2026-10-27 08:52 UTC, pilot plan.** The validators.app snapshot failed certificate verification (`CERTIFICATE_VERIFY_FAILED`), because the antivirus web shield of the measuring machine re-signs that host. The plan was drawn without it, so no pilot burst carries the second label. The message reached the console only, since the pilot command keeps no draw notes; campaign plans keep theirs in `draw-notes.json`. The fix adds an extra root for that one request (`ITB_EXTRA_CA_FILE`, commit eebdf2f), and [scripts/campaign.sh](scripts/campaign.sh) passes it on. The campaign plan of epoch 1071, drawn at 22:35 UTC the same day, carries the snapshot with 666 records, and each of its 144 bursts has the same class there as in gossip.
+- **2026-10-27 08:52 UTC, pilot plan.** The validators.app snapshot failed certificate verification (`CERTIFICATE_VERIFY_FAILED`), because the antivirus web shield of the measuring machine re-signs that host. The plan was drawn without it, so no pilot burst carries the second label. The message reached the console only, since the pilot command keeps no draw notes; campaign plans keep theirs in `draw-notes.json`. The fix adds an extra root for that one request (`ITB_EXTRA_CA_FILE`, commit eebdf2f), and [scripts/campaign.sh](scripts/campaign.sh) passes it on.
 - **2026-10-27, pilot run.** Six bursts arrived outside their band. Burst 52 landed one slot early in another leader's block, and five probes of burst 99 met a closed connection (section 5.5).
 - **2026-10-27, minimum.** The spread of tau in the pilot puts every equivalence form out of reach of the campaign (section 5.15).
 - **2026-10-27, epoch tick sample.** The public RPC node cut a 0.9 MB `getBlock` body short (`IncompleteRead`). The RPC client retried only OS-level errors, so the read stopped after 321 blocks. It now retries a cut body too, with a selftest check for each kind of failure.

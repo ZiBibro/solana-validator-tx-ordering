@@ -26,10 +26,13 @@ PREREG_STAGES = ("pilot", "campaign")
 # analysis constants. Code that carries out the plan stays outside, so a bug fix after
 # the anchor does not break the hash; the plan and its numbers bind that code.
 PILOT_MANIFEST_FILES = ("prereg/ANALYSIS-PLAN.md", "prereg/pilot-table.json", "itb/prereg.py")
-# The campaign manifest adds the campaign table and the minimum computed from the pilot.
-CAMPAIGN_MANIFEST_FILES = ("prereg/ANALYSIS-PLAN.md", "prereg/campaign-table.json",
+# The campaign manifest adds the campaign table, the minimum computed from the pilot and the
+# addendum, which states in words every rule the campaign's code carries beyond the plan text.
+# `itb manifest --stage campaign --panel` adds the panel the campaign runs on.
+CAMPAIGN_MANIFEST_FILES = ("prereg/ANALYSIS-PLAN.md", "prereg/CAMPAIGN-ADDENDUM.md", "prereg/campaign-table.json",
                            "prereg/campaign-minimum.json", "itb/prereg.py")
 MANIFEST_FILES = {"pilot": PILOT_MANIFEST_FILES, "campaign": CAMPAIGN_MANIFEST_FILES}
+PANEL_PREFIX = "data/panels/"
 ANCHORS_FILE = "prereg-anchors.json"
 
 
@@ -61,6 +64,25 @@ def sha256_file(path):
 
 def manifest_path(repo_dir, stage):
     return os.path.join(repo_dir, "prereg", "manifest-%s.json" % stage)
+
+
+def manifest_panel(doc):
+    """(name, sha256) of the one panel a manifest pins, or None."""
+    found = [(n, h) for n, h in sorted(doc.get("files", {}).items())
+             if n.startswith(PANEL_PREFIX) and n.endswith("/panel.json")]
+    return found[0] if len(found) == 1 else None
+
+
+def panel_pin_problem(doc, panel_path):
+    """Why a campaign plan may not draw from panel_path under manifest doc, or None
+    (campaign addendum, section 8): the manifest pins one panel and the file has its sha256."""
+    pinned = manifest_panel(doc)
+    if pinned is None:
+        return "the manifest pins no panel"
+    have = sha256_file(panel_path)
+    if have != pinned[1]:
+        return "panel %s hashes %s, the manifest pins %s with %s" % (panel_path, have, pinned[0], pinned[1])
+    return None
 
 
 def read_anchors(data_dir):

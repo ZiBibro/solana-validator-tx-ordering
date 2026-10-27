@@ -311,17 +311,27 @@ def cmd_campaign(args):
     manifest_sha = None
     if os.path.exists(manifest):
         with open(manifest, "rb") as f:
-            manifest_sha = pilotmod.sha256_bytes(f.read())
+            manifest_raw = f.read()
+        manifest_sha = pilotmod.sha256_bytes(manifest_raw)
+        # The manifest pins the campaign panel (campaign addendum, section 8); another panel is refused.
+        problem = verify.panel_pin_problem(json.loads(manifest_raw), args.panel)
+        if problem:
+            print("campaign: %s (manifest %s)" % (problem, manifest), file=sys.stderr)
+            return EXIT_FAIL
         print("campaign: plan carries prereg manifest %s sha256 %s" % (manifest, manifest_sha))
     elif args.manifest:
         print("campaign: manifest %s not found" % manifest, file=sys.stderr)
         return EXIT_FAIL
     else:
         print("campaign: note: no %s; a live run refuses this plan" % manifest)
+    nodes_doc = None
+    if args.nodes:
+        with open(args.nodes, "rb") as f:
+            nodes_doc = json.load(f)
     client = _client()
     try:
         p, snapshots, notes = campaignmod.draw(client, panel_doc, table, pilotmod.sha256_bytes(raw), manifest_sha,
-                                               args.epoch_index, args.epoch, args.lead_slots)
+                                               args.epoch_index, args.epoch, args.lead_slots, nodes_doc=nodes_doc)
         slot_ms, samples = _slot_ms(client)
         now_slot = client.call("getSlot", [{"commitment": "confirmed"}])
     except (ValueError, rpc.RpcError) as e:
@@ -411,9 +421,20 @@ def cmd_pilot(args):
 
 
 def cmd_manifest(args):
-    files = args.file or verify.MANIFEST_FILES.get(args.stage)
+    files = list(args.file or verify.MANIFEST_FILES.get(args.stage) or ())
     if not files:
         print("manifest: stage %s lists its files with --file" % args.stage, file=sys.stderr)
+        return EXIT_FAIL
+    if args.stage == "campaign":
+        # The campaign manifest pins the panel it runs on (campaign addendum, section 8).
+        name = (args.panel or "").replace("\\", "/")
+        if not (name.startswith(verify.PANEL_PREFIX) and name.endswith("/panel.json")):
+            print("manifest: stage campaign pins its panel with --panel %s<id>/panel.json"
+                  % verify.PANEL_PREFIX, file=sys.stderr)
+            return EXIT_FAIL
+        files.append(name)
+    elif args.panel:
+        print("manifest: --panel belongs to stage campaign", file=sys.stderr)
         return EXIT_FAIL
     done = [a for a in verify.read_anchors(_data_dir(args)) if a["stage"] == args.stage]
     if done:
@@ -561,7 +582,10 @@ def main(argv=None):
     p = sub.add_parser("campaign", help="put one epoch of the campaign table into windows of the panel leaders")
     p.add_argument("--panel", required=True, help="panel.json from itb panel")
     p.add_argument("--epoch-index", type=int, required=True, help="epoch of the table, 0 to 3")
-    p.add_argument("--epoch", type=int, required=True, help="chain epoch it runs in: the current or the next")
+    p.add_argument("--epoch", type=int, required=True,
+                   help="chain epoch it runs in: the panel's epoch plus the index, the current or the next")
+    p.add_argument("--nodes", help="cluster-nodes.json of the epoch's first plan: a plan drawn again "
+                                   "scans the same gossip, so its windows repeat")
     p.add_argument("--table", help="campaign table (default: prereg/campaign-table.json)")
     p.add_argument("--manifest", help="prereg manifest whose sha256 the plan carries "
                                       "(default: prereg/manifest-campaign.json when it exists)")
@@ -575,6 +599,7 @@ def main(argv=None):
     p.add_argument("--stage", required=True, choices=verify.PREREG_STAGES)
     p.add_argument("--file", action="append",
                    help="repository file to list (repeatable; default: MANIFEST_FILES of verify.py)")
+    p.add_argument("--panel", help="campaign: the panel.json the campaign runs on, repository path")
     p.add_argument("--data", help="data directory with prereg-anchors.json (default: repo data/)")
     p = sub.add_parser("channel", help="line health: rounds of a run, getSlot round trips, campaign watch")
     p.add_argument("what", choices=("rounds", "rpc", "watch"))

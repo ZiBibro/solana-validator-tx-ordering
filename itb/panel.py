@@ -6,8 +6,12 @@ on the version that holds the largest stake share of the class, taken by
 stake, largest first. A candidate needs a current vote account, a tpuQuic in
 gossip, at least MIN_WINDOWS leader windows in the epoch and a passing window
 in each eighth of it. A window passes when it is full and the window right
-before it does not belong to another validator on the same tpuQuic (section
-5.3). Class rules come on top of that:
+before it does not belong to another validator whose tpuQuic stands on the
+same IP, whatever the port (section 5.3). Nobody documents what a shared
+receiver does with a transaction that reaches it before its own validator's
+window, and in the pilot burst 52 went to the leader before it on the same IP
+with another port. The campaign uses this rule; the pilot panel compared the
+whole address. Class rules come on top of that:
 
 - JitoLabs, Firedancer, Agave and Rakurai: tpuQuic on the gossip IP, so the
   base of each pair takes transactions without a node in between;
@@ -91,8 +95,11 @@ def stakes(vote_accounts):
 
 
 def _shared_tpu_before(prev, leader, tpu):
-    return prev is not None and prev != leader and tpu.get(prev) is not None \
-        and tpu.get(prev) == tpu.get(leader)
+    """The window before belongs to another validator with tpuQuic on the leader's IP."""
+    if prev is None or prev == leader:
+        return False
+    host = host_port(tpu.get(prev))[0]
+    return host is not None and host == host_port(tpu.get(leader))[0]
 
 
 def scan(schedule, epoch_first, tpu):

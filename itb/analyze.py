@@ -13,9 +13,17 @@ from collections import namedtuple
 from . import prereg, rawformat, stats, verdict
 
 Run = namedtuple("Run", "run bursts probes sends ends inclusions slots")
-Unit = namedtuple("Unit", "run_id burst_seq burst blocks reasons arrival_ms")
+# signers: one frozenset per order block, the market-tick signers of that block's slot.
+Unit = namedtuple("Unit", "run_id burst_seq burst blocks reasons arrival_ms signers", defaults=(None,))
 
 DELIVERED = ("finished", "rpc_ok")
+
+# The known tick signer of each builder class (analysis plan section 8, campaign addendum section 7):
+# a slot of such a class enters the builder rule only with a tick of this key.
+BAM_SIGNER = "BAMgx3XPWrXkNUuQiVWUZU6eB2HQZdwz9HNnT4tpo8LG"
+HARMONIC_SIGNER = "Harmonic8SoAfZixJqUxxdSeyWzr6q7XFjuiXS5Z2zPg"
+BUILDER_SIGNER = {"AgaveBam": BAM_SIGNER, "FireBAM": BAM_SIGNER,
+                  "HarmonicAgave": HARMONIC_SIGNER, "HarmonicFiredancer": HARMONIC_SIGNER}
 
 
 def load_run(run_dir):
@@ -149,12 +157,36 @@ def units_of(run):
                 "send_rank": p["send_rank"], "cu_limit": p["cu_limit"],
                 "segment": inc.get("tick_segment"),
             })
-        blocks = [probes for _, probes in sorted(per_slot.items()) if len(probes) >= 2]
+        order = [(slot, probes) for slot, probes in sorted(per_slot.items()) if len(probes) >= 2]
+        blocks = [probes for _, probes in order]
+        signers = [frozenset(t.get("signer") for t in (run.slots.get(slot) or {}).get("ticks") or [])
+                   for slot, _ in order]
         if any(slot_bursts.get(slot, set()) - {seq} for slot in per_slot):
             reasons.append("foreign-probe-in-block")
         if not blocks:
             reasons.append("fewer-than-two-in-a-block")
-        out.append(Unit(run.run["run_id"], seq, b, blocks, reasons, est))
+        out.append(Unit(run.run["run_id"], seq, b, blocks, reasons, est, signers))
+    return out
+
+
+def burst_key(burst):
+    """A burst of the table: one leader, round, cell and path in one chain epoch."""
+    return (burst.get("epoch"), burst.get("round"), burst["leader"], burst["arm"], burst["timing"], burst["path"])
+
+
+def repeated_bursts(runs, stages):
+    """[(key, run_id, run_id)] for every table burst that a second run sent again (campaign
+    addendum, section 5); analyze refuses such data instead of choosing one copy after the fact."""
+    seen, out = {}, []
+    for run in runs:
+        if run.run["stage"] not in stages:
+            continue
+        for seq, b in sorted(run.bursts.items()):
+            key = (run.run["stage"],) + burst_key(b)
+            if key in seen:
+                out.append((key, seen[key], "%s/%d" % (run.run["run_id"], seq)))
+            else:
+                seen[key] = "%s/%d" % (run.run["run_id"], seq)
     return out
 
 
@@ -223,6 +255,10 @@ def _tau_dict(r):
 
 
 def analyze(runs, stages=("campaign",)):
+    repeated = repeated_bursts(runs, stages)
+    if repeated:
+        key, first, again = repeated[0]
+        raise ValueError("analyze: burst %s of %s ran again as %s (%d repeats)" % (key, first, again, len(repeated)))
     units = []
     for run in runs:
         if run.run["stage"] in stages:
@@ -301,9 +337,23 @@ def rounds_test(kept):
             "pooled": _tau_dict(pooled), "form": form}
 
 
+def builder_blocks(unit, cls, labelled=True):
+    """Order blocks of a burst of class cls for the builder rule (analysis plan section 8):
+    for a builder class the blocks whose slot carries a tick of BUILDER_SIGNER[cls]
+    (labelled) or the rest; a class without a builder keeps every block."""
+    want = BUILDER_SIGNER.get(cls)
+    if want is None:
+        return unit.blocks
+    signers = unit.signers if unit.signers is not None else [frozenset()] * len(unit.blocks)
+    return [blk for blk, sg in zip(unit.blocks, signers) if (want in sg) == labelled]
+
+
 def pair_tests(kept):
     """Class differences inside the pairs of section 1 by label swaps per stratum
-    (epoch, round, arm, timing); both different-fee arms go into one test."""
+    (epoch, round, arm, timing); both different-fee arms go into one test. The
+    builder class counts only blocks with its builder's tick; its blocks without
+    one form the group without a label, one descriptive row per pair, condition
+    and tau, outside the Holm family."""
     strata = {}
     for u in kept:
         b = u.burst
@@ -316,28 +366,35 @@ def pair_tests(kept):
     for a, z in prereg.PAIRS:
         for timing in prereg.TIMINGS:
             for name in ("fee", "cross"):
-                diffs = []
+                diffs, bare = [], []
                 for (ep, rnd, arm, t), by_class in sorted(strata.items()):
                     if t != timing or len(by_class.get(a, [])) != 1 or len(by_class.get(z, [])) != 1:
                         continue
-                    ta = verdict.burst_tau(by_class[a][0].blocks, name)
                     tz = verdict.burst_tau(by_class[z][0].blocks, name)
-                    if ta is not None and tz is not None:
-                        diffs.append(ta - tz)
+                    for labelled, into in ((True, diffs), (False, bare)):
+                        ta = verdict.burst_tau(builder_blocks(by_class[a][0], a, labelled), name)
+                        if ta is not None and tz is not None:
+                            into.append(ta - tz)
                 key = (a, z, timing, name)
                 if not diffs:
                     rows.append({"pair": [a, z], "timing": timing, "tau": name, "strata": 0})
-                    continue
-                p, method, b_used, mean, se, df, tost = verdict.pair_test(diffs, seed=prereg.LABEL_TEST_SEED)
-                ptests[key] = p
-                etests[key] = tost
-                rows.append({"pair": [a, z], "timing": timing, "tau": name, "strata": len(diffs),
-                             "p": float(p), "method": method, "permutations": b_used,
-                             "mean_diff": mean, "se": se, "df": df, "tost_p": tost})
+                else:
+                    p, method, b_used, mean, se, df, tost = verdict.pair_test(diffs, seed=prereg.LABEL_TEST_SEED)
+                    ptests[key] = p
+                    etests[key] = tost
+                    rows.append({"pair": [a, z], "timing": timing, "tau": name, "strata": len(diffs),
+                                 "p": float(p), "method": method, "permutations": b_used,
+                                 "mean_diff": mean, "se": se, "df": df, "tost_p": tost})
+                if bare:
+                    rows.append({"pair": [a, z], "timing": timing, "tau": name, "strata": len(bare),
+                                 "without_label": True, "mean_diff": sum(bare) / len(bare),
+                                 "form": "descriptive"})
     sig = verdict.holm_decisions(ptests, m=verdict.PAIR_FAMILY_M)
     eq = verdict.holm_decisions(etests, m=verdict.PAIR_FAMILY_M)
     for row in rows:
         key = (row["pair"][0], row["pair"][1], row["timing"], row["tau"])
+        if row.get("without_label"):
+            continue
         if key in ptests:
             row["form"] = verdict.pair_form(sig[key], eq[key])
         else:
@@ -360,7 +417,10 @@ def summary_lines(result):
         lines.append("%-18s %-11s %-6s %3d bursts  %-16s %s  %s" % (
             c["class"], c["arm"], c["timing"], c["bursts"], c["form"], c["detail"] or "", taus))
     for r in result["pairs"]:
-        if r["strata"]:
+        if r.get("without_label"):
+            lines.append("pair %s vs %s %-6s %-5s %2d strata  diff %.3f  without its tick, %s" % (
+                r["pair"][0], r["pair"][1], r["timing"], r["tau"], r["strata"], r["mean_diff"], r["form"]))
+        elif r["strata"]:
             lines.append("pair %s vs %s %-6s %-5s %2d strata  diff %.3f  p %.3g  %s" % (
                 r["pair"][0], r["pair"][1], r["timing"], r["tau"], r["strata"], r["mean_diff"], r["p"], r["form"]))
     rt = result.get("rounds_test")

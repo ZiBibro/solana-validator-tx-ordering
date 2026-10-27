@@ -1212,9 +1212,10 @@ def report_checks():
         except ValueError as e:
             got = str(e)
         out.append(("report: %s is an error" % name, got != "no error", got))
-    p, method = report._path_label_p([([1.0, 2.0, 3.0, 4.0], 2)])
-    out.append(("report: the path label test is exact on a small stratum", p == 2 / 6 and method == "exact over 6",
-                "p %s, %s" % (p, method)))
+    p, method, smallest = report._path_label_p([([1.0, 2.0, 3.0, 4.0], 2)])
+    out.append(("report: the path label test is exact on a small stratum and names its smallest p",
+                p == 2 / 6 and method == "exact over 6" and smallest == 2 / 6,
+                "p %s, %s, smallest %s" % (p, method, smallest)))
     tx = {"signatures": ["s"], "write_accounts": ["w", "w"], "ix_data_bytes": 12, "cu_limit": 1000,
           "loaded_data_limit": None}
     got = report._requested_cost(tx) - chain.agave_cost(1, 1, 12, 1000, 0)
@@ -1245,9 +1246,25 @@ def report_checks():
     out.append(("report: every per-stage table builds on a synthetic run", error is None and len(tables) == 10,
                 error or "%d tables" % len(tables)))
     control = tables.get("control", "")
-    out.append(("report: the control table compares both measures in one leader-epoch stratum",
-                "| tau fee | 1 |" in control and "| inclusion share | 1 | 0.000 | 1 |" in control,
-                repr(control.split("\n")[2:4])))
+    # Three control and three direct bursts in one stratum: no arrangement reaches p <= 0.05.
+    out.append(("report: the control table compares both measures in one stratum and, with too few bursts "
+                "to reach 0.05, prints them descriptive without a p",
+                "| tau fee | 1 | -0.134 | - | descriptive: smallest attainable p 0.1, exact over 20 |" in control
+                and "| inclusion share | 1 | 0.000 | - | descriptive: smallest attainable p 1, exact over 20 |"
+                in control, repr(control.split("\n")[2:4])))
+    _, _, smallest = report._path_label_p([([float(v) for v in range(8)], 4)])
+    out.append(("report: four control and four direct bursts can reach 0.05, so their stratum is tested",
+                smallest == 2 / 70 and smallest <= stats.ALPHA, "smallest %s" % smallest))
+    calls = []
+    real = stats.fisher_yates
+    stats.fisher_yates = lambda items, rnd: calls.append(1) or real(items, rnd)
+    try:
+        _, method, _ = report._path_label_p([([float(v) for v in range(10)], 5)] * 3)
+    finally:
+        stats.fisher_yates = real
+    out.append(("report: a stratum set past the exact limit draws its labels with the own Fisher-Yates",
+                method == "%d draws" % prereg.LABEL_TEST_B and len(calls) == 3 * prereg.LABEL_TEST_B,
+                "%s, %d shuffles" % (method, len(calls))))
     parts = [[[c.strip() for c in line.split("|")[1:-1]] for line in part.split("\n")[2:]]
              for part in tables.get("elsewhere", "").split("\n\n")]
     by_class = parts[1] if len(parts) == 2 else []
@@ -1274,6 +1291,154 @@ def report_checks():
     return out
 
 
+class _EpochClient:
+    """RPC stand-in for campaign.draw: chain epoch now, and no leader schedule yet."""
+
+    def __init__(self, epoch):
+        self.epoch = epoch
+
+    def call(self, method, params):
+        if method == "getEpochInfo":
+            return {"epoch": self.epoch, "absoluteSlot": 432000 * self.epoch + 100, "slotIndex": 100,
+                    "slotsInEpoch": 432000}
+        return None
+
+
+def _patched(owner, name, value, fn):
+    """fn() with owner.name replaced by value, the original put back after."""
+    real = getattr(owner, name)
+    setattr(owner, name, value)
+    try:
+        return fn()
+    finally:
+        setattr(owner, name, real)
+
+
+def _raises(fn):
+    try:
+        fn()
+    except ValueError as e:
+        return str(e)
+    return None
+
+
+def addendum_checks():
+    """Rules the campaign addendum states in words (sections 5, 7 and 8). Each
+    check comes with a mutant that removes the rule and must turn it red."""
+    out = []
+    # Section 8: A's first window follows N on A's IP with another port, its second follows O on another IP.
+    schedule = {"N": [0, 1, 2, 3], "A": [4, 5, 6, 7, 12, 13, 14, 15], "O": [8, 9, 10, 11]}
+    tpu = {"A": "10.0.0.1:8009", "N": "10.0.0.1:9007", "O": "10.0.0.2:8009"}
+
+    def windows_of_a():
+        return [(first, passes) for first, _, leader, passes in panel.scan(schedule, 1000, tpu) if leader == "A"]
+
+    want = [(1004, False), (1012, True)]
+    got = windows_of_a()
+    whole = _patched(panel, "_shared_tpu_before",
+                     lambda prev, leader, t: prev not in (None, leader) and t.get(prev) == t.get(leader), windows_of_a)
+    out.append(("addendum: a window right after another validator on the leader's IP fails whatever the port; "
+                "the mutant comparing the whole address lets it pass",
+                got == want and whole != want, "%s; mutant %s" % (got, whole)))
+
+    # Section 8: the manifest pins the panel by its sha256.
+    with tempfile.TemporaryDirectory() as tmp:
+        pinned_path, other_path = os.path.join(tmp, "pinned.json"), os.path.join(tmp, "other.json")
+        for path, body in ((pinned_path, b'{"epoch": 1071}\n'), (other_path, b'{"epoch": 1071} \n')):
+            with open(path, "wb") as f:
+                f.write(body)
+        doc = {"files": {"data/panels/x/panel.json": verify.sha256_file(pinned_path),
+                         "prereg/ANALYSIS-PLAN.md": "00"}}
+        same = verify.panel_pin_problem(doc, pinned_path)
+        other = verify.panel_pin_problem(doc, other_path)
+        none = verify.panel_pin_problem({"files": {"prereg/ANALYSIS-PLAN.md": "00"}}, pinned_path)
+        mutant = _patched(verify, "sha256_file", lambda path: doc["files"]["data/panels/x/panel.json"],
+                          lambda: verify.panel_pin_problem(doc, other_path))
+    out.append(("addendum: a campaign plan takes the pinned panel and refuses one with another hash or a "
+                "manifest without a panel; the mutant that skips the hash takes the other panel",
+                same is None and other is not None and "hashes" in other and none is not None and mutant is None,
+                "%s; %s; mutant %s" % (same, other, mutant)))
+
+    # Section 5: index e runs only in chain epoch panel epoch + e; a passed epoch loses the index.
+    doc = {"epoch": 1071, "network": "mainnet", "classes": {}}
+
+    def draw(index, epoch, now):
+        return _raises(lambda: campaign.draw(_EpochClient(now), doc, {"epochs": [], "seed": "s"}, "aa", "bb",
+                                             index, epoch, 150))
+
+    moved = draw(1, 1071, 1071)
+    passed = draw(0, 1071, 1072)
+    own = draw(1, 1072, 1072)
+    out.append(("addendum: the draw refuses index 1 in chain epoch 1071 and index 0 once epoch 1071 has passed; "
+                "index 1 in epoch 1072 gets past both gates",
+                moved is not None and "runs only in chain epoch 1072" in moved
+                and passed is not None and "has passed" in passed and "is lost" in passed
+                and own is not None and "not known yet" in own,
+                "%s; %s; %s" % (moved, passed, own)))
+
+    # Sections 5 and 7 on synthetic runs: FireBAM against Firedancer, 8 rounds in both different-fee arms.
+    spec = []
+    for rnd in range(8):
+        for arm in ("independent", "shared"):
+            spec.append({"class": "FireBAM", "rule": "fifo", "arm": arm, "timing": "pre300", "round": rnd,
+                         "tick": rnd >= 2})
+            spec.append({"class": "Firedancer", "rule": "firedancer", "arm": arm, "timing": "pre300",
+                         "round": rnd, "leader": 1})
+
+    def analyze_spec(rows_spec, name):
+        with tempfile.TemporaryDirectory() as tmp:
+            run_dir = os.path.join(tmp, "runs", name)
+            os.makedirs(run_dir)
+            prows, crows = synth.campaign_rows(name, rows_spec, "itb-selftest:" + name)
+            _write(os.path.join(run_dir, "probes.jsonl"), prows)
+            _write(os.path.join(run_dir, "collect.jsonl"), crows)
+            runs = analyze.load_runs(tmp)
+        return lambda: analyze.analyze(runs, stages=("test",))
+
+    def fee_rows(result):
+        rows = [r for r in result["pairs"] if r["pair"] == ["FireBAM", "Firedancer"]
+                and r["timing"] == "pre300" and r["tau"] == "fee"]
+        tested = next((r["strata"] for r in rows if not r.get("without_label")), None)
+        bare = next((r for r in rows if r.get("without_label")), {})
+        return tested, bare.get("strata"), bare.get("form"), "p" in bare
+
+    run = analyze_spec(spec, "selftest-tick")
+    got = fee_rows(run())
+    whole = fee_rows(_patched(analyze, "builder_blocks", lambda unit, cls, labelled=True: unit.blocks, run))
+    out.append(("addendum: the pair test takes the FireBAM blocks with the BAM tick (12 strata) and shows the "
+                "4 without it as a descriptive row; the mutant without the filter tests all 16",
+                got == (12, 4, "descriptive", False) and whole[0] == 16, "%s; mutant %s" % (got, whole)))
+
+    # Section 9: the control burst of round 0 lands outside its window; the inclusion share keeps it at 0.
+    control_spec = [{"class": "FireBAM", "rule": "fifo", "arm": "independent", "timing": "pre300", "round": rnd,
+                     "fields": {"path": path}} for rnd in range(3) for path in ("quic", "rpc")]
+    with tempfile.TemporaryDirectory() as tmp:
+        run_dir = os.path.join(tmp, "runs", "selftest-control")
+        os.makedirs(run_dir)
+        prows, crows = synth.campaign_rows("selftest-control", control_spec, "itb-selftest:control")
+        for r in crows:
+            if r["kind"] == "inclusion" and r["burst_seq"] == 1:
+                r["in_target_window"] = False
+        _write(os.path.join(run_dir, "probes.jsonl"), prows)
+        _write(os.path.join(run_dir, "collect.jsonl"), crows)
+        items = report._items(analyze.load_runs(tmp))
+        control = report.control_block(items)
+        narrow = dict(report.CONTROL_KEEPS, **{"inclusion share": {"control-path"}})
+        mutant = _patched(report, "CONTROL_KEEPS", narrow, lambda: report.control_block(items))
+    out.append(("addendum: the control inclusion share counts a control burst that missed its window as 0; "
+                "the mutant that drops such bursts reads no difference",
+                "| inclusion share | 1 | -0.333 |" in control and "| tau fee | 1 |" in control
+                and "| inclusion share | 1 | 0.000 |" in mutant,
+                "%s; mutant %s" % (control.split("\n")[2], mutant.split("\n")[2])))
+
+    twice = analyze_spec(spec[:2] + spec[:1], "selftest-repeat")
+    refused = _raises(twice)
+    kept = _patched(analyze, "repeated_bursts", lambda runs, stages: [], lambda: _raises(twice))
+    out.append(("addendum: analyze refuses a table burst that ran twice; the mutant without the check takes both",
+                refused is not None and "ran again" in refused and kept is None, "%s; mutant %s" % (refused, kept)))
+    return out
+
+
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
@@ -1285,7 +1450,8 @@ def run_all():
               + clock_guard_checks()
               + channel_checks()
               + rpc_checks()
-              + report_checks())
+              + report_checks()
+              + addendum_checks())
     lines = []
     failed = 0
     for name, ok, detail in checks:

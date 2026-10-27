@@ -375,20 +375,31 @@ def build(table, epoch_index, table_sha, manifest_sha, panel_doc, placed, epoch,
 
 
 def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, lead_slots,
-         va_fetch=pilot.validators_app):
+         va_fetch=pilot.validators_app, nodes_doc=None):
     """Read the cluster once and return (plan, snapshots, notes) for epoch index
-    epoch_index of the table, run in chain epoch epoch (the current or the next)."""
+    epoch_index of the table, run in chain epoch epoch (the current or the next).
+
+    Index e runs only in chain epoch panel epoch + e (campaign addendum, section 5):
+    another epoch is refused, and an index whose chain epoch has passed is lost.
+    nodes_doc, the cluster-nodes.json of the epoch's first plan, makes a plan drawn
+    again after a failed run scan the same gossip, so its windows repeat exactly."""
+    if epoch != panel_doc["epoch"] + epoch_index:
+        raise ValueError("campaign: epoch index %d runs only in chain epoch %d (panel epoch %d plus the index), "
+                         "not %d" % (epoch_index, panel_doc["epoch"] + epoch_index, panel_doc["epoch"], epoch))
     info = client.call("getEpochInfo", [{"commitment": "confirmed"}])
     now_slot = info["absoluteSlot"]
     slots = info["slotsInEpoch"]
-    if epoch not in (info["epoch"], info["epoch"] + 1):
+    if epoch < info["epoch"]:
+        raise ValueError("campaign: chain epoch %d has passed (now %d); epoch index %d is lost"
+                         % (epoch, info["epoch"], epoch_index))
+    if epoch > info["epoch"] + 1:
         raise ValueError("campaign: epoch %d is neither the current epoch %d nor the next" % (epoch, info["epoch"]))
     epoch_first = now_slot - info["slotIndex"] + (epoch - info["epoch"]) * slots
     drawn_utc = plan.utc_now()
     schedule = client.call("getLeaderSchedule", [epoch_first, {"commitment": "confirmed"}])
     if not schedule:
         raise ValueError("campaign: the leader schedule of epoch %d is not known yet" % epoch)
-    nodes = client.call("getClusterNodes", [])
+    nodes = client.call("getClusterNodes", []) if nodes_doc is None else nodes_doc["nodes"]
     vote_accounts = client.call("getVoteAccounts", [{"commitment": "confirmed"}])
     tpu = {n["pubkey"]: n.get("tpuQuic") for n in nodes}
     leaders = pilot.leaders_of(panel_doc)
@@ -415,8 +426,10 @@ def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, 
     if not p["rounds"]:
         raise ValueError("campaign: no burst of epoch index %d found a window from slot %d"
                          % (epoch_index, now_slot + lead_slots))
+    if nodes_doc is not None:
+        notes.append("windows scanned with the gossip snapshot of %s" % nodes_doc["utc"])
     snapshots = {
-        "cluster-nodes.json": {"utc": drawn_utc, "slot": now_slot, "nodes": nodes},
+        "cluster-nodes.json": nodes_doc or {"utc": drawn_utc, "slot": now_slot, "nodes": nodes},
         "leader-schedule.json": {"utc": drawn_utc, "epoch": epoch, "first_slot": epoch_first,
                                  "schedule": schedule},
     }

@@ -9,7 +9,7 @@ output the Python documentation keeps across versions.
 
 import random
 
-from . import b58
+from . import analyze, b58
 from .stats import fisher_yates
 
 FEE_LEVELS = (0, 10, 100, 1000)
@@ -171,22 +171,22 @@ def burst_rows(run, seq, probes, **fields):
     return rows
 
 
-def inclusion_row(run_id, seq, rank, slot, tx_index, leader, leader_class):
+def inclusion_row(run_id, seq, rank, slot, tx_index, leader, leader_class, tick_segment=None):
     return {
         "v": 1, "kind": "inclusion", "run_id": run_id, "burst_seq": seq,
         "signature": sig(seq, rank), "status": "included", "slot": slot, "slot_in_window": 1,
         "tx_index": tx_index, "block_tx_count": 400, "block_cost_units": 30_000_000,
         "fee": 5000, "err": None, "actual_leader": leader, "actual_leader_class": leader_class,
-        "in_target_window": True, "tick_segment": None, "block_time": 1793044801,
+        "in_target_window": True, "tick_segment": tick_segment, "block_time": 1793044801,
         "checked_utc": "2026-10-26T20:05:00Z",
     }
 
 
-def slot_row(run_id, slot, leader):
+def slot_row(run_id, slot, leader, ticks=()):
     return {
         "v": 1, "kind": "slot", "run_id": run_id, "slot": slot, "block_time": 1793044801,
         "parent_slot": slot - 1, "blockhash": key(4, slot % 256), "leader": leader,
-        "tx_count": 400, "cost_units": 30_000_000, "ticks": [], "crank_memo": None,
+        "tx_count": 400, "cost_units": 30_000_000, "ticks": list(ticks), "crank_memo": None,
         "competition_file": None,
     }
 
@@ -199,7 +199,8 @@ def campaign_rows(run_id, plan, seed):
     """Raw rows of a synthetic run. plan: list of dicts with class, rule, arm,
     timing, round and optional extra burst fields; every burst lands whole in
     the first slot of its window, its probes spread between foreign transactions.
-    Returns (probe_rows, collect_rows)."""
+    The slot of a builder class carries one tick of its builder at index 0
+    unless the spec says "tick": False. Returns (probe_rows, collect_rows)."""
     rnd = random.Random(seed)
     run = run_row(run_id)
     probe_rows = [run]
@@ -214,8 +215,11 @@ def campaign_rows(run_id, plan, seed):
                   "leader_client_id": spec["class"], "leader": leader, "first_slot": slot}
         fields.update(spec.get("fields", {}))
         probe_rows.extend(burst_rows(run, seq, probes, **fields))
+        signer = analyze.BUILDER_SIGNER.get(spec["class"]) if spec.get("tick", True) else None
+        ticks = [{"index": 0, "signer": signer, "timestamp_ns": 1793044800 * 10 ** 9,
+                  "interval_ns": 50_000_000}] if signer else []
         for i, p in enumerate(ordered):
             collect_rows.append(inclusion_row(run_id, seq, p["send_rank"], slot, 40 + 3 * i,
-                                              leader, spec["class"]))
-        collect_rows.append(slot_row(run_id, slot, leader))
+                                              leader, spec["class"], 1 if ticks else None))
+        collect_rows.append(slot_row(run_id, slot, leader, ticks))
     return probe_rows, collect_rows
