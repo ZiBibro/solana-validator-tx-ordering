@@ -1,0 +1,300 @@
+commit 8ff9207857c5e8818ae6ab5c45f577905598caf2, transcript logs/devnet-pipeline-20261027T082825Z.txt
+
+== probe image (built as the README says) (08:28:25Z)
+
+== funded public address the dry-run simulates from (08:28:26Z)
+ Container inside-the-block-plan-run-7d5fa955be77 Creating 
+ Container inside-the-block-plan-run-7d5fa955be77 Created 
+ Container inside-the-block-plan-run-c8fcc9d990d0 Creating 
+ Container inside-the-block-plan-run-c8fcc9d990d0 Created 
+simulation payer dv3qDFk1DTF36Z62bNvrCXe9sKATA6xvVy6A798xxAS, 216302777015001 lamports
+
+== plan (08:28:34Z)
+ Container inside-the-block-plan-run-cbf55e68274a Creating 
+ Container inside-the-block-plan-run-cbf55e68274a Created 
+plan: /repo/data/plans/devnet-devnet-20261027T082837Z/plan.json
+plan: seed 0ca1108ed8c87385ec1829be2265935c, 4 bursts from slot 515632948 (anchor 515632647)
+  slot 515632948 dv3qDFk1DTF36Z62bNvrCXe9sKATA6xvVy6A798xxAS equal_fee slot2 quic fee 100
+  slot 515633108 dv1ZAGvdsz5hHLwWXsVnM94hWf1pjbKVau1QVkaMJ92 independent slot2 quic fee None
+  slot 515633268 dv4ACNkpYPcE3aKmYDqZm9G5EB3J4MRoeE7WNDRBVJB shared slot2 quic fee None
+  slot 515633428 dv1ZAGvdsz5hHLwWXsVnM94hWf1pjbKVau1QVkaMJ92 denominator slot2 quic fee 0
+
+== the key as the probe container sees it (08:28:38Z)
+ Container inside-the-block-probe-run-1c5454e766f4 Creating 
+ Container inside-the-block-probe-run-1c5454e766f4 Created 
+key mode 777, owner 0:0, type regular file
+process uid 10001, gid 10001
+
+== live run under a limit below the plan cost: must refuse before sending (08:28:39Z)
+ Container inside-the-block-probe-run-feaf4a120bba Creating 
+ Container inside-the-block-probe-run-feaf4a120bba Created 
+itb-probe info start {"bursts":4,"code_limit_lamports":50000000,"mode":"live","network":"devnet","plan":"/data/plans/devnet-devnet-20261027T082837Z/plan.json","rpc":"https://api.devnet.solana.com","spend_limit_lamports":1000,"ws":"wss://api.devnet.solana.com"}
+itb-probe LIVE run devnet-devnet-20261027T082839Z: 4 bursts, spend limit 1000 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.devnet.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.devnet.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+itb-probe info journal_reconciled {"adjust":0,"chain_fee_total":0,"chain_max_burst_seq":null,"chain_signatures":0,"committed":0,"fetched":0}
+itb-probe info plan_cost {"committed":0,"limit":1000,"overhead_lamports":5000,"worst_fee_lamports":247860}
+itb-probe error limit_refusal {"message":"spend limit: the plan needs up to 252860 lamports, the limit 1000 leaves 1000"}
+plan worst-case fees 247860 lamports plus 5000 for funding and closing; committed 0; limit 1000 (25286.0% used after the plan)
+payer  1 FdX6rZPtd1Eu3NQBWS8oDi7q8YDjTkVLDjwQFY8vFd6D: 0 lamports
+payer  2 G9ecafJZA843ufTo9nXhFATrbYtc5rwwPwthfiPG7AN8: 0 lamports
+payer  3 E3bgsx7R7zXUvZ2U8HTaFyd64cAuppSkup4wJuRmJ8aS: 0 lamports
+payer  4 H197dggrmptmKTGbttDjFTT2LBaNyAJjMBD3LZ4WCGUi: 0 lamports
+payer  5 5AAjHYdDXcnTmybAKDVVYCSjp416LFiwqzGrAvHxkdb8: 0 lamports
+payer  6 3tFbakZ79RfquR53Za73DzMDvpnGvDWyRmbGy4ko7jYu: 0 lamports
+payer  7 3ggEDeGQ62RPzcE8KK61hReZmf5evnkqXzKt8an7Y58Q: 0 lamports
+payer  8 EezXx4Lg7fWNE1bG3ujvbD5KFfznNkwAgvmqsATdhAFx: 0 lamports
+payer  9 2JDRaXwsSf8XsriT8cjm1ymm9yV7EvERFbdRSweTWXh1: 0 lamports
+payer 10 5DpLkfAPC99KLRodTPdfS9Ko6URGmz2XmxBe72DzVXLq: 0 lamports
+payer 11 51erkVWKsQ1tDBNb64WCn7ZR9tcsR2ft8WqAnnuPA1wP: 0 lamports
+payer 12 FBWuaDr17FerWmWC1rzEN9ssChvQwXS96uMDGBaCtqdu: 0 lamports
+payers total: 0 lamports
+itb-probe: spend limit: the plan needs up to 252860 lamports, the limit 1000 leaves 1000
+
+-- refusal exits non-zero: ok
+-- log shows limit_refusal: ok
+-- refusal wrote no raw data: ok
+
+== dry-run of the same plan: zero streams, every probe simulated (08:28:57Z)
+ Container inside-the-block-probe-run-c8cd455be007 Creating 
+ Container inside-the-block-probe-run-c8cd455be007 Created 
+itb-probe info start {"bursts":4,"code_limit_lamports":50000000,"mode":"dry-run","network":"devnet","plan":"/data/plans/devnet-devnet-20261027T082837Z/plan.json","rpc":"https://api.devnet.solana.com","spend_limit_lamports":50000000,"ws":"wss://api.devnet.solana.com"}
+itb-probe dry-run run dry-run-devnet-20261027T082858Z: 4 bursts, spend limit 50000000 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.devnet.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.devnet.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+itb-probe info plan_cost {"committed":0,"limit":50000000,"overhead_lamports":5000,"worst_fee_lamports":247860}
+plan worst-case fees 247860 lamports plus 5000 for funding and closing; committed 0; limit 50000000 (0.5% used after the plan)
+itb-probe info slot_clock_ready {"anchor_slot":515632898,"basis":"node_ts","slot_ms":237.35230455818692,"source":"first_shred","step_ms_by_window_position":[145.0,200.0,200.0,426.0]}
+slot clock: first_shred at 237.4 ms per slot
+itb-probe info quic_connected {"rtt_ns":40665767,"tpu_quic":"64.130.41.138:8003"}
+itb-probe info burst_done {"arm":"equal_fee","arrival_ms":130.312845,"first_slot":515632948,"leader":"dv3qDFk1DTF36Z62bNvrCXe9sKATA6xvVy6A798xxAS","path":"quic","results":null,"rtt_ms":62.175298,"timing":"slot2"}
+burst 33 slot 515632948 equal_fee slot2 quic: est. arrival 130.3 ms from slot start, rtt 62.2 ms
+itb-probe info quic_connected {"rtt_ns":273336348,"tpu_quic":"109.94.99.153:8003"}
+itb-probe info burst_done {"arm":"independent","arrival_ms":149.192096,"first_slot":515633108,"leader":"dv1ZAGvdsz5hHLwWXsVnM94hWf1pjbKVau1QVkaMJ92","path":"quic","results":null,"rtt_ms":290.338281,"timing":"slot2"}
+burst 34 slot 515633108 independent slot2 quic: est. arrival 149.2 ms from slot start, rtt 290.3 ms
+itb-probe info quic_connected {"rtt_ns":159756712,"tpu_quic":"64.130.33.238:8003"}
+itb-probe info burst_done {"arm":"shared","arrival_ms":145.000388,"first_slot":515633268,"leader":"dv4ACNkpYPcE3aKmYDqZm9G5EB3J4MRoeE7WNDRBVJB","path":"quic","results":null,"rtt_ms":171.438513,"timing":"slot2"}
+burst 35 slot 515633268 shared slot2 quic: est. arrival 145.0 ms from slot start, rtt 171.4 ms
+itb-probe info quic_connected {"rtt_ns":286118418,"tpu_quic":"109.94.99.153:8003"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":86.000586,"first_slot":515633428,"leader":"dv1ZAGvdsz5hHLwWXsVnM94hWf1pjbKVau1QVkaMJ92","path":"quic","results":null,"rtt_ms":300.78065,"timing":"slot2"}
+burst 36 slot 515633428 denominator slot2 quic: est. arrival 86.0 ms from slot start, rtt 300.8 ms
+itb-probe info summary {"arrival_ms_min_median_max":[86.000586,145.000388,149.192096],"bursts_done":4,"handshakes":4,"handshakes_ok":4,"in_timing_band":4,"rtt_ms_min_median_max":[62.175298,290.338281,300.78065]}
+summary: {"arrival_ms_min_median_max":[86.000586,145.000388,149.192096],"bursts_done":4,"handshakes":4,"handshakes_ok":4,"in_timing_band":4,"rtt_ms_min_median_max":[62.175298,290.338281,300.78065]}
+dry-run: no key read, nothing sent, payers of the dry-run wallet hold no funds
+payer  1 DbdDvynpgtj2paZnVbFbpJbVGnQehTEc3qJisvyrwH5N: 0 lamports
+payer  2 D67gWjV3Q2zfz11oagc9jxFKZSfKQq58qWz4eS43ssgB: 0 lamports
+payer  3 Hw3BH2rLZrp13VrYKwNqkhZH1reKYoZu8uhUhxYQgMdJ: 0 lamports
+payer  4 FmCo72GB83X7KaKwyc755AxRA4fS1CSkHDbsqoxSFkx5: 0 lamports
+payer  5 9pYdZmK3SCxFnAtBryTW3QvGGGAWunnjbbgwszWE6aZw: 0 lamports
+payer  6 8pQmYJ9BYJrzkKGvaAiKNM9AW69FHW8GGjLVhjD1Kxp2: 0 lamports
+payer  7 DfMx86XEUDhtb8m27wbzroyWGygsPXRbPLMBx8ua7due: 0 lamports
+payer  8 H2NfwpxpNZYM8K77gcoNbWKhPuCPBpyeqkLgrSiVsFCY: 0 lamports
+payer  9 FHPKDbC2xPfraCMho4bwGSRHEefdwbxxxnDDfpmK9BtJ: 0 lamports
+payer 10 ExebbAEPWwBA477kgsegSW1xAoL2YcaSDwSTC9Yn3ZCh: 0 lamports
+payer 11 3u4Y1LjbkekTNdVRn3vxFmcWFjBp4uautVbzEu1Xmcut: 0 lamports
+payer 12 Da4qMiaC8ECU989FS36TRQV6qNAancL3XYdbkirDcUoj: 0 lamports
+payers total: 0 lamports
+-- dry-run: ok
+dry-run: 48 send rows, 48 simulated without error
+-- dry-run rows simulated without error: ok
+
+== wallet balance (08:31:44Z)
+ Container inside-the-block-probe-run-0344cdadf52f Creating 
+ Container inside-the-block-probe-run-0344cdadf52f Created 
+spend journal /state/spend-journal-devnet.jsonl: 0 lamports committed, 0 settled, 0 bookings pending (0 lamports)
+raw data /data: 444 probes, next burst_seq from data 37
+wallet 9x7N6zsg9heDhz7t63jwPhBpuTREWmLcSDiGt5aEVaUL
+payer  1 FdX6rZPtd1Eu3NQBWS8oDi7q8YDjTkVLDjwQFY8vFd6D: 0 lamports
+payer  2 G9ecafJZA843ufTo9nXhFATrbYtc5rwwPwthfiPG7AN8: 0 lamports
+payer  3 E3bgsx7R7zXUvZ2U8HTaFyd64cAuppSkup4wJuRmJ8aS: 0 lamports
+payer  4 H197dggrmptmKTGbttDjFTT2LBaNyAJjMBD3LZ4WCGUi: 0 lamports
+payer  5 5AAjHYdDXcnTmybAKDVVYCSjp416LFiwqzGrAvHxkdb8: 0 lamports
+payer  6 3tFbakZ79RfquR53Za73DzMDvpnGvDWyRmbGy4ko7jYu: 0 lamports
+payer  7 3ggEDeGQ62RPzcE8KK61hReZmf5evnkqXzKt8an7Y58Q: 0 lamports
+payer  8 EezXx4Lg7fWNE1bG3ujvbD5KFfznNkwAgvmqsATdhAFx: 0 lamports
+payer  9 2JDRaXwsSf8XsriT8cjm1ymm9yV7EvERFbdRSweTWXh1: 0 lamports
+payer 10 5DpLkfAPC99KLRodTPdfS9Ko6URGmz2XmxBe72DzVXLq: 0 lamports
+payer 11 51erkVWKsQ1tDBNb64WCn7ZR9tcsR2ft8WqAnnuPA1wP: 0 lamports
+payer 12 FBWuaDr17FerWmWC1rzEN9ssChvQwXS96uMDGBaCtqdu: 0 lamports
+payers total: 0 lamports
+ Container inside-the-block-plan-run-57806557c976 Creating 
+ Container inside-the-block-plan-run-57806557c976 Created 
+wallet 9x7N6zsg9heDhz7t63jwPhBpuTREWmLcSDiGt5aEVaUL holds 500000000 lamports
+
+== second plan, live, with funding and closing (08:31:47Z)
+ Container inside-the-block-plan-run-6c62c0bf12e3 Creating 
+ Container inside-the-block-plan-run-6c62c0bf12e3 Created 
+plan: /repo/data/plans/devnet-devnet-20261027T083149Z/plan.json
+plan: seed 4b1b3275cd79317c24a1e735d63d24a4, 4 bursts from slot 515633756 (anchor 515633453)
+  slot 515633756 dv3qDFk1DTF36Z62bNvrCXe9sKATA6xvVy6A798xxAS shared pre300 quic fee None
+  slot 515633916 dv4ACNkpYPcE3aKmYDqZm9G5EB3J4MRoeE7WNDRBVJB equal_fee slot2 quic fee 100
+  slot 515634076 dv2eQHeP4RFrJZ6UeiZWoc3XTtmtZCUKxxCApCDcRNV independent pre300 quic fee None
+  slot 515634236 dv4ACNkpYPcE3aKmYDqZm9G5EB3J4MRoeE7WNDRBVJB independent slot2 quic fee None
+ Container inside-the-block-probe-run-d5cc006a32c9 Creating 
+ Container inside-the-block-probe-run-d5cc006a32c9 Created 
+itb-probe info start {"bursts":4,"code_limit_lamports":50000000,"mode":"live","network":"devnet","plan":"/data/plans/devnet-devnet-20261027T083149Z/plan.json","rpc":"https://api.devnet.solana.com","spend_limit_lamports":2000000,"ws":"wss://api.devnet.solana.com"}
+itb-probe LIVE run devnet-devnet-20261027T083150Z: 4 bursts, spend limit 2000000 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.devnet.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.devnet.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+itb-probe info journal_reconciled {"adjust":0,"chain_fee_total":0,"chain_max_burst_seq":null,"chain_signatures":0,"committed":0,"fetched":0}
+itb-probe info plan_cost {"committed":0,"limit":2000000,"overhead_lamports":65000,"worst_fee_lamports":251190}
+plan worst-case fees 251190 lamports plus 65000 for funding and closing; committed 0; limit 2000000 (15.8% used after the plan)
+itb-probe info slot_clock_ready {"anchor_slot":515633619,"basis":"node_ts","slot_ms":239.48100725127972,"source":"first_shred","step_ms_by_window_position":[145.0,200.0,200.0,435.0]}
+slot clock: first_shred at 239.5 ms per slot
+itb-probe info payer_balances {"balances":[0,0,0,0,0,0,0,0,0,0,0,0],"deficits":[676360,675350,675540,676350,675540,675440,676450,675460,677350,677340,676450,676440],"needs":[26120,25110,25300,26110,25300,25200,26210,25220,27110,27100,26210,26200],"rent":650240}
+itb-probe info fund_send {"lamports":8114070,"payers":12,"signature":"MbDqXQs4h9J8SMpUNbFadi88qMPtFtVhsMzniScPKAVV2DnbPrQnKRB5rge5dUEaTWZwxgbFHzXzjESjXQyAWF2"}
+itb-probe info journal_resolved {"committed":5000,"finalized_block_height":502831352,"pending":0,"released":0,"settled":1}
+itb-probe info funded {"balances":[676360,675350,675540,676350,675540,675440,676450,675460,677350,677340,676450,676440],"signature":"MbDqXQs4h9J8SMpUNbFadi88qMPtFtVhsMzniScPKAVV2DnbPrQnKRB5rge5dUEaTWZwxgbFHzXzjESjXQyAWF2"}
+itb-probe info quic_connected {"rtt_ns":37599536,"tpu_quic":"64.130.41.138:8003"}
+itb-probe info burst_done {"arm":"shared","arrival_ms":-166.951844,"first_slot":515633756,"leader":"dv3qDFk1DTF36Z62bNvrCXe9sKATA6xvVy6A798xxAS","path":"quic","results":["finished","finished","finished","finished","finished","finished","finished","finished","finished","finished","finished","finished"],"rtt_ms":45.077933,"timing":"pre300"}
+burst 37 slot 515633756 shared pre300 quic: est. arrival -167.0 ms from slot start, rtt 45.1 ms
+itb-probe info quic_connected {"rtt_ns":157335604,"tpu_quic":"64.130.33.238:8003"}
+itb-probe info burst_done {"arm":"equal_fee","arrival_ms":145.041474,"first_slot":515633916,"leader":"dv4ACNkpYPcE3aKmYDqZm9G5EB3J4MRoeE7WNDRBVJB","path":"quic","results":["finished","finished","finished","finished","finished","finished","finished","finished","finished","finished","finished","finished"],"rtt_ms":160.447075,"timing":"slot2"}
+burst 38 slot 515633916 equal_fee slot2 quic: est. arrival 145.0 ms from slot start, rtt 160.4 ms
+itb-probe info quic_connected {"rtt_ns":181180925,"tpu_quic":"198.13.130.39:8003"}
+itb-probe info burst_done {"arm":"independent","arrival_ms":-297.956637,"first_slot":515634076,"leader":"dv2eQHeP4RFrJZ6UeiZWoc3XTtmtZCUKxxCApCDcRNV","path":"quic","results":["finished","finished","finished","finished","finished","finished","finished","finished","finished","finished","finished","finished"],"rtt_ms":189.225394,"timing":"pre300"}
+burst 39 slot 515634076 independent pre300 quic: est. arrival -298.0 ms from slot start, rtt 189.2 ms
+itb-probe info quic_connected {"rtt_ns":164280262,"tpu_quic":"64.130.33.238:8003"}
+itb-probe info burst_done {"arm":"independent","arrival_ms":144.068119,"first_slot":515634236,"leader":"dv4ACNkpYPcE3aKmYDqZm9G5EB3J4MRoeE7WNDRBVJB","path":"quic","results":["finished","finished","finished","finished","finished","finished","finished","finished","finished","finished","finished","finished"],"rtt_ms":160.86623,"timing":"slot2"}
+burst 40 slot 515634236 independent slot2 quic: est. arrival 144.1 ms from slot start, rtt 160.9 ms
+itb-probe info summary {"arrival_ms_min_median_max":[-297.956637,144.068119,145.041474],"bursts_done":4,"handshakes":4,"handshakes_ok":4,"in_timing_band":3,"rtt_ms_min_median_max":[45.077933,160.86623,189.225394]}
+summary: {"arrival_ms_min_median_max":[-297.956637,144.068119,145.041474],"bursts_done":4,"handshakes":4,"handshakes_ok":4,"in_timing_band":3,"rtt_ms_min_median_max":[45.077933,160.86623,189.225394]}
+itb-probe info journal_resolved {"committed":256190,"finalized_block_height":502831950,"pending":0,"released":0,"settled":48}
+itb-probe info balance_check {"after":499743810,"before":500000000,"committed":256190,"limit":2000000,"ok":true,"pending":0,"pending_lamports":0,"settled_this_session":256190}
+itb-probe info close_send {"lamports":655240,"payer":"FdX6rZPtd1Eu3NQBWS8oDi7q8YDjTkVLDjwQFY8vFd6D","signature":"4PHMgc4NtL2mBc4YYGxskoy3pt3HrTRLMXBNrxXnxpkEwY2odJ9LuPWSGdZ8omwsR7PgPbxTcQfGqJWkMFiPog4t"}
+itb-probe info close_send {"lamports":655240,"payer":"G9ecafJZA843ufTo9nXhFATrbYtc5rwwPwthfiPG7AN8","signature":"5YCJsaFX5t3FSdwS8JUxTDzh6mU2cgi8FLVD6zVogEaU6CWViJu8U8oqrv9ifEEwqXCSCeEzsri1MYGqDCATyyBi"}
+itb-probe info close_send {"lamports":655240,"payer":"E3bgsx7R7zXUvZ2U8HTaFyd64cAuppSkup4wJuRmJ8aS","signature":"2xQiiuj2Q6oAgcUqVqeRLahWrtBiZU1jj9Pq957EAdyh43urWMQRdzNCESYumfLuLFTrCLBoaEcbzvRoy3ebGyTt"}
+itb-probe info close_send {"lamports":655240,"payer":"H197dggrmptmKTGbttDjFTT2LBaNyAJjMBD3LZ4WCGUi","signature":"3VF2KbFv3Zxw1mMdJ5vG7DgCjuVq3AE2GM1468m4eTPwC23hZs9w8HEfzxdjPMWMDWn75ZisX7MhQ5ELwgJquocT"}
+itb-probe info close_send {"lamports":655240,"payer":"5AAjHYdDXcnTmybAKDVVYCSjp416LFiwqzGrAvHxkdb8","signature":"13y51XjcniZS3iQxd2tQJgcv8V417FGsZ4xuRGg7hBq4odRnfw3t21gj8wm4hQBdJEpdgKwBTfLz5m39DjGWTCr"}
+itb-probe info close_send {"lamports":655240,"payer":"3tFbakZ79RfquR53Za73DzMDvpnGvDWyRmbGy4ko7jYu","signature":"EiguLwWmCzYBf24h3rcxWictAXruS6pkKeSxdtoiurW9jr8TZtxAzys3vQMC3Z9zvGjwdCqAAcU9ftJtumKzpQn"}
+itb-probe info close_send {"lamports":655240,"payer":"3ggEDeGQ62RPzcE8KK61hReZmf5evnkqXzKt8an7Y58Q","signature":"3SBcJvLWy3bJxM1fHA9wzae7Eh3WLgFfAeWus1tGUS1uMVP47hapBovGqnyMbSewCHawaNAQpmo9hUtvjrzmdfZk"}
+itb-probe info close_send {"lamports":655240,"payer":"EezXx4Lg7fWNE1bG3ujvbD5KFfznNkwAgvmqsATdhAFx","signature":"4EynRfDow25eJmkAKLjXXEuoUgzbDoLiQFAfw9dUMU6JXURMgwz4u2bkhw7BcbJX63o3BuBYtDtZvPsDzUJEbU6W"}
+itb-probe info close_send {"lamports":655240,"payer":"2JDRaXwsSf8XsriT8cjm1ymm9yV7EvERFbdRSweTWXh1","signature":"3LaeSS55w8BppfyQSznjeKfkWsGyFrKnVJWCfXHJCwRsyv8h12yLYB773N5zPFtMUCqMyih4WDFPYe7aXtMHmtbB"}
+itb-probe info close_send {"lamports":655240,"payer":"5DpLkfAPC99KLRodTPdfS9Ko6URGmz2XmxBe72DzVXLq","signature":"E2Xx7cMkKkyBXC8hNDkxPUb5yxnVKRffLTCNxJYzvnGy6FWAcFs1FyP6TSfZPTmFFbmLjUKhpgnX1Jmcti5iY1W"}
+itb-probe info close_send {"lamports":655240,"payer":"51erkVWKsQ1tDBNb64WCn7ZR9tcsR2ft8WqAnnuPA1wP","signature":"4CCqTv7MqGhcomN3YrDxhrW3FrDKx8fWicDLcbGaXrKauFJAPVDzE9Fnq4EfTcwUYz9UpBF21tuJzKmeZ4BSzwc9"}
+itb-probe info close_send {"lamports":655240,"payer":"FBWuaDr17FerWmWC1rzEN9ssChvQwXS96uMDGBaCtqdu","signature":"dgBs88WVmMNxEon9JGEABcriV9bkh3rhps3MtyB6bUnfq9ejL5uDQQULpKyXBqR5B622gh68rFqBa6kxCFQYHRG"}
+itb-probe info journal_resolved {"committed":316190,"finalized_block_height":502832306,"pending":8,"released":0,"settled":4}
+itb-probe info journal_resolved {"committed":316190,"finalized_block_height":502832325,"pending":0,"released":0,"settled":8}
+itb-probe info closed {"balances":[0,0,0,0,0,0,0,0,0,0,0,0]}
+spend journal: 316190 of 2000000 lamports committed
+payer  1 FdX6rZPtd1Eu3NQBWS8oDi7q8YDjTkVLDjwQFY8vFd6D: 0 lamports
+payer  2 G9ecafJZA843ufTo9nXhFATrbYtc5rwwPwthfiPG7AN8: 0 lamports
+payer  3 E3bgsx7R7zXUvZ2U8HTaFyd64cAuppSkup4wJuRmJ8aS: 0 lamports
+payer  4 H197dggrmptmKTGbttDjFTT2LBaNyAJjMBD3LZ4WCGUi: 0 lamports
+payer  5 5AAjHYdDXcnTmybAKDVVYCSjp416LFiwqzGrAvHxkdb8: 0 lamports
+payer  6 3tFbakZ79RfquR53Za73DzMDvpnGvDWyRmbGy4ko7jYu: 0 lamports
+payer  7 3ggEDeGQ62RPzcE8KK61hReZmf5evnkqXzKt8an7Y58Q: 0 lamports
+payer  8 EezXx4Lg7fWNE1bG3ujvbD5KFfznNkwAgvmqsATdhAFx: 0 lamports
+payer  9 2JDRaXwsSf8XsriT8cjm1ymm9yV7EvERFbdRSweTWXh1: 0 lamports
+payer 10 5DpLkfAPC99KLRodTPdfS9Ko6URGmz2XmxBe72DzVXLq: 0 lamports
+payer 11 51erkVWKsQ1tDBNb64WCn7ZR9tcsR2ft8WqAnnuPA1wP: 0 lamports
+payer 12 FBWuaDr17FerWmWC1rzEN9ssChvQwXS96uMDGBaCtqdu: 0 lamports
+payers total: 0 lamports
+-- live run: ok
+ Container inside-the-block-probe-run-8174c7a894a8 Creating 
+ Container inside-the-block-probe-run-8174c7a894a8 Created 
+spend journal /state/spend-journal-devnet.jsonl: 316190 lamports committed, 316190 settled, 0 bookings pending (0 lamports)
+raw data /data: 492 probes, next burst_seq from data 41
+wallet 9x7N6zsg9heDhz7t63jwPhBpuTREWmLcSDiGt5aEVaUL
+payer  1 FdX6rZPtd1Eu3NQBWS8oDi7q8YDjTkVLDjwQFY8vFd6D: 0 lamports
+payer  2 G9ecafJZA843ufTo9nXhFATrbYtc5rwwPwthfiPG7AN8: 0 lamports
+payer  3 E3bgsx7R7zXUvZ2U8HTaFyd64cAuppSkup4wJuRmJ8aS: 0 lamports
+payer  4 H197dggrmptmKTGbttDjFTT2LBaNyAJjMBD3LZ4WCGUi: 0 lamports
+payer  5 5AAjHYdDXcnTmybAKDVVYCSjp416LFiwqzGrAvHxkdb8: 0 lamports
+payer  6 3tFbakZ79RfquR53Za73DzMDvpnGvDWyRmbGy4ko7jYu: 0 lamports
+payer  7 3ggEDeGQ62RPzcE8KK61hReZmf5evnkqXzKt8an7Y58Q: 0 lamports
+payer  8 EezXx4Lg7fWNE1bG3ujvbD5KFfznNkwAgvmqsATdhAFx: 0 lamports
+payer  9 2JDRaXwsSf8XsriT8cjm1ymm9yV7EvERFbdRSweTWXh1: 0 lamports
+payer 10 5DpLkfAPC99KLRodTPdfS9Ko6URGmz2XmxBe72DzVXLq: 0 lamports
+payer 11 51erkVWKsQ1tDBNb64WCn7ZR9tcsR2ft8WqAnnuPA1wP: 0 lamports
+payer 12 FBWuaDr17FerWmWC1rzEN9ssChvQwXS96uMDGBaCtqdu: 0 lamports
+payers total: 0 lamports
+
+== collect, after the run's slots finalize (08:36:37Z)
+ Container inside-the-block-collect-run-df2d11e05f85 Creating 
+ Container inside-the-block-collect-run-df2d11e05f85 Created 
+collect: devnet-devnet-20261027T083150Z, 48 probes, 4 inclusion slots, 4 window first slots
+collect: devnet-devnet-20261027T083150Z, 48 of 48 probes included, wrote /repo/data/runs/devnet-devnet-20261027T083150Z/collect.jsonl
+-- collect: ok
+
+== verify (reads the v1 probes with maxSupportedTransactionVersion 1) (08:37:27Z)
+ Container inside-the-block-reproduce-run-2cdf54256232 Creating 
+ Container inside-the-block-reproduce-run-2cdf54256232 Created 
+verify: reading devnet through https://api.devnet.solana.com
+verify: 1 runs, 48 probes, 12 payers, 6 slots
+verify: getBlock full downloads about 11-16 MB; on the public node (6 getBlock per 10 s) that takes at least 10 s
+note  reverse 3LaeSS55w8BppfyQ: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse MbDqXQs4h9J8SMpU: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse 3SBcJvLWy3bJxM1f: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse EiguLwWmCzYBf24h: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse 4CCqTv7MqGhcomN3: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse 13y51XjcniZS3iQx: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse E2Xx7cMkKkyBXC8h: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse 2xQiiuj2Q6oAgcUq: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse 4EynRfDow25eJmkA: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse dgBs88WVmMNxEon9: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse 4PHMgc4NtL2mBc4Y: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse 5YCJsaFX5t3FSdwS: wallet or payer transaction that is not a probe (account creation or closing)
+note  reverse 3VF2KbFv3Zxw1mMd: wallet or payer transaction that is not a probe (account creation or closing)
+signature         slot        index  result
+3V4hjWZWymVyfvVb  515633756       0  match
+2rU3MFwZJGELiZ3b  515633756       1  match
+7f59SmBcTG4z6bAi  515633756       2  match
+4eJ33vxycHJN2eFm  515633756       3  match
+5ERLe1mp87XQ313R  515633756       4  match
+41qDKXiAjGHMwhYE  515633756       5  match
+3jM9Kvsr8PXWtK39  515633756       6  match
+3rC3oPZ3pVo7bCPc  515633756       7  match
+2omQ8EXAWMgYJYTf  515633756       8  match
+3MnXfxJ2eYvgThJ5  515633756       9  match
+5EvEQYQVGKniMGFZ  515633756      10  match
+28A6fzPaxa6dDuau  515633756      11  match
+4zg1ava3jf2X9DSm  515633917       4  match
+CyU5xGETRcF6AXJk  515633917       5  match
+ZoJ9HfhpA2hrLVrN  515633917       7  match
+2RXEGnBSQdRYZHUR  515633917       8  match
+4p1BMghMNvwBvmru  515633917      10  match
+yXeFJj8FMRhdezAY  515633917      11  match
+2hLjWZJQMMHHZB3d  515633917      12  match
+5RVnJZ7XK1yoCSqK  515633917      13  match
+4jqp4nSmKx7rhJTa  515633917      14  match
+y6WHmF1VD3mQFTCt  515633917      15  match
+2GXUT3R1Gp4xwjbj  515633917      16  match
+AEd4aQE8uBgAywMw  515633917      17  match
+4hQ5ZK3VCj4LDC9r  515634076       0  match
+3mmXnT6uDe4rHNnv  515634076       1  match
+5cwUvavfq8AmFDLe  515634076       2  match
+2ewrKkrwbB6WLEyP  515634076       3  match
+45Dgd2Txnwun8SxY  515634076       5  match
+2MMvvyku1NNU675a  515634076       6  match
+5sgKqtgCYLKgESZX  515634076       7  match
+4BUqsz5xUunkopv5  515634076       8  match
+5YzQKkv7dbXQuDRE  515634076      11  match
+nT44Gi6jvkq1Vfva  515634076      12  match
+8rGhABCEvCrZ7CZ6  515634076      13  match
+24MvDyfnGckrCsfs  515634076      14  match
+3axMmSbSQwYWR9wU  515634237       2  match
+4Syzn9ga99HWmo8B  515634237       3  match
+4v91coJWDo6DvDri  515634237       4  match
+2GxXU4XQKBZTpoiA  515634237       5  match
+4MNjLTZWCtYVvZk3  515634237       6  match
+5T7KkgbCE2rvTFZA  515634237       7  match
+4yPRNnYvLVjVLFLz  515634237       8  match
+vM6KjLHQKPgfuhLk  515634237       9  match
+9a2B2P768vU5UR5U  515634237      10  match
+5mkXfD3oCkBpWSzQ  515634237      11  match
+54k2tCXnxNbY5HBm  515634237      12  match
+iPeNkZyuxeavXnfL  515634237      13  match
+verify: 48 included probes checked on two channels, 0 problems, 13 notes
+-- verify: ok
+
+== search everything the runs wrote for the bytes of the key (08:38:39Z)
+ Container inside-the-block-reproduce-run-a6adc1ed4d22 Creating 
+ Container inside-the-block-reproduce-run-a6adc1ed4d22 Created 
+keyscan: 14 secrets in 12 forms each, 125 files, 65159461 bytes after decompression, 0 hits
+-- keyscan: ok
+
+== nothing outside data/ and logs/ changed (08:38:44Z)
+-- repository untouched: ok
+
+devnet pipeline test passed
