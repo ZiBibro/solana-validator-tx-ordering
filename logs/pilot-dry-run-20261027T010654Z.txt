@@ -1,0 +1,62 @@
+ Container itb-pilot-dry Creating 
+ Container itb-pilot-dry Created 
+itb-probe info start {"bursts":68,"code_limit_lamports":50000000,"mode":"dry-run","network":"mainnet","plan":"/data/plans/pilot-mainnet-20261027T010638Z/plan.json","rpc":"https://api.mainnet-beta.solana.com","spend_limit_lamports":50000000,"ws":"wss://api.mainnet-beta.solana.com"}
+itb-probe dry-run run dry-run-mainnet-20261027T010659Z: 68 bursts, spend limit 50000000 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.mainnet-beta.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.mainnet-beta.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+itb-probe info plan_cost {"committed":0,"limit":50000000,"overhead_lamports":5000,"worst_fee_lamports":4306440}
+plan worst-case fees 4306440 lamports plus 5000 for funding and closing; committed 0; limit 50000000 (8.6% used after the plan)
+itb-probe info slot_clock_ready {"anchor_slot":461878389,"basis":"node_ts","slot_ms":213.7780376437784,"source":"first_shred","step_ms_by_window_position":[148.0,200.0,200.0,276.0]}
+slot clock: first_shred at 213.8 ms per slot
+itb-probe info quic_connected {"rtt_ns":42497809,"tpu_quic":"64.130.46.242:12291"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":146.000436,"first_slot":461878836,"leader":"CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4","path":"quic","results":null,"rtt_ms":47.51906,"timing":"slot2"}
+burst 16 slot 461878836 denominator slot2 quic: est. arrival 146.0 ms from slot start, rtt 47.5 ms
+itb-probe info quic_connected {"rtt_ns":162934787,"tpu_quic":"63.254.180.13:5010"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-79.99965,"first_slot":461878996,"leader":"5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux","path":"quic","results":null,"rtt_ms":162.376248,"timing":"slot2"}
+burst 17 slot 461878996 denominator slot2 quic: est. arrival -80.0 ms from slot start, rtt 162.4 ms
+itb-probe info quic_connected {"rtt_ns":30401794,"tpu_quic":"198.13.140.105:12341"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-341.777025,"first_slot":461879212,"leader":"Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk","path":"quic","results":null,"rtt_ms":34.303348,"timing":"pre300"}
+burst 18 slot 461879212 denominator pre300 quic: est. arrival -341.8 ms from slot start, rtt 34.3 ms
+itb-probe info quic_connected {"rtt_ns":36375449,"tpu_quic":"23.109.46.35:9007"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-247.999651,"first_slot":461879456,"leader":"DNVZMSqeRH18Xa4MCTrb1MndNf3Npg4MEwqswo23eWkf","path":"quic","results":null,"rtt_ms":38.10234,"timing":"pre300"}
+burst 19 slot 461879456 denominator pre300 quic: est. arrival -248.0 ms from slot start, rtt 38.1 ms
+itb-probe info quic_connected {"rtt_ns":30581328,"tpu_quic":"198.13.140.105:12349"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-301.999655,"first_slot":461879624,"leader":"JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b","path":"quic","results":null,"rtt_ms":35.183774,"timing":"pre300"}
+burst 20 slot 461879624 denominator pre300 quic: est. arrival -302.0 ms from slot start, rtt 35.2 ms
+itb-probe info quic_connected {"rtt_ns":30615691,"tpu_quic":"198.13.140.105:12351"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":140.024287,"first_slot":461879816,"leader":"Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM","path":"quic","results":null,"rtt_ms":35.320333,"timing":"slot2"}
+burst 21 slot 461879816 denominator slot2 quic: est. arrival 140.0 ms from slot start, rtt 35.3 ms
+itb-probe info quic_connected {"rtt_ns":38201300,"tpu_quic":"64.130.57.215:8002"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-417.999571,"first_slot":461880024,"leader":"HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU","path":"quic","results":null,"rtt_ms":37.391698,"timing":"pre300"}
+burst 22 slot 461880024 denominator pre300 quic: est. arrival -418.0 ms from slot start, rtt 37.4 ms
+itb-probe info quic_connected {"rtt_ns":37451767,"tpu_quic":"64.130.32.153:8002"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":121.000477,"first_slot":461880216,"leader":"E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL","path":"quic","results":null,"rtt_ms":37.862971,"timing":"slot2"}
+burst 23 slot 461880216 denominator slot2 quic: est. arrival 121.0 ms from slot start, rtt 37.9 ms
+itb-probe info quic_connected {"rtt_ns":45465741,"tpu_quic":"5.199.172.176:12002"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-301.999535,"first_slot":461880484,"leader":"7QQGNm3ptwinipDCyaCF7jY5katgmFUu1ieP2f7nwLpE","path":"quic","results":null,"rtt_ms":44.688673,"timing":"pre300"}
+burst 24 slot 461880484 denominator pre300 quic: est. arrival -302.0 ms from slot start, rtt 44.7 ms
+itb-probe info quic_connected {"rtt_ns":31345627,"tpu_quic":"198.13.141.173:5010"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-458.999397,"first_slot":461880904,"leader":"9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP","path":"quic","results":null,"rtt_ms":31.829061,"timing":"pre300"}
+burst 25 slot 461880904 denominator pre300 quic: est. arrival -459.0 ms from slot start, rtt 31.8 ms
+itb-probe info quic_connected {"rtt_ns":36716064,"tpu_quic":"51.89.11.197:8002"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":142.000516,"first_slot":461881088,"leader":"E3mDbFMr8yZcCAZx5wPUFCRmLX31u8Nnj4jPoPc54h3F","path":"quic","results":null,"rtt_ms":36.137381,"timing":"slot2"}
+burst 26 slot 461881088 denominator slot2 quic: est. arrival 142.0 ms from slot start, rtt 36.1 ms
+itb-probe info quic_connected {"rtt_ns":112949108,"tpu_quic":"208.91.105.55:5010"}
+itb-probe info burst_done {"arm":"equal_fee","arrival_ms":59.00054,"first_slot":461881384,"leader":"DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy","path":"quic","results":null,"rtt_ms":112.170811,"timing":"slot2"}
+burst 27 slot 461881384 equal_fee slot2 quic: est. arrival 59.0 ms from slot start, rtt 112.2 ms
+itb-probe info quic_connected {"rtt_ns":113385325,"tpu_quic":"208.91.105.55:5010"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-469.999263,"first_slot":461881820,"leader":"DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy","path":"quic","results":null,"rtt_ms":112.465737,"timing":"pre300"}
+burst 28 slot 461881820 denominator pre300 quic: est. arrival -470.0 ms from slot start, rtt 112.5 ms
+itb-probe info quic_connected {"rtt_ns":58769265,"tpu_quic":"185.189.44.172:12002"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":116.000384,"first_slot":461882316,"leader":"5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS","path":"quic","results":null,"rtt_ms":58.589344,"timing":"slot2"}
+burst 29 slot 461882316 denominator slot2 quic: est. arrival 116.0 ms from slot start, rtt 58.6 ms
+itb-probe info quic_connected {"rtt_ns":44427801,"tpu_quic":"45.32.145.112:8002"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-425.999639,"first_slot":461883172,"leader":"ana2y2YvQ3ZPMwm6qhnN3nJoUSiT3qx5Pvetkq9xcfY","path":"quic","results":null,"rtt_ms":43.824354,"timing":"pre300"}
+burst 30 slot 461883172 denominator pre300 quic: est. arrival -426.0 ms from slot start, rtt 43.8 ms
+itb-probe info quic_connected {"rtt_ns":43604872,"tpu_quic":"137.239.202.126:9007"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":171.000679,"first_slot":461885300,"leader":"BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy","path":"quic","results":null,"rtt_ms":47.360817,"timing":"slot2"}
+burst 31 slot 461885300 denominator slot2 quic: est. arrival 171.0 ms from slot start, rtt 47.4 ms
+itb-probe info quic_connected {"rtt_ns":107932713,"tpu_quic":"64.130.51.255:5010"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":144.000607,"first_slot":461890044,"leader":"SSmBEooM7RkmyuXxuKgAhTvhQZ36Z3G2WsmLGJKoQLY","path":"quic","results":null,"rtt_ms":107.351324,"timing":"slot2"}
+burst 32 slot 461890044 denominator slot2 quic: est. arrival 144.0 ms from slot start, rtt 107.4 ms
+
