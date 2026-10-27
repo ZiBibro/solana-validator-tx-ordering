@@ -6,6 +6,15 @@
 //! leader (devnet dry-run 2026-10-26: 145-149 ms between slots 1 and 2 of a window at a
 //! 238 ms mean), so near the anchor each step uses the median duration of its position
 //! in the 4-slot window; far from it the fitted mean slot duration is used.
+//!
+//! The public mainnet node delivers events late at times: on 2026-10-26 at 23:43 UTC
+//! every connection lagged the cluster by 12-14 slots at the median, while the slot
+//! numbers lined up with the excess delivery time, receipt minus the node timestamp of
+//! firstShredReceived. The node received the shreds on time and the delay sat in the
+//! WebSocket stream. So the clock runs on node time: each event's node timestamp plus
+//! the smallest receipt-minus-node-time offset of recent events, which is the delivery
+//! of an event that met no backlog. Receipt times remain the basis when events carry no
+//! timestamp or too few do.
 
 use crate::clock::mono_ns;
 use serde_json::{json, Value};
@@ -23,6 +32,9 @@ const FRESH_NS: i64 = 2_000_000_000;
 pub const WINDOW_SLOTS: u64 = 4;
 /// Per-position steps are used up to this many slots past the anchor.
 const STEP_HORIZON: u64 = 16;
+/// Recent slots the node time offset is the minimum over, about 5 minutes: short enough
+/// for drift between the local and the node clock to stay at a few ms.
+const OFFSET_SLOTS: u64 = 1_500;
 /// Observed consecutive pairs needed per position.
 const MIN_STEP_SAMPLES: usize = 5;
 
@@ -41,6 +53,24 @@ impl Source {
     }
 }
 
+/// Which time of an event the model stands on.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Basis {
+    /// Node timestamp plus the offset of the least delayed recent event.
+    NodeTs,
+    /// Local receipt, backlog included.
+    Receipt,
+}
+
+impl Basis {
+    pub fn name(self) -> &'static str {
+        match self {
+            Basis::NodeTs => "node_ts",
+            Basis::Receipt => "receipt",
+        }
+    }
+}
+
 #[derive(Default)]
 pub struct State {
     /// slot -> (local monotonic ns of receipt, node timestamp ms)
@@ -53,6 +83,9 @@ pub struct State {
 #[derive(Clone, Copy, Debug)]
 pub struct Model {
     pub source: Source,
+    pub basis: Basis,
+    /// Local monotonic ns minus node ms * 1e6 of the least delayed recent event.
+    pub offset_ns: Option<i64>,
     pub anchor_slot: u64,
     pub anchor_ns: i64,
     pub slot_ns: f64,
@@ -118,16 +151,51 @@ fn steps(points: &BTreeMap<u64, i64>) -> Option<[f64; WINDOW_SLOTS as usize]> {
 }
 
 impl State {
+    /// Smallest receipt minus node time over the last OFFSET_SLOTS slots, once at least
+    /// MIN_FIT_SLOTS events there carry a node timestamp.
+    pub fn node_offset_ns(&self) -> Option<i64> {
+        let last = *self.first_shred.keys().next_back()?;
+        let d: Vec<i64> = self
+            .first_shred
+            .range(last.saturating_sub(OFFSET_SLOTS)..)
+            .filter_map(|(_, (recv, ts))| ts.map(|ts| recv - ts as i64 * 1_000_000))
+            .collect();
+        (d.len() as u64 >= MIN_FIT_SLOTS).then(|| *d.iter().min().unwrap())
+    }
+
+    /// firstShredReceived of a slot on the local monotonic clock, from the node
+    /// timestamp; None without a timestamp or an offset.
+    pub fn node_time(&self, slot: u64, offset_ns: Option<i64>) -> Option<i64> {
+        let ts = self.first_shred.get(&slot)?.1?;
+        Some(ts as i64 * 1_000_000 + offset_ns?)
+    }
+
     pub fn model(&self) -> Option<Model> {
         let now = mono_ns();
         let shred: BTreeMap<u64, i64> = self.first_shred.iter().map(|(s, (t, _))| (*s, *t)).collect();
         let fresh = |m: &BTreeMap<u64, i64>| m.iter().next_back().filter(|(_, t)| now - **t < FRESH_NS).map(|(s, t)| (*s, *t));
+        // The stream counts as live by receipt; the anchor and the fit stand on node time.
+        if fresh(&shred).is_some() {
+            if let Some(off) = self.node_offset_ns() {
+                let node: BTreeMap<u64, i64> = self
+                    .first_shred
+                    .iter()
+                    .filter_map(|(s, (_, ts))| ts.map(|ts| (*s, ts as i64 * 1_000_000 + off)))
+                    .collect();
+                if let (Some((&slot, &ns)), Some(slope)) = (node.iter().next_back(), fit(&node)) {
+                    return Some(Model { source: Source::FirstShred, basis: Basis::NodeTs, offset_ns: Some(off),
+                                        anchor_slot: slot, anchor_ns: ns, slot_ns: slope, step_ns: steps(&node) });
+                }
+            }
+        }
         if let (Some((slot, ns)), Some(slope)) = (fresh(&shred), fit(&shred)) {
-            return Some(Model { source: Source::FirstShred, anchor_slot: slot, anchor_ns: ns, slot_ns: slope, step_ns: steps(&shred) });
+            return Some(Model { source: Source::FirstShred, basis: Basis::Receipt, offset_ns: None,
+                                anchor_slot: slot, anchor_ns: ns, slot_ns: slope, step_ns: steps(&shred) });
         }
         let (slot, ns) = fresh(&self.slot_events)?;
         let slope = fit(&self.slot_events)?;
-        Some(Model { source: Source::SlotSubscribe, anchor_slot: slot, anchor_ns: ns, slot_ns: slope, step_ns: steps(&self.slot_events) })
+        Some(Model { source: Source::SlotSubscribe, basis: Basis::Receipt, offset_ns: None,
+                     anchor_slot: slot, anchor_ns: ns, slot_ns: slope, step_ns: steps(&self.slot_events) })
     }
 
     fn trim(&mut self) {
@@ -220,9 +288,53 @@ fn run_once(ws_url: &str, methods: &[&str], state: &Shared) -> Result<(), String
 mod tests {
     use super::*;
 
+    /// ts 0 leaves the timestamp out, so the clock stays on receipt times.
     fn shred(slot: u64, ts: u64) -> Value {
-        json!({"method": "slotsUpdatesNotification",
-               "params": {"result": {"type": "firstShredReceived", "slot": slot, "timestamp": ts}}})
+        let mut r = json!({"type": "firstShredReceived", "slot": slot});
+        if ts > 0 {
+            r["timestamp"] = json!(ts);
+        }
+        json!({"method": "slotsUpdatesNotification", "params": {"result": r}})
+    }
+
+    #[test]
+    fn node_time_clock_ignores_the_delivery_backlog() {
+        let mut st = State::default();
+        let now = mono_ns();
+        // Slots 210 ms apart on the node; the first 300 events arrive 40 ms after the node
+        // stamp, the last 100 meet a backlog growing to 3 s, as on mainnet 2026-10-26.
+        let node0_ms: u64 = 1_800_000_000_000;
+        let base = now - 399 * 210_000_000 - 40_000_000 - 99 * 30_000_000;
+        for i in 0..400u64 {
+            let node_ms = node0_ms + i * 210;
+            let backlog = if i < 300 { 0 } else { (i - 300) as i64 * 30_000_000 };
+            let recv = base + (i * 210) as i64 * 1_000_000 + 40_000_000 + backlog;
+            assert!(st.apply(&shred(5000 + i, node_ms), recv));
+        }
+        let off = st.node_offset_ns().expect("offset");
+        assert_eq!(off, base + 40_000_000 - node0_ms as i64 * 1_000_000);
+        let m = st.model().expect("model");
+        assert_eq!((m.source, m.basis), (Source::FirstShred, Basis::NodeTs));
+        assert_eq!(m.anchor_slot, 5399);
+        // The anchor sits where an event without backlog would have arrived, 2.97 s
+        // before its actual receipt.
+        assert_eq!(m.anchor_ns, base + 399 * 210_000_000 + 40_000_000);
+        assert!((m.slot_ns - 210e6).abs() < 1.0, "{}", m.slot_ns);
+        assert_eq!(st.node_time(5100, m.offset_ns), Some(base + 100 * 210_000_000 + 40_000_000));
+        let recv_anchor = st.first_shred[&5399].0;
+        assert_eq!(recv_anchor - m.anchor_ns, 99 * 30_000_000);
+    }
+
+    #[test]
+    fn receipt_basis_without_timestamps() {
+        let mut st = State::default();
+        let now = mono_ns();
+        for i in 0..200u64 {
+            st.apply(&shred(i, 0), now - ((199 - i) * 200_000_000) as i64);
+        }
+        assert_eq!(st.node_offset_ns(), None);
+        let m = st.model().expect("model");
+        assert_eq!((m.source, m.basis, m.offset_ns), (Source::FirstShred, Basis::Receipt, None));
     }
 
     #[test]

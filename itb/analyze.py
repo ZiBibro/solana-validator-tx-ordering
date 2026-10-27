@@ -60,16 +60,19 @@ def load_runs(data_dir):
 def arrival_ms(burst, end):
     """Estimated arrival at the leader relative to the first slot start, ms.
 
-    Send offset from the local first-shred moment of the first slot when the
-    probe measured it, else from the predicted slot start; plus half the RTT.
-    The final aim in burst_end, taken right before the send, wins over the
-    aim at signing time in the burst row.
+    Send offset from the first-shred moment of the first slot on node time
+    (schema version 2: the node timestamp moved onto the local clock, so a
+    WebSocket backlog does not shift it), else on local receipt, else from the
+    predicted slot start; plus half the RTT. The final aim in burst_end, taken
+    right before the send, wins over the aim at signing time in the burst row.
     """
     end = end or {}
     rtt = end.get("send_rtt_ns")
     if rtt is None:
         rtt = burst.get("rtt_ns") or 0
-    offset = end.get("first_send_offset_ns")
+    offset = end.get("first_send_node_offset_ns")
+    if offset is None:
+        offset = end.get("first_send_offset_ns")
     if offset is None:
         if end.get("send_predicted_first_slot_ns") is not None:
             offset = end["send_target_arrival_ns"] - rtt / 2.0 - end["send_predicted_first_slot_ns"]
@@ -81,8 +84,12 @@ def arrival_ms(burst, end):
 def slot2_ms(burst, end):
     """Start of slot 2 from the start of slot 1, ms. Slot steps are uneven
     inside a leader window (plan section 5.1), so the observed firstShredReceived
-    gap wins; then the probe's final aim; then the mean slot length."""
+    gap wins, by the node timestamps first and local receipt second; then the
+    probe's final aim; then the mean slot length."""
     end = end or {}
+    ts = end.get("node_ts_ms") or [None, None]
+    if ts[0] is not None and ts[1] is not None:
+        return float(ts[1] - ts[0])
     shreds = end.get("first_shred_ns") or [None, None]
     if shreds[0] is not None and shreds[1] is not None:
         return (shreds[1] - shreds[0]) / 1e6
@@ -96,6 +103,15 @@ def timing_in_band(burst, est_ms, end=None):
     if target is None:
         target = slot2_ms(burst, end)
     return abs(est_ms - target) <= prereg.TIMING_BAND_HALF_MS
+
+
+def clock_behind(burst):
+    """Slot clock behind the cluster when the burst was signed (section 5.1)."""
+    if "clock_lag_slots" in burst:
+        lag = burst["clock_lag_slots"]
+        return lag is not None and lag >= prereg.CLOCK_LAG_SKIP_SLOTS
+    ctx = burst.get("blockhash_context_slot")
+    return ctx is not None and ctx >= burst["first_slot"] - prereg.BLOCKHASH_LEAD_SLOTS
 
 
 def units_of(run):
@@ -120,6 +136,8 @@ def units_of(run):
         est = arrival_ms(b, run.ends.get(seq))
         if not timing_in_band(b, est, run.ends.get(seq)):
             reasons.append("outside-timing-band")
+        if clock_behind(b):
+            reasons.append("slot-clock-behind")
         per_slot = {}
         for p in by_burst.get(seq, []):
             inc = run.inclusions.get(p["signature"])

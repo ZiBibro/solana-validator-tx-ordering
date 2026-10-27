@@ -101,7 +101,7 @@ def sig(seq, rank):
 
 def run_row(run_id, stage="test"):
     return {
-        "v": 1, "kind": "run", "run_id": run_id, "stage": stage, "network": "localnet",
+        "v": 2, "kind": "run", "run_id": run_id, "stage": stage, "network": "localnet",
         "mode": "dry-run", "spend_limit_lamports": 50_000_000,
         "code_limit_lamports": 50_000_000, "rpc_url": "http://127.0.0.1:8899",
         "ws_url": "ws://127.0.0.1:8900", "tool_version": "0.1.0", "git_commit": None,
@@ -115,7 +115,7 @@ def burst_rows(run, seq, probes, **fields):
     """burst, probe, send and burst_end rows of one burst; probes in send order."""
     run_id = run["run_id"]
     burst = {
-        "v": 1, "kind": "burst", "run_id": run_id, "burst_seq": seq, "round": 0,
+        "v": 2, "kind": "burst", "run_id": run_id, "burst_seq": seq, "round": 0,
         "cell": 0, "arm": "independent", "timing": "pre300", "path": "quic", "epoch": 1069,
         "first_slot": 462000000, "window_len": 4, "selection_class": "Agave",
         "leader": key(2, 1), "leader_vote": key(2, 2), "leader_client_id": "Agave",
@@ -124,7 +124,10 @@ def burst_rows(run, seq, probes, **fields):
         "validators_app": None, "cluster_nodes_file": None, "equal_fee_lamports": None,
         "blockhash": key(3, 1), "last_valid_block_height": 440000150,
         "blockhash_context_slot": 461999994, "utc": "2026-10-26T20:00:01Z",
-        "slot_clock_source": "first_shred", "slot_ms": 213.2, "anchor_slot": 461999996,
+        "slot_clock_source": "first_shred", "slot_clock_basis": "node_ts",
+        "clock_offset_ns": -1_793_044_800_000_000_000, "http_slot": 461999993,
+        "http_slot_rtt_ns": 55_000_000, "clock_slot_at_http": 461999994, "clock_lag_slots": -1,
+        "slot_ms": 213.2, "anchor_slot": 461999996,
         "anchor_leader": key(2, 3), "predicted_first_slot_ns": 1_000_000_000,
         "target_arrival_ns": 700_000_000, "rtt_ns": 30_000_000, "send_at_ns": 685_000_000,
         "handshake": None,
@@ -135,7 +138,7 @@ def burst_rows(run, seq, probes, **fields):
         rank = p["send_rank"]
         payer = run["payers"][rank]
         rows.append({
-            "v": 1, "kind": "probe", "run_id": run_id, "burst_seq": seq,
+            "v": 2, "kind": "probe", "run_id": run_id, "burst_seq": seq,
             "signature": sig(seq, rank), "payer_index": rank + 1, "payer": payer,
             "send_rank": rank, "transfer_lamports": seq * 16 + rank + 1,
             "priority_fee_lamports": p["fee"], "cu_limit": p["cu_limit"],
@@ -145,16 +148,18 @@ def burst_rows(run, seq, probes, **fields):
     for p in probes:
         rank = p["send_rank"]
         rows.append({
-            "v": 1, "kind": "send", "run_id": run_id, "burst_seq": seq,
+            "v": 2, "kind": "send", "run_id": run_id, "burst_seq": seq,
             "signature": sig(seq, rank), "result": "finished", "code": None,
             "send_end_ns": 685_000_000 + rank * 1000, "stopped_ns": 700_000_000 + rank * 1000,
             "rpc_response": None, "simulate": None, "error": None,
         })
     rows.append({
-        "v": 1, "kind": "burst_end", "run_id": run_id, "burst_seq": seq,
+        "v": 2, "kind": "burst_end", "run_id": run_id, "burst_seq": seq,
         "quic_stats": {"rtt_ns": 30_000_000, "lost_packets": 0},
         "first_shred_ns": [1_010_000_000, None], "node_ts_ms": [None, None],
+        "first_shred_node_ns": [None, None], "clock_offset_ns": burst["clock_offset_ns"],
         "first_send_offset_ns": -325_000_000, "last_send_offset_ns": -324_989_000,
+        "first_send_node_offset_ns": None,
         "prediction_residual_ns": 10_000_000,
         # The final aim equals the aim at signing here.
         "send_anchor_slot": burst["anchor_slot"], "send_anchor_leader": burst["anchor_leader"],

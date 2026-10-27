@@ -35,6 +35,15 @@ POWER_PER_TAU = 0.9
 TIMING_TARGET_MS = {"pre300": -300.0, "slot2": None}  # slot2 target = start of slot 2, analyze.slot2_ms
 TIMING_BAND_HALF_MS = 100.0
 
+# Section 5.1: slot clock guard. getSlot at processed commitment this many slots
+# or more ahead of the slot the clock gave for the same moment means the burst
+# was aimed late; the probe skips such a burst, and analyze keeps any burst row
+# with that lag out of the verdict. Rows of schema version 1 predate the guard:
+# for them the confirmed blockhash, fetched BLOCKHASH_LEAD_SLOTS before the
+# window by the clock, must come from a slot before that point.
+CLOCK_LAG_SKIP_SLOTS = 2
+BLOCKHASH_LEAD_SLOTS = 6
+
 # Section 3: default QUIC port of the Jito relayer.
 RELAYER_PORT = 11228
 

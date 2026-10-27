@@ -10,12 +10,15 @@
 //! node's own timestamp of the event; it moves when the path from the node lags.
 //! Every second connection subscribes to slotSubscribe alone, so one run shows whether
 //! a connection kept apart from the heavy slotsUpdates stream keeps up with the cluster.
+//! The model gap is the same comparison for the slot the clock model of the connection
+//! gives at the midpoint of the HTTP call, on node time where the events carry it: the
+//! probe skips a burst when it reaches CLOCK_LAG_SKIP_SLOTS.
 //!
 //!   itb-probe clock [--seconds N] [--connections K]
 
 use crate::clock::{mono_ns, sleep_until_ns, utc_now};
 use crate::rpc::Rpc;
-use crate::session::Settings;
+use crate::session::{Settings, CLOCK_LAG_SKIP_SLOTS};
 use crate::slots;
 use serde_json::{json, Value};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -30,14 +33,17 @@ struct Newest {
     delivery_ms: Option<f64>,
     slot_slot: Option<u64>,
     reconnects: u64,
+    model_slot: Option<u64>,
+    basis: Option<&'static str>,
 }
 
 fn wall_ms() -> f64 {
     SystemTime::now().duration_since(UNIX_EPOCH).map(|d| d.as_secs_f64() * 1e3).unwrap_or(0.0)
 }
 
-fn newest(clock: &slots::Shared, now_mono: i64, now_wall_ms: f64) -> Newest {
+fn newest(clock: &slots::Shared, now_mono: i64, now_wall_ms: f64, mid: i64) -> Newest {
     let st = clock.lock().unwrap();
+    let model = st.model();
     let shred = st.first_shred.iter().next_back().map(|(s, (t, ts))| (*s, *t, *ts));
     Newest {
         shred_slot: shred.map(|x| x.0),
@@ -45,6 +51,8 @@ fn newest(clock: &slots::Shared, now_mono: i64, now_wall_ms: f64) -> Newest {
         delivery_ms: shred.and_then(|(_, t, ts)| ts.map(|ts| now_wall_ms - (now_mono - t) as f64 / 1e6 - ts as f64)),
         slot_slot: st.slot_events.keys().next_back().copied(),
         reconnects: st.reconnects,
+        model_slot: model.map(|m| m.slot_at(mid)),
+        basis: model.map(|m| m.basis.name()),
     }
 }
 
@@ -75,6 +83,8 @@ pub fn check(settings: &Settings, seconds: u64, connections: usize) -> Result<()
     let mut gaps: Vec<Vec<f64>> = vec![vec![]; connections];
     let mut slot_gaps: Vec<Vec<f64>> = vec![vec![]; connections];
     let mut delivery: Vec<Vec<f64>> = vec![vec![]; connections];
+    let mut model_gaps: Vec<Vec<f64>> = vec![vec![]; connections];
+    let mut bases: Vec<Option<&'static str>> = vec![None; connections];
     let mut fused: Vec<f64> = vec![];
     let mut http_ms: Vec<f64> = vec![];
     let mut next = start + SAMPLE_NS;
@@ -92,7 +102,8 @@ pub fn check(settings: &Settings, seconds: u64, connections: usize) -> Result<()
         let t1 = mono_ns();
         let Some(h) = http else { continue };
         let (now_mono, now_wall) = (mono_ns(), wall_ms());
-        let rows: Vec<Newest> = clocks.iter().map(|c| newest(c, now_mono, now_wall)).collect();
+        let mid = t0 + (t1 - t0) / 2;
+        let rows: Vec<Newest> = clocks.iter().map(|c| newest(c, now_mono, now_wall, mid)).collect();
         let mut ws = vec![];
         for (i, n) in rows.iter().enumerate() {
             let gap = n.shred_slot.map(|s| h as i64 - s as i64);
@@ -105,8 +116,13 @@ pub fn check(settings: &Settings, seconds: u64, connections: usize) -> Result<()
             if let Some(d) = n.delivery_ms {
                 delivery[i].push(d);
             }
+            if let Some(s) = n.model_slot {
+                model_gaps[i].push(h as f64 - s as f64);
+                bases[i] = n.basis;
+            }
             ws.push(json!({"shred_slot": n.shred_slot, "gap": gap, "age_ms": n.shred_age_ms,
                            "delivery_ms": n.delivery_ms, "slot_gap": n.slot_slot.map(|s| h as i64 - s as i64),
+                           "model_gap": n.model_slot.map(|s| h as i64 - s as i64), "basis": n.basis,
                            "reconnects": n.reconnects}));
         }
         // The clock falls back to slotSubscribe when a node sends no firstShredReceived,
@@ -127,10 +143,14 @@ pub fn check(settings: &Settings, seconds: u64, connections: usize) -> Result<()
         // A slotSubscribe-only connection has no shred events: its lag is the slot gap.
         let own = if gaps[i].is_empty() { &slot_gaps[i] } else { &gaps[i] };
         let (samples, lagging) = (own.len(), share(own));
+        let skips = model_gaps[i].iter().filter(|g| **g >= CLOCK_LAG_SKIP_SLOTS as f64).count() as f64
+            / model_gaps[i].len().max(1) as f64;
         per.push(json!({"connection": i, "subscriptions": subscriptions[i], "samples": samples,
                         "lagging_share": lagging,
                         "gap_slots": spread(&mut gaps[i]), "slot_subscribe_gap_slots": spread(&mut slot_gaps[i]),
-                        "delivery_ms": spread(&mut delivery[i]), "last_error": errors}));
+                        "delivery_ms": spread(&mut delivery[i]), "model_basis": bases[i],
+                        "model_gap_slots": spread(&mut model_gaps[i]), "model_skip_share": skips,
+                        "last_error": errors}));
     }
     let summary = json!({"samples": fused.len(), "lag_from_slots": LAG_SLOTS, "fused_lagging_share": share(&fused),
                          "fused_gap_slots": spread(&mut fused), "http_ms": spread(&mut http_ms), "connections": per});

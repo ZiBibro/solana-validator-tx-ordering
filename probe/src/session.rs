@@ -45,6 +45,11 @@ const RESOLVE_WAIT: Duration = Duration::from_secs(180);
 const BAND_HALF_MS: f64 = 100.0;
 /// The send moment is re-aimed from the freshest slot event until this close to it.
 const AIM_FINAL_NS: i64 = 2_000_000;
+/// Clock guard (section 5.1): a burst is skipped when getSlot at processed commitment is
+/// this many slots ahead of the slot the clock gives for the same moment. On node time
+/// the clock leads processed (devnet 2026-10-26: gap -1 at the median, 0 at most), and
+/// itb/prereg.py CLOCK_LAG_SKIP_SLOTS holds the same bound for the analysis.
+pub const CLOCK_LAG_SKIP_SLOTS: i64 = 2;
 const AIM_POLL: Duration = Duration::from_millis(5);
 
 pub struct Settings {
@@ -124,7 +129,7 @@ fn wait_for_model(clock: &slots::Shared, log: &mut Log) -> Result<Model, String>
             log.info(
                 "slot_clock_ready",
                 None,
-                json!({"source": m.source.name(), "slot_ms": m.slot_ns / 1e6, "anchor_slot": m.anchor_slot,
+                json!({"source": m.source.name(), "basis": m.basis.name(), "slot_ms": m.slot_ns / 1e6, "anchor_slot": m.anchor_slot,
                        "step_ms_by_window_position": m.step_ns.map(|s| s.map(|x| x / 1e6))}),
             );
             return Ok(m);
@@ -176,6 +181,14 @@ struct Aim {
 enum BurstEnd {
     Done(BurstNote),
     Skipped(String),
+}
+
+/// getSlot at processed commitment next to the clock (section 5.1).
+struct ClockCheck {
+    http_slot: Option<u64>,
+    rtt_ns: i64,
+    clock_slot: u64,
+    lag: Option<i64>,
 }
 
 struct Session {
@@ -594,11 +607,29 @@ impl Session {
         self.clock.lock().unwrap().model()
     }
 
-    fn first_shred(&self, slot: u64) -> (Option<i64>, Option<u64>) {
-        match self.clock.lock().unwrap().first_shred.get(&slot) {
-            Some((ns, ts)) => (Some(*ns), *ts),
-            None => (None, None),
+    /// firstShredReceived of a slot: local receipt, node timestamp, and node time on the
+    /// local clock, which is the receipt the event would have had without backlog.
+    fn first_shred(&self, slot: u64) -> (Option<i64>, Option<u64>, Option<i64>) {
+        let st = self.clock.lock().unwrap();
+        let node = st.node_time(slot, st.node_offset_ns());
+        match st.first_shred.get(&slot) {
+            Some((ns, ts)) => (Some(*ns), *ts, node),
+            None => (None, None, None),
         }
+    }
+
+    fn clock_check(&mut self, model: &Model) -> ClockCheck {
+        let t0 = mono_ns();
+        let http = match self.rpc.call("getSlot", json!([{"commitment": "processed"}])) {
+            Ok(v) => v.as_u64(),
+            Err(e) => {
+                self.log.warn("clock_check_failed", None, json!({"error": e.to_string()}));
+                None
+            }
+        };
+        let t1 = mono_ns();
+        let clock_slot = model.slot_at(t0 + (t1 - t0) / 2);
+        ClockCheck { http_slot: http, rtt_ns: t1 - t0, clock_slot, lag: http.map(|h| h as i64 - clock_slot as i64) }
     }
 
     fn burst(&mut self, round: &Round, b: &Burst, seq: u64) -> Result<BurstEnd, String> {
@@ -658,6 +689,20 @@ impl Session {
 
         let built = self.build(b, seq, hash32)?;
         let model = self.model().unwrap_or(model);
+        // A clock behind the cluster would aim the burst at the wrong window and the
+        // arrival estimate would not show it, so the burst stops here, before any row.
+        let check = self.clock_check(&model);
+        if let Some(lag) = check.lag.filter(|l| *l >= CLOCK_LAG_SKIP_SLOTS) {
+            if let Some(c) = conn.as_ref() {
+                quic::close(c, b"clock behind");
+            }
+            return Ok(BurstEnd::Skipped(format!(
+                "slot clock {lag} slots behind getSlot processed {} ({} on {})",
+                check.http_slot.unwrap_or(0),
+                model.source.name(),
+                model.basis.name()
+            )));
+        }
         let predicted = model.predict(b.first_slot);
         let target = if b.timing == "pre300" { predicted - PRE300_NS } else { model.predict(b.first_slot + 1) };
         let rtt_ns = conn.as_ref().map(|c| c.rtt().as_nanos() as i64);
@@ -668,9 +713,12 @@ impl Session {
         if !self.live && b.path == "quic" && handshake.is_none() {
             handshake = Some(json!({"ok": conn.is_some(), "close_code": null, "rtt_ns": rtt_ns, "error": null}));
         }
-        self.rows.write(
-            "burst",
-            json!({"run_id": self.run_id, "burst_seq": seq, "round": round.round, "cell": b.cell, "arm": b.arm,
+        // Schema version 2 fields of the clock guard; one json! of all fields would pass
+        // the macro recursion limit.
+        let guard = json!({"slot_clock_basis": model.basis.name(), "clock_offset_ns": model.offset_ns,
+                           "http_slot": check.http_slot, "http_slot_rtt_ns": check.rtt_ns,
+                           "clock_slot_at_http": check.clock_slot, "clock_lag_slots": check.lag});
+        let mut row = json!({"run_id": self.run_id, "burst_seq": seq, "round": round.round, "cell": b.cell, "arm": b.arm,
                    "timing": b.timing, "path": b.path, "epoch": self.leaders.schedule.epoch_of(b.first_slot),
                    "first_slot": b.first_slot, "window_len": b.window_len, "selection_class": b.selection_class,
                    "leader": b.leader, "leader_vote": b.leader_vote,
@@ -683,8 +731,11 @@ impl Session {
                    "blockhash_context_slot": hash_slot, "utc": utc_now(), "slot_clock_source": model.source.name(),
                    "slot_ms": model.slot_ns / 1e6, "anchor_slot": model.anchor_slot, "anchor_leader": anchor_leader,
                    "predicted_first_slot_ns": predicted, "target_arrival_ns": target, "rtt_ns": rtt_ns,
-                   "send_at_ns": send_at, "handshake": handshake}),
-        )?;
+                   "send_at_ns": send_at, "handshake": handshake});
+        if let (Some(r), Value::Object(g)) = (row.as_object_mut(), guard) {
+            r.extend(g);
+        }
+        self.rows.write("burst", row)?;
         let b64 = base64::engine::general_purpose::STANDARD;
         for p in &built {
             self.rows.write(
@@ -807,15 +858,17 @@ impl Session {
         }
         self.rows.sync()?;
 
-        let (fs1, _) = self.first_shred(b.first_slot);
-        let (fs2, _) = self.first_shred(b.first_slot + 1);
-        let base = fs1.unwrap_or(aim.predicted);
+        let (fs1, ts1, n1) = self.first_shred(b.first_slot);
+        let (fs2, ts2, _) = self.first_shred(b.first_slot + 1);
+        let base = n1.or(fs1).unwrap_or(aim.predicted);
         let arrival_ms = first_send.map(|t| (t - base + aim.rtt_ns.unwrap_or(0) / 2) as f64 / 1e6);
         let note = BurstNote {
             timing: b.timing.clone(),
-            // Start of slot 2 as observed, else as finally aimed (itb/analyze.py slot2_ms).
-            slot2_ms: match (fs1, fs2) {
-                (Some(a), Some(c)) => (c - a) as f64 / 1e6,
+            // Start of slot 2 as observed on node time, else on receipt, else as finally
+            // aimed (itb/analyze.py slot2_ms).
+            slot2_ms: match (ts1, ts2, fs1, fs2) {
+                (Some(a), Some(c), _, _) => c as f64 - a as f64,
+                (_, _, Some(a), Some(c)) => (c - a) as f64 / 1e6,
                 _ if b.timing == "slot2" => (aim.target - aim.predicted) as f64 / 1e6,
                 _ => (self.model().unwrap_or(model).predict(b.first_slot + 1) - aim.predicted) as f64 / 1e6,
             },
@@ -926,17 +979,20 @@ impl Session {
         sends: &[i64],
         reconnects: u64,
     ) -> Result<(), String> {
-        let (fs1, ts1) = self.first_shred(b.first_slot);
-        let (fs2, ts2) = self.first_shred(b.first_slot + 1);
+        let (fs1, ts1, n1) = self.first_shred(b.first_slot);
+        let (fs2, ts2, n2) = self.first_shred(b.first_slot + 1);
+        let offset = self.clock.lock().unwrap().node_offset_ns();
         let send_anchor_leader = aim.and_then(|a| self.leaders.leader(&mut self.rpc, a.anchor_slot));
         let final_prediction = aim.map_or(predicted, |a| a.predicted);
         self.rows.write(
             "burst_end",
             json!({"run_id": self.run_id, "burst_seq": seq, "quic_stats": conn.map(quic::stats_json),
                    "first_shred_ns": [fs1, fs2], "node_ts_ms": [ts1, ts2],
+                   "first_shred_node_ns": [n1, n2], "clock_offset_ns": offset,
                    "first_send_offset_ns": fs1.and_then(|f| sends.first().map(|s| s - f)),
                    "last_send_offset_ns": fs1.and_then(|f| sends.last().map(|s| s - f)),
-                   "prediction_residual_ns": fs1.map(|f| f - final_prediction),
+                   "first_send_node_offset_ns": n1.and_then(|f| sends.first().map(|s| s - f)),
+                   "prediction_residual_ns": n1.or(fs1).map(|f| f - final_prediction),
                    "send_anchor_slot": aim.map(|a| a.anchor_slot), "send_anchor_leader": send_anchor_leader,
                    "send_predicted_first_slot_ns": aim.map(|a| a.predicted),
                    "send_target_arrival_ns": aim.map(|a| a.target), "send_rtt_ns": aim.and_then(|a| a.rtt_ns),

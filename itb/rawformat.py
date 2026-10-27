@@ -107,12 +107,18 @@ def _check_value(spec, value):
 
 
 def validate_row(row, schema):
-    """Return a list of problems for one decoded row (empty when valid)."""
+    """Return a list of problems for one decoded row (empty when valid).
+
+    Rows of an older schema version stay valid: a field marked since N is
+    required from version N on and may not appear in an older row.
+    """
     if not isinstance(row, dict):
         return ["row is not an object"]
     problems = []
-    if row.get("v") != schema["version"]:
-        problems.append("v: expected %d" % schema["version"])
+    v = row.get("v")
+    if type(v) is not int or not 1 <= v <= schema["version"]:
+        problems.append("v: expected 1 to %d" % schema["version"])
+        v = schema["version"]
     kind = row.get("kind")
     spec = schema["kinds"].get(kind)
     if spec is None:
@@ -121,7 +127,11 @@ def validate_row(row, schema):
     for name in row:
         if name not in fields and name not in ("v", "kind"):
             problems.append(name + ": unknown field")
+        elif name in fields and fields[name].get("since", 1) > v:
+            problems.append("%s: not in version %d" % (name, v))
     for name, fspec in fields.items():
+        if fspec.get("since", 1) > v:
+            continue
         if name not in row:
             problems.append(name + ": missing")
             continue

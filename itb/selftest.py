@@ -52,7 +52,9 @@ def _mutations(rows):
         ("bool where int expected", edit(lambda m: m[first_probe].__setitem__("cu_limit", True))),
         ("rank out of range", edit(lambda m: m[first_probe].__setitem__("send_rank", 12))),
         ("first row is not run", edit(lambda m: m.pop(0))),
-        ("schema version", edit(lambda m: m[1].__setitem__("v", 2))),
+        ("schema version from the future", edit(lambda m: m[1].__setitem__("v", 3))),
+        ("version 2 field missing", edit(lambda m: m[1].pop("clock_lag_slots"))),
+        ("version 2 field on a version 1 row", edit(lambda m: m[1].__setitem__("v", 1))),
         ("RPC URL with an API key in the query",
          edit(lambda m: m[0].__setitem__("rpc_url", "https://rpc.example.com/?api-key=abc"))),
         ("RPC URL with a token in the path",
@@ -276,6 +278,8 @@ def end_to_end_checks():
                          "round": rnd, "leader": 1})
     plan.append({"class": "Firedancer", "rule": "firedancer", "arm": "independent", "timing": "pre300",
                  "round": 8, "fields": {"leader_client_id": "Frankendancer"}})
+    plan.append({"class": "FireBAM", "rule": "fifo", "arm": "independent", "timing": "pre300",
+                 "round": 9, "fields": {"http_slot": 461999996, "clock_lag_slots": 2}})
     schema = rawformat.load_schema()
     with tempfile.TemporaryDirectory() as tmp:
         run_dir = os.path.join(tmp, "runs", "selftest-e2e")
@@ -288,8 +292,9 @@ def end_to_end_checks():
         out.append(("end to end: synthetic raw files pass the format checks", not p1 and not p2,
                     "%d probe rows, %d collect rows %s" % (len(prows), len(crows), (p1 + p2)[:2])))
         result = analyze.analyze(analyze.load_runs(tmp), stages=("test",))
-    out.append(("end to end: the burst with another client drops out",
-                result["excluded"] == {"client-differs-from-selection": 1} and result["kept"] == len(plan) - 1,
+    out.append(("end to end: the bursts with another client and with a late clock drop out",
+                result["excluded"] == {"client-differs-from-selection": 1, "slot-clock-behind": 1}
+                and result["kept"] == len(plan) - 2,
                 "kept %d, excluded %s" % (result["kept"], result["excluded"])))
     forms = {(c["class"], c["arm"]): (c["form"], c["detail"]) for c in result["cells"]}
     for cls, want in (("FireBAM", ("arrival-rule", "forward")),
@@ -516,13 +521,53 @@ def timing_checks():
     out.append(("timing: arrival takes half the RTT of the final aim", est == 130.0, str(est)))
     out.append(("timing: 130 ms is in the band of a slot 2 seen at 42 ms, out of one at 243 ms",
                 analyze.timing_in_band(burst, est, seen) and not analyze.timing_in_band(burst, est, None), ""))
+    # Schema version 2: the node timestamps hold when a WebSocket backlog delays receipt.
+    late = dict(seen, first_shred_ns=[3_000_000_000, 3_400_000_000], first_send_offset_ns=-1_890_000_000,
+                node_ts_ms=[1_793_044_800_000, 1_793_044_800_044], first_send_node_offset_ns=110_000_000)
+    out.append(("timing: node timestamps give slot 2 when receipt was delayed",
+                analyze.slot2_ms(burst, late) == 44.0, str(analyze.slot2_ms(burst, late))))
+    out.append(("timing: arrival takes the send offset on node time first",
+                analyze.arrival_ms(burst, late) == 130.0, str(analyze.arrival_ms(burst, late))))
+    return out
+
+
+def clock_guard_checks():
+    """Slot clock guard (plan section 5.1): the lag bound and the version 1 rule."""
+    out = []
+    rows = sample_run()
+    b = rows[1]
+    lag = lambda n: dict(b, clock_lag_slots=n)
+    out.append(("clock guard: a lag of 2 slots keeps the burst out, 1 slot and an unknown lag do not",
+                analyze.clock_behind(lag(2)) and not analyze.clock_behind(lag(1))
+                and not analyze.clock_behind(lag(None)), ""))
+    v1 = {k: val for k, val in b.items() if k not in ("slot_clock_basis", "clock_offset_ns", "http_slot",
+                                                      "http_slot_rtt_ns", "clock_slot_at_http", "clock_lag_slots")}
+    first = v1["first_slot"]
+    out.append(("clock guard: a version 1 burst with a blockhash from the slot of the fetch is late, 3 slots earlier is not",
+                analyze.clock_behind(dict(v1, blockhash_context_slot=first - 6))
+                and not analyze.clock_behind(dict(v1, blockhash_context_slot=first - 9)), ""))
+    schema = rawformat.load_schema()
+    old = []
+    for r in rows:
+        r = dict(r, v=1)
+        for name, spec in schema["kinds"][r["kind"]]["fields"].items():
+            if spec.get("since", 1) > 1:
+                r.pop(name, None)
+        old.append(r)
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "probes.jsonl")
+        _write(path, old)
+        n, problems = rawformat.check_probe_file(path, schema)
+    out.append(("clock guard: version 1 rows without the guard fields stay valid",
+                n == len(old) and not problems, "%d rows, %s" % (n, problems[:3])))
     return out
 
 
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
-              + end_to_end_checks() + chain_checks() + plan_checks() + timing_checks())
+              + end_to_end_checks() + chain_checks() + plan_checks() + timing_checks()
+              + clock_guard_checks())
     lines = []
     failed = 0
     for name, ok, detail in checks:
