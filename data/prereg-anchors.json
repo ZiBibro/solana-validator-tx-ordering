@@ -1,0 +1,11 @@
+[
+  {
+    "block_time": 1793091131,
+    "file": "prereg/manifest-pilot.json",
+    "manifest": true,
+    "sha256": "9a9c92c2917f62eade441b89566b3c48e31eab9ef09bbe1fd8335c93e2a6e971",
+    "signature": "3jmFZBgsQoXTnKVSf3CCkABLtQnqGF5uwxmqa6Qht3eRwgbZf49K7VtBjPx5KtK2vFALUNzm4d5o2ay2kT7AJaBi",
+    "slot": 462009555,
+    "stage": "pilot"
+  }
+]
