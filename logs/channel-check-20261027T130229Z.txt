@@ -1,0 +1,93 @@
+commit 5ffb53a27110ae76fdfe733db36dd15d87fafb51, 2026-10-27T13:02:29Z, panel data/panels/mainnet-e1069-20261027T005744Z/panel.json
+== getSlot round trips for 180 s
+ Container inside-the-block-plan-run-3778ad24ed3d Creating 
+ Container inside-the-block-plan-run-3778ad24ed3d Created 
+{"below": [], "failed": 0, "http_rtt_ms": [38.7, 56.7, 1260.0], "http_rtt_p90_ms": 88.4, "kind": "rpc_channel", "rpc": "https://api.mainnet-beta.solana.com", "samples": 89}
+rpc exit 0
+== plan
+ Container inside-the-block-plan-run-49dd0a5f31a5 Creating 
+ Container inside-the-block-plan-run-49dd0a5f31a5 Created 
+plan: /repo/data/plans/test-mainnet-20261027T130538Z/plan.json
+plan: seed a7ae49c069f23b645cef146b128e27cf, 12 bursts from slot 462081376 (anchor 462081056)
+  slot 462081376 E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL equal_fee pre300 quic fee 1000
+  slot 462081544 HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU denominator pre300 quic fee 0
+  slot 462081708 HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU shared pre300 quic fee None
+  slot 462081872 DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy independent pre300 quic fee None
+  slot 462082052 5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS shared slot2 quic fee None
+  slot 462082224 Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk equal_fee slot2 quic fee 100
+  slot 462082404 5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux independent slot2 quic fee None
+  slot 462082580 DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy denominator slot2 quic fee 100
+  slot 462082744 E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL equal_fee pre300 quic fee 100
+  slot 462082928 9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP denominator pre300 quic fee 100
+  slot 462083112 CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4 shared pre300 quic fee None
+  slot 462083292 JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b independent pre300 quic fee None
+== dry-run
+ Container inside-the-block-probe-run-722c2195f755 Creating 
+ Container inside-the-block-probe-run-722c2195f755 Created 
+itb-probe info start {"bursts":12,"code_limit_lamports":50000000,"mode":"dry-run","network":"mainnet","plan":"/data/plans/test-mainnet-20261027T130538Z/plan.json","rpc":"https://api.mainnet-beta.solana.com","spend_limit_lamports":50000000,"ws":"wss://api.mainnet-beta.solana.com"}
+itb-probe dry-run run dry-run-mainnet-20261027T130541Z: 12 bursts, spend limit 50000000 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.mainnet-beta.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.mainnet-beta.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+itb-probe info plan_cost {"committed":0,"limit":50000000,"overhead_lamports":5000,"worst_fee_lamports":756780}
+plan worst-case fees 756780 lamports plus 5000 for funding and closing; committed 0; limit 50000000 (1.5% used after the plan)
+itb-probe info slot_clock_ready {"anchor_slot":462081242,"basis":"node_ts","slot_ms":213.6690288555614,"source":"first_shred","step_ms_by_window_position":[150.0,200.0,201.0,278.0]}
+slot clock: first_shred at 213.7 ms per slot
+itb-probe info quic_connected {"rtt_ns":42253863,"tpu_quic":"64.130.32.153:8002"}
+itb-probe info burst_done {"arm":"equal_fee","arrival_ms":-219.674584,"first_slot":462081376,"leader":"E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL","path":"quic","results":null,"rtt_ms":41.597692,"timing":"pre300"}
+burst 109 slot 462081376 equal_fee pre300 quic: est. arrival -219.7 ms from slot start, rtt 41.6 ms
+itb-probe info quic_connected {"rtt_ns":39174592,"tpu_quic":"64.130.57.215:8002"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-309.997429,"first_slot":462081544,"leader":"HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU","path":"quic","results":null,"rtt_ms":42.680984,"timing":"pre300"}
+burst 110 slot 462081544 denominator pre300 quic: est. arrival -310.0 ms from slot start, rtt 42.7 ms
+itb-probe info quic_connected {"rtt_ns":38021324,"tpu_quic":"64.130.57.215:8002"}
+itb-probe info burst_done {"arm":"shared","arrival_ms":-312.998086,"first_slot":462081708,"leader":"HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU","path":"quic","results":null,"rtt_ms":41.168029,"timing":"pre300"}
+burst 111 slot 462081708 shared pre300 quic: est. arrival -313.0 ms from slot start, rtt 41.2 ms
+itb-probe info quic_connected {"rtt_ns":117756073,"tpu_quic":"208.91.105.55:5010"}
+itb-probe info burst_done {"arm":"independent","arrival_ms":-289.38406,"first_slot":462081872,"leader":"DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy","path":"quic","results":null,"rtt_ms":120.005059,"timing":"pre300"}
+burst 112 slot 462081872 independent pre300 quic: est. arrival -289.4 ms from slot start, rtt 120.0 ms
+itb-probe info quic_connected {"rtt_ns":59707205,"tpu_quic":"185.189.44.172:12002"}
+itb-probe info burst_done {"arm":"shared","arrival_ms":152.001558,"first_slot":462082052,"leader":"5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS","path":"quic","results":null,"rtt_ms":61.971898,"timing":"slot2"}
+burst 113 slot 462082052 shared slot2 quic: est. arrival 152.0 ms from slot start, rtt 62.0 ms
+itb-probe info quic_connected {"rtt_ns":31042929,"tpu_quic":"198.13.140.105:12341"}
+itb-probe info burst_done {"arm":"equal_fee","arrival_ms":58.000316,"first_slot":462082224,"leader":"Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk","path":"quic","results":null,"rtt_ms":33.114943,"timing":"slot2"}
+burst 114 slot 462082224 equal_fee slot2 quic: est. arrival 58.0 ms from slot start, rtt 33.1 ms
+itb-probe info quic_connected {"rtt_ns":163893262,"tpu_quic":"63.254.180.13:5010"}
+itb-probe info burst_done {"arm":"independent","arrival_ms":46.000283,"first_slot":462082404,"leader":"5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux","path":"quic","results":null,"rtt_ms":164.411069,"timing":"slot2"}
+burst 115 slot 462082404 independent slot2 quic: est. arrival 46.0 ms from slot start, rtt 164.4 ms
+itb-probe info quic_connected {"rtt_ns":115481520,"tpu_quic":"208.91.105.55:5010"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":195.650328,"first_slot":462082580,"leader":"DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy","path":"quic","results":null,"rtt_ms":115.214437,"timing":"slot2"}
+burst 116 slot 462082580 denominator slot2 quic: est. arrival 195.7 ms from slot start, rtt 115.2 ms
+itb-probe info quic_connected {"rtt_ns":51572461,"tpu_quic":"64.130.32.153:8002"}
+itb-probe info burst_done {"arm":"equal_fee","arrival_ms":-269.998624,"first_slot":462082744,"leader":"E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL","path":"quic","results":null,"rtt_ms":43.733295,"timing":"pre300"}
+burst 117 slot 462082744 equal_fee pre300 quic: est. arrival -270.0 ms from slot start, rtt 43.7 ms
+itb-probe info quic_connected {"rtt_ns":35117055,"tpu_quic":"198.13.141.173:5010"}
+itb-probe info burst_done {"arm":"denominator","arrival_ms":-592.693218,"first_slot":462082928,"leader":"9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP","path":"quic","results":null,"rtt_ms":36.933273,"timing":"pre300"}
+burst 118 slot 462082928 denominator pre300 quic: est. arrival -592.7 ms from slot start, rtt 36.9 ms
+itb-probe info quic_connected {"rtt_ns":44186036,"tpu_quic":"64.130.46.242:12291"}
+itb-probe info burst_done {"arm":"shared","arrival_ms":-439.99902,"first_slot":462083112,"leader":"CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4","path":"quic","results":null,"rtt_ms":45.930727,"timing":"pre300"}
+burst 119 slot 462083112 shared pre300 quic: est. arrival -440.0 ms from slot start, rtt 45.9 ms
+itb-probe info quic_connected {"rtt_ns":32460084,"tpu_quic":"198.13.140.105:12349"}
+itb-probe info burst_done {"arm":"independent","arrival_ms":-460.998533,"first_slot":462083292,"leader":"JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b","path":"quic","results":null,"rtt_ms":34.170805,"timing":"pre300"}
+burst 120 slot 462083292 independent pre300 quic: est. arrival -461.0 ms from slot start, rtt 34.2 ms
+itb-probe info summary {"arrival_ms_min_median_max":[-592.693218,-269.998624,195.650328],"bursts_done":12,"handshakes":12,"handshakes_ok":12,"in_timing_band":10,"rtt_ms_min_median_max":[33.114943,43.733295,164.411069]}
+summary: {"arrival_ms_min_median_max":[-592.693218,-269.998624,195.650328],"bursts_done":12,"handshakes":12,"handshakes_ok":12,"in_timing_band":10,"rtt_ms_min_median_max":[33.114943,43.733295,164.411069]}
+dry-run: no key read, nothing sent, payers of the dry-run wallet hold no funds
+payer  1 DbdDvynpgtj2paZnVbFbpJbVGnQehTEc3qJisvyrwH5N: 0 lamports
+payer  2 D67gWjV3Q2zfz11oagc9jxFKZSfKQq58qWz4eS43ssgB: 0 lamports
+payer  3 Hw3BH2rLZrp13VrYKwNqkhZH1reKYoZu8uhUhxYQgMdJ: 0 lamports
+payer  4 FmCo72GB83X7KaKwyc755AxRA4fS1CSkHDbsqoxSFkx5: 0 lamports
+payer  5 9pYdZmK3SCxFnAtBryTW3QvGGGAWunnjbbgwszWE6aZw: 0 lamports
+payer  6 8pQmYJ9BYJrzkKGvaAiKNM9AW69FHW8GGjLVhjD1Kxp2: 0 lamports
+payer  7 DfMx86XEUDhtb8m27wbzroyWGygsPXRbPLMBx8ua7due: 0 lamports
+payer  8 H2NfwpxpNZYM8K77gcoNbWKhPuCPBpyeqkLgrSiVsFCY: 0 lamports
+payer  9 FHPKDbC2xPfraCMho4bwGSRHEefdwbxxxnDDfpmK9BtJ: 0 lamports
+payer 10 ExebbAEPWwBA477kgsegSW1xAoL2YcaSDwSTC9Yn3ZCh: 0 lamports
+payer 11 3u4Y1LjbkekTNdVRn3vxFmcWFjBp4uautVbzEu1Xmcut: 0 lamports
+payer 12 Da4qMiaC8ECU989FS36TRQV6qNAancL3XYdbkirDcUoj: 0 lamports
+payers total: 0 lamports
+dry-run exit 0
+== rounds of dry-run-mainnet-20261027T130541Z
+ Container inside-the-block-plan-run-6528ffee5a92 Creating 
+ Container inside-the-block-plan-run-6528ffee5a92 Created 
+{"below": [], "clock_lag_ge1": 0, "clock_lag_max": 0, "complete": true, "epoch": 1069, "failed": 0, "handshake_fail": 0, "http_rtt_ms": [44.0, 49.7, 124.0], "in_band": 10, "in_band_share": 0.833, "kind": "round_channel", "planned": 12, "quic_rtt_ms": [31.0, 43.2, 163.9], "reconnects": 0, "round": 0, "run_id": "dry-run-mainnet-20261027T130541Z", "skipped_clock": 0, "skipped_other": 0, "written": 12}
+rounds exit 0
+line check: passed, 2026-10-27T13:13:36Z
