@@ -541,7 +541,7 @@ The README lists what stays out of reach from outside the leader ([What it does 
 
 - The arrival estimate rests on the first-shred event as the RPC node sees it, so shred propagation from the leader enters the timing tables (sections 5.6 and 6.6) as error of unknown source.
 - For the builder classes the round-trip time ends at the builder's receiver (sections 5.8 and 6.8).
-- Burst 52 shows that a builder can hand probes to another leader behind it (section 5.5). Which builder node did so stays unknown, because every Harmonic builder shares one tick signer.
+- Burst 52 shows that a builder can hand probes to another leader behind it (section 5.5). In the gossip snapshot of the panel, `JUPiTERr...` and `nymsGg7Z...` advertise `tpuQuic` on the same IP with different ports (`198.13.140.105:12349` and `:9007`), and the panel rule drops a window only when the leader before it shares the whole address. In epoch 1069 a leader on the same IP with another port comes right before 534 of the 4033 passing windows of the HarmonicFiredancer panel leaders and 582 of the 6687 of the HarmonicAgave ones. No other class has such a neighbour. Which builder node handed the probes on stays unknown, because every Harmonic builder shares one tick signer.
 - The competition ranks assume Agave's priority rule for every class (sections 5.13 and 6.13).
 
 ## 9. What went wrong
@@ -559,6 +559,21 @@ The README lists what stays out of reach from outside the leader ([What it does 
 - **2026-10-27, minimum.** The spread of tau in the pilot puts every equivalence form out of reach of the campaign (section 5.15).
 - **2026-10-27, epoch tick sample.** The public RPC node cut a 0.9 MB `getBlock` body short (`IncompleteRead`). The RPC client retried only OS-level errors, so the read stopped after 321 blocks. It now retries a cut body too, with a selftest check for each kind of failure.
 - **Stability over epochs.** The README says four epochs show whether a rule holds over time, yet the analysis plan fixed no test for it. The epoch tables (sections 5.12 and 6.12) describe it without a verdict.
+
+## 10. Other measurements of the same question
+
+Four public repositories measured the ordering rule on mainnet after Alpenglow before this campaign. What follows rests on their reports as of 2026-10-27.
+
+- [fomoles/superteam-inside-the-block](https://github.com/fomoles/superteam-inside-the-block), epoch 1066, 2026-10-24. Pairs of probes go straight to the leader's TPU with a controlled gap of 0 to 150 ms, in two runs of 1100 leader windows (6600 and 6438 probes) on panels of 20 and 47 validators, and the checks of the second run were registered in git before it. The report reads the sort key as fee per estimated cost unit, with the 64 MiB loaded-data allowance inside the cost. In its runs JitoLabs lets the fee decide less often than the other clients with enough pairs, and Firedancer 26.10.4 gives fee ties to the later arrival (TAU 1.00). Of the 603 direct probes that landed with a leader other than the target, 596 landed with one that advertises the target's IP.
+- [eternally-black/alpenglow-validator-ordering](https://github.com/eternally-black/alpenglow-validator-ordering), 2026-10-24 to 2026-10-26. Each of its pre-registered studies froze the hashes of its plan in a mainnet Memo before the first probe, and positive controls on an Agave and a Firedancer validator recovered their known rule. All six core targets order its probes by Agave's priority, `reward / (cost + 1)`, and four exploratory targets agree, Rakurai in part. Firedancer lands the later of two identical probes first in 50 of 54 pairs.
+- [ukraineopt/inside-the-block](https://github.com/ukraineopt/inside-the-block). 5,296 probes aimed at 27 validators on 8 client builds, without pre-registration. For both Harmonic classes it reads arrival order with a batching window of about 15 to 30 ms, where the fee sorts only inside each small group, and it notes that both classes advertise one IP with different ports.
+- [zdfgu113/inside-the-block](https://github.com/zdfgu113/inside-the-block), from 2026-10-23. Bursts of four fee levels in a Latin-square send order gave 135 same-block pairs over eight builds. AgaveBam puts the higher fee first in 25 of 32 pairs, while HarmonicAgave (16 of 30) and HarmonicFiredancer (14 of 27) stay near chance at its price range.
+
+On Harmonic the reports split. fomoles finds a fee sort in both Harmonic classes, and eternally-black counts a HarmonicAgave and a HarmonicFiredancer validator among its core targets that follow Agave's priority. ukraineopt reads arrival order in short batches there, and zdfgu113 sees no fee order. The campaign measures both Harmonic classes with its own design and fixes no expectation for them in advance.
+
+Fee per cost is the reading of two of these reports, so the campaign checks it independently in epochs 1071 and later with another design: bursts of 12 probes in one leader window, an arm that holds the fee equal, an arm that changes only the requested cost, and builder classes set against their base client.
+
+Two parts of this kit appear in none of these reports, by a text search of the public repositories on this question on 2026-10-27 with data files left out. The builder mark matches each slot of a builder class to its builder through the builder's tick in the block (section 7), and order is tested inside the segments between ticks (sections 5.4 and 6.4). The campaign also measures the same panel over four epochs, and its epoch tables describe how each rule holds over time (section 6.12).
 
 ## Appendix A. Every burst
 
