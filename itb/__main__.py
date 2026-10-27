@@ -495,6 +495,10 @@ def main(argv=None):
                    help="repository file to list (repeatable; default: MANIFEST_FILES of verify.py)")
     p.add_argument("--data", help="data directory with prereg-anchors.json (default: repo data/)")
     args = parser.parse_args(argv)
+    # Operator names carry emoji; a Windows console in a legacy code page prints them escaped.
+    for stream in (sys.stdout, sys.stderr):
+        if hasattr(stream, "reconfigure"):
+            stream.reconfigure(errors="backslashreplace")
     handlers = {
         "reproduce": cmd_reproduce, "selftest": cmd_selftest, "verify": cmd_verify,
         "analyze": cmd_analyze, "claim": cmd_claim, "collect": cmd_collect,

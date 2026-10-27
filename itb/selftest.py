@@ -913,6 +913,20 @@ def campaign_checks():
     out.append(("validators.app: the snapshot records the sha256 of an extra root and null without one",
                 snap["extra_ca_sha256"] == pilot.sha256_bytes(b"pem")
                 and pilot.va_snapshot("u", {}, env={})["extra_ca_sha256"] is None, ""))
+    with tempfile.TemporaryDirectory() as d:
+        root = os.path.join(d, "root.pem")
+        with open(root, "w", encoding="ascii") as f:
+            f.write("pem\n")
+        from_file = pilot.extra_ca({pilot.EXTRA_CA_FILE_ENV: root})
+        text_first = pilot.extra_ca({pilot.EXTRA_CA_ENV: "text", pilot.EXTRA_CA_FILE_ENV: root})
+        try:
+            pilot.extra_ca({pilot.EXTRA_CA_FILE_ENV: os.path.join(d, "missing.pem")})
+            missing = None
+        except OSError as e:
+            missing = e
+    out.append(("validators.app: ITB_EXTRA_CA_FILE gives the root from its file, the PEM text wins over it, "
+                "and a missing file fails as OSError",
+                from_file == "pem" and text_first == "text" and missing is not None, ""))
     return out
 
 

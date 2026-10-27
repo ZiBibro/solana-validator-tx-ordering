@@ -21,7 +21,8 @@
 #
 # It needs the campaign anchor on chain (probe anchor --stage campaign --live) and the
 # wallet key file in ITB_WALLET_KEY_FILE, which only the probe container reads.
-# ITB_EXTRA_CA_PEM, when set, reaches the plan service (README, TLS-inspecting proxy).
+# ITB_EXTRA_CA_PEM, when set, reaches the plan service (README, TLS-inspecting proxy);
+# ITB_EXTRA_CA_FILE names the same root as a file, and the script passes on its text.
 # The transcript lands in logs/campaign-<stamp>.txt.
 set -uo pipefail
 export MSYS_NO_PATHCONV=1
@@ -40,6 +41,11 @@ overhead=65000
 [ -n "${ITB_WALLET_KEY_FILE:-}" ] && [ -f "$ITB_WALLET_KEY_FILE" ] \
     || { echo "campaign.sh: ITB_WALLET_KEY_FILE names no file" >&2; exit 2; }
 unset ITB_WALLET_KEY ITB_SIM_PAYER
+if [ -z "${ITB_EXTRA_CA_PEM:-}" ] && [ -n "${ITB_EXTRA_CA_FILE:-}" ]; then
+    ITB_EXTRA_CA_PEM=$(cat "$ITB_EXTRA_CA_FILE") \
+        || { echo "campaign.sh: ITB_EXTRA_CA_FILE names no readable file" >&2; exit 2; }
+    export ITB_EXTRA_CA_PEM
+fi
 export ITB_NETWORK=mainnet ITB_RPC_URL=https://api.mainnet-beta.solana.com ITB_WS_URL=wss://api.mainnet-beta.solana.com
 
 # Docker Desktop on Windows takes C:/... paths, and so does Git for Windows under MSYS_NO_PATHCONV.

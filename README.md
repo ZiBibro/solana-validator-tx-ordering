@@ -169,7 +169,7 @@ docker build --secret id=extra_ca,src=proxy-root.pem -f probe/Dockerfile -t insi
 
 The probe itself refuses to measure through such a proxy, as described above.
 
-The plan step reads the second client label from validators.app, and a web shield may re-sign that host too. `ITB_EXTRA_CA_PEM`, set to the PEM text of the same root, adds it next to the system roots for that one request; RPC calls never use it, and the snapshot records the root's SHA-256. Without it the plan still draws and notes that its bursts carry no second label.
+The plan step reads the second client label from validators.app, and a web shield may re-sign that host too. `ITB_EXTRA_CA_PEM`, set to the PEM text of the same root, adds it next to the system roots for that one request (`ITB_EXTRA_CA_FILE` names the root as a file instead, for runs on the host and for `scripts/campaign.sh`); RPC calls never use it, and the snapshot records the root's SHA-256. Without it the plan still draws and notes that its bursts carry no second label.
 
 ## Layout
 

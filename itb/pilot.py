@@ -40,6 +40,7 @@ VALIDATORS_APP_URL = "https://www.validators.app/api/v1/validators/%s.json?limit
 VALIDATORS_APP_FIELDS = ("account", "software_client", "software_version", "updated_at",
                          "active_stake", "delinquent")
 EXTRA_CA_ENV = "ITB_EXTRA_CA_PEM"
+EXTRA_CA_FILE_ENV = "ITB_EXTRA_CA_FILE"
 
 
 def _burst(cls, rank, arm, timing, fee, rng, extra=False):
@@ -159,10 +160,15 @@ def place(table, leaders, passing, start_slot):
 
 
 def extra_ca(env=os.environ):
-    """PEM text of ITB_EXTRA_CA_PEM, or None. A machine whose antivirus re-signs
-    the validators.app certificate sets it to that antivirus root; the system
-    roots stay trusted next to it, and only the validators.app request uses it."""
+    """PEM text of ITB_EXTRA_CA_PEM, else of the file ITB_EXTRA_CA_FILE names, or None.
+    A machine whose antivirus re-signs the validators.app certificate sets one of
+    them to that antivirus root; the system roots stay trusted next to it, and only
+    the validators.app request uses it. An unreadable file raises OSError."""
     pem = env.get(EXTRA_CA_ENV, "").strip()
+    path = env.get(EXTRA_CA_FILE_ENV, "").strip()
+    if not pem and path:
+        with open(path, encoding="ascii") as f:
+            pem = f.read().strip()
     return pem or None
 
 
