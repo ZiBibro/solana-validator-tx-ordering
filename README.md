@@ -44,9 +44,9 @@ Arms differ in exactly one property each:
 
 Each burst also draws one of two moment conditions, defined by the target arrival at the leader's tpuQuic. One target is 300 ms before the first slot of the window, when every probe waits in the queue for the first scheduling pass. The other is the start of the second slot, when the scheduler takes transactions as they arrive. The sender fires the first probe at the target minus half the round-trip time of the same connection, measured just before the burst. Without that correction the condition would mix with distance, since the average RTT from the measuring machine ran from 29 ms to a BAM node in Frankfurt up to 244 ms to one in Tokyo on 2026-10-26. A burst counts for its condition when its estimated arrival lies in a band fixed before live data: 500 to 200 ms before the first slot for the pre-window condition, and 100 ms either side of the start of slot 2 for the other ([prereg/ANALYSIS-PLAN.md](prereg/ANALYSIS-PLAN.md), section 6).
 
-The panel holds two leaders from each class, 16 validators in all, picked by a rule fixed before live data. A candidate is not delinquent, runs the most common version of its class, holds at least 16 leader windows per epoch, and has a window that passes the filters in every eighth of the epoch. Among candidates the largest stake wins, and the two leaders of a class belong to different operators by validator-info name whenever the name is set, so a difference inside a class can come from the client's rule apart from one operator's setup. The campaign measures the same panel over four epochs in rounds spread through each epoch. A pilot of 68 bursts runs first to measure inclusion and the spread of tau between bursts, which sets the campaign size.
+The panel holds two leaders from each class, 16 validators in all, picked by a rule fixed before live data. A candidate is not delinquent, runs the most common version of its class, holds at least 16 leader windows per epoch, and has a window that passes the filters in every eighth of the epoch. Among candidates the largest stake wins, and the two leaders of a class belong to different operators by validator-info name whenever the name is set, so a difference inside a class can come from the client's rule apart from one operator's setup. The campaign measures the same panel over four epochs in rounds spread through each epoch. A pilot of 68 bursts runs first to measure inclusion and the spread of tau between bursts. It also tests whether the segments between ticks are rounds in time: in the equal-fee bursts sent at the start of slot 2, a later-sent probe should not stand in an earlier segment (analysis plan, section 10). The budget fixes the campaign at 8 bursts per class and cell; the spread from the pilot gives the minimum number of bursts an equivalence verdict needs, and that number goes on chain before the campaign, so REPORT shows in advance which cells can reach such a verdict.
 
-Before any live probe, every file that fixes the analysis, the seeded pilot table included, is hashed into a manifest ([prereg/manifest-pilot.json](prereg/manifest-pilot.json)). A memo transaction puts `itb-prereg <sha256>` of that manifest on chain, and the sender refuses a live run of a stage until the anchor for the same manifest exists.
+Before any live probe, every file that fixes the analysis, the seeded pilot table included, is hashed into a manifest ([prereg/manifest-pilot.json](prereg/manifest-pilot.json)). A memo transaction puts `itb-prereg <sha256>` of that manifest on chain, and the sender refuses a live run of a stage until the anchor for the same manifest exists. The campaign gets a second manifest of the same kind ([prereg/manifest-campaign.json](prereg/manifest-campaign.json)). It adds the seeded campaign table, whose seed is `campaign:` plus the signature of the pilot anchor and so was fixed before any pilot data existed, and the minimum computed from the pilot.
 
 ## Design considerations
 
@@ -133,7 +133,23 @@ docker compose --profile measure run --rm probe anchor --stage pilot
 docker compose --profile measure run --rm probe run --plan /data/plans/<id>/plan.json
 ```
 
-The commands draw the panel, place the seeded pilot table into its windows, simulate the anchor memo, and dry-run the plan. The live form of the last two adds `--live --max-spend-lamports N`. The comments at the top of [compose.yaml](compose.yaml) list every command.
+The commands draw the panel, place the seeded pilot table into its windows, simulate the anchor memo, and dry-run the plan. The live form of the last two adds `--live --max-spend-lamports N`.
+
+The campaign follows the same steps. On the host, `python -m itb minimum` reads the collected pilot runs and `python -m itb manifest --stage campaign` hashes the campaign files; containers mount `prereg/` read-only. Each epoch gets its own plan, drawn once the leader schedule of that epoch is known:
+
+```bash
+docker compose --profile measure run --rm plan campaign --panel data/panels/<id>/panel.json --epoch-index 0 --epoch <epoch>
+```
+
+A round whose first window has already passed when the plan is drawn is left out and noted in `draw-notes.json` beside the plan; its cells are not moved to another hour, because that would break the blocking by round. Placement depends on the seed and the leader schedule only, so a plan drawn again after a stopped run keeps the windows of the rounds still ahead.
+
+[scripts/campaign.sh](scripts/campaign.sh) runs the four epochs live one after another, since they share the payers and the spend journal. For each epoch it draws the plan, sets the limit to the committed lamports plus the plan's worst-case fees plus the funding and closing overhead, closes the payers at the end and collects the run. A failed run is collected and its epoch drawn again after ten minutes, up to three attempts:
+
+```bash
+scripts/campaign.sh data/panels/<id>/panel.json <first epoch>
+```
+
+The comments at the top of [compose.yaml](compose.yaml) list every command.
 
 Keys are never part of the repository. The sender reads the wallet key from a Compose secret whose file is given by `ITB_WALLET_KEY_FILE` (by default the git-ignored `secrets/wallet-key.json`), or from an environment variable through `compose.key-from-env.yaml`. Logs and raw rows never carry key bytes, and `tests/keyscan.py` searches everything a run wrote for them in every encoding.
 
@@ -153,6 +169,8 @@ docker build --secret id=extra_ca,src=proxy-root.pem -f probe/Dockerfile -t insi
 
 The probe itself refuses to measure through such a proxy, as described above.
 
+The plan step reads the second client label from validators.app, and a web shield may re-sign that host too. `ITB_EXTRA_CA_PEM`, set to the PEM text of the same root, adds it next to the system roots for that one request; RPC calls never use it, and the snapshot records the root's SHA-256. Without it the plan still draws and notes that its bursts carry no second label.
+
 ## Layout
 
 | Path | What it holds |
@@ -160,10 +178,11 @@ The probe itself refuses to measure through such a proxy, as described above.
 | `compose.yaml` | four services: `reproduce`, `plan`, `collect`, `probe`; all but the first need the profile `measure` |
 | `probe/` | the sender, Rust on Agave's QUIC stack; dry-run by default, live sending only with `--live --max-spend-lamports N` under a compiled 0.05 SOL cap |
 | `itb/` | panel, plan, collect, verify, analyze and selftest, Python standard library only |
-| `prereg/` | everything fixed before live data: the analysis plan with the seeded pilot table, and the manifest whose hash goes on chain |
+| `prereg/` | everything fixed before live data: the analysis plan, the seeded pilot and campaign tables, the minimum from the pilot, and the manifests whose hashes go on chain |
 | `schema/raw-format.json` | the format of every raw row, shared by both languages |
 | `data/` | inputs and raw data of every run, failed ones included |
 | `logs/` | operational logs, kept apart from raw data |
+| `scripts/` | the live campaign runner, one epoch after another |
 | `tests/` | the devnet pipeline test, the mainnet dry-run, the key scanner, and unit tests for the scanner and the raw format |
 
 ## License

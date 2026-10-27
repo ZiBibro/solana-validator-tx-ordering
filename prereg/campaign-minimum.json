@@ -1,0 +1,149 @@
+{
+ "minimum_version": 1,
+ "stage": "campaign",
+ "formula": "(t[B-1; 1 - alpha_e] + t[B-1; (1 + POWER_PER_TAU) / 2]) * sigma / sqrt(B) <= DELTA_CLASS",
+ "alpha_e": 0.0005208333333333333,
+ "power_per_tau": 0.9,
+ "delta_class": 0.2,
+ "pilot_runs": [
+  "pilot-mainnet-20261027T085253Z"
+ ],
+ "pilot_bursts": 68,
+ "kept": 61,
+ "excluded": {
+  "fewer-than-two-in-a-block": 1,
+  "outside-timing-band": 6
+ },
+ "slots": [
+  {
+   "bursts": 13,
+   "rank": 9,
+   "df": 4,
+   "sigma": 0.3318992721049467,
+   "arm": "independent",
+   "tau": "fee",
+   "min_bursts": 72,
+   "cells": {
+    "pre300": {
+     "bursts": 8,
+     "classes": 8,
+     "raw_variance": 0.050024050024050006
+    },
+    "slot2": {
+     "bursts": 5,
+     "classes": 5,
+     "raw_variance": 0.18271604938271602
+    }
+   }
+  },
+  {
+   "bursts": 13,
+   "rank": 9,
+   "df": 4,
+   "sigma": 0.3749714209503072,
+   "arm": "independent",
+   "tau": "cross",
+   "min_bursts": 90,
+   "cells": {
+    "pre300": {
+     "bursts": 8,
+     "classes": 8,
+     "raw_variance": 0.013496962571036643
+    },
+    "slot2": {
+     "bursts": 5,
+     "classes": 5,
+     "raw_variance": 0.22400548696844994
+    }
+   }
+  },
+  {
+   "bursts": 15,
+   "rank": 9,
+   "df": 6,
+   "sigma": 0.36017101469197926,
+   "arm": "shared",
+   "tau": "fee",
+   "min_bursts": 84,
+   "cells": {
+    "pre300": {
+     "bursts": 8,
+     "classes": 8,
+     "raw_variance": 0.007295173961840625
+    },
+    "slot2": {
+     "bursts": 7,
+     "classes": 7,
+     "raw_variance": 0.21874052148102335
+    }
+   }
+  },
+  {
+   "bursts": 15,
+   "rank": 9,
+   "df": 6,
+   "sigma": 0.4615675619876056,
+   "arm": "shared",
+   "tau": "cross",
+   "min_bursts": 134,
+   "cells": {
+    "pre300": {
+     "bursts": 8,
+     "classes": 8,
+     "raw_variance": 0.07642563198118753
+    },
+    "slot2": {
+     "bursts": 7,
+     "classes": 7,
+     "raw_variance": 0.30713959109020833
+    }
+   }
+  },
+  {
+   "bursts": 18,
+   "rank": 9,
+   "df": 9,
+   "sigma": 0.5331099514759188,
+   "arm": "equal_fee",
+   "tau": "send",
+   "min_bursts": 177,
+   "cells": {
+    "pre300": {
+     "bursts": 7,
+     "classes": 7,
+     "raw_variance": 0.3116008570554025
+    },
+    "slot2": {
+     "bursts": 11,
+     "classes": 7,
+     "raw_variance": 0.14590810051712785
+    }
+   }
+  },
+  {
+   "bursts": 15,
+   "rank": 9,
+   "df": 6,
+   "sigma": 0.19452173273280077,
+   "arm": "denominator",
+   "tau": "limit",
+   "min_bursts": 28,
+   "cells": {
+    "pre300": {
+     "bursts": 7,
+     "classes": 7,
+     "raw_variance": 0.06437389770723105
+    },
+    "slot2": {
+     "bursts": 8,
+     "classes": 8,
+     "raw_variance": 0.0802970177970178
+    }
+   }
+  }
+ ],
+ "undefined_slots": [],
+ "min_bursts": 177,
+ "campaign_bursts_per_class_cell": 8,
+ "reached": false
+}

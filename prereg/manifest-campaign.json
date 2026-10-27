@@ -1,0 +1,10 @@
+{
+  "files": {
+    "itb/prereg.py": "d4a192651771f11cf5b6df51297f2ce9144d07ade56d0352d0b9e3f1b0ac2978",
+    "prereg/ANALYSIS-PLAN.md": "670bb9d85ee9ae1771b97ae955afcb2e819933beaa43adf76db674e7774ae898",
+    "prereg/campaign-minimum.json": "d044fe7086cb2a8d6b11de2fb8ef78c03424d4ee26732b18f476fe822c450f30",
+    "prereg/campaign-table.json": "af55032dd6afe2084838f81f996ce077039f53e43df17cc632bc2fd3129bd8e3"
+  },
+  "manifest_version": 1,
+  "stage": "campaign"
+}
