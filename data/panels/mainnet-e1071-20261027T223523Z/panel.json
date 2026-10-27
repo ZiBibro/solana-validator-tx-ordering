@@ -1,0 +1,582 @@
+{
+ "panel_version": 1,
+ "network": "mainnet",
+ "epoch": 1071,
+ "epoch_first_slot": 462672000,
+ "slots_in_epoch": 432000,
+ "drawn_utc": "2026-10-27T22:34:49.766177Z",
+ "anchor_epoch": 1070,
+ "finalized_slot": 462241390,
+ "rule": {
+  "per_class": 2,
+  "min_windows": 16,
+  "eighths": 8,
+  "block_tries": 3,
+  "own_ip_classes": [
+   "JitoLabs",
+   "Firedancer",
+   "Agave",
+   "Rakurai"
+  ],
+  "relayer_port_classes": [
+   "JitoLabs",
+   "Rakurai"
+  ],
+  "relayer_port": 11228,
+  "tick_classes": [
+   "AgaveBam",
+   "FireBAM"
+  ],
+  "stock_firedancer_memos": [
+   "PRF",
+   "BAL"
+  ],
+  "harmonic_strategies": [
+   "FBA",
+   "MRV"
+  ]
+ },
+ "classes": {
+  "AgaveBam": {
+   "class_stake_lamports": 152496074791152442,
+   "version": "4.3.2",
+   "version_stake_share": 0.965965,
+   "relayer_port_stake_share": 0.0,
+   "leaders": [
+    {
+     "identity": "DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy",
+     "vote": "3N7s9zXMZ4QqvHQR15t5GNHyqc89KduzMP7423eWiD5g",
+     "names": [
+      "binance staking"
+     ],
+     "client_id": "AgaveBam",
+     "version": "4.3.2",
+     "stake_lamports": 12791931105823044,
+     "class_stake_share": 0.083884,
+     "tpu_quic": "208.91.105.53:5010",
+     "gossip": "67.202.63.79:8000",
+     "windows": 3192,
+     "passing_by_eighth": [
+      409,
+      412,
+      381,
+      375,
+      389,
+      391,
+      398,
+      424
+     ],
+     "block_slot": 462241316,
+     "crank_memo": null,
+     "ticks": 7,
+     "fee_recipient": "DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy"
+    },
+    {
+     "identity": "5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux",
+     "vote": "GHViLgbrJdZDPb6sphRbeuPNM9cmjsFuGWzrTF1sKF5n",
+     "names": [
+      "Upbit Staking"
+     ],
+     "client_id": "AgaveBam",
+     "version": "4.3.2",
+     "stake_lamports": 5712980482784175,
+     "class_stake_share": 0.037463,
+     "tpu_quic": "63.254.180.11:5010",
+     "gossip": "54.245.46.64:37000",
+     "windows": 1429,
+     "passing_by_eighth": [
+      181,
+      165,
+      189,
+      174,
+      180,
+      189,
+      169,
+      181
+     ],
+     "block_slot": 462241284,
+     "crank_memo": null,
+     "ticks": 2,
+     "fee_recipient": "5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux"
+    }
+   ],
+   "rejected": []
+  },
+  "JitoLabs": {
+   "class_stake_lamports": 114754557751240361,
+   "version": "4.3.2",
+   "version_stake_share": 0.996454,
+   "relayer_port_stake_share": 0.316612,
+   "leaders": [
+    {
+     "identity": "HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU",
+     "vote": "he1iusunGwqrNtafDtLdhsUQDFvo13z9sUa36PauBtk",
+     "names": [
+      "Helius"
+     ],
+     "client_id": "JitoLabs",
+     "version": "4.3.2",
+     "stake_lamports": 16661096436307864,
+     "class_stake_share": 0.145189,
+     "tpu_quic": "64.130.57.215:8002",
+     "gossip": "64.130.57.215:8001",
+     "windows": 4136,
+     "passing_by_eighth": [
+      503,
+      529,
+      528,
+      555,
+      519,
+      489,
+      514,
+      499
+     ],
+     "block_slot": 462241212,
+     "crank_memo": null,
+     "ticks": 0,
+     "fee_recipient": "HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU"
+    },
+    {
+     "identity": "E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL",
+     "vote": "8GbwASqdpw4dVcwbWUxbHXMrjyQx2aKkoBR5H1GJF8iD",
+     "names": [
+      "Bitwise Onchain Solutions"
+     ],
+     "client_id": "JitoLabs",
+     "version": "4.3.2",
+     "stake_lamports": 10815143082173286,
+     "class_stake_share": 0.094246,
+     "tpu_quic": "64.130.32.153:8002",
+     "gossip": "64.130.32.153:8001",
+     "windows": 2629,
+     "passing_by_eighth": [
+      286,
+      341,
+      332,
+      323,
+      326,
+      342,
+      346,
+      333
+     ],
+     "block_slot": 462241096,
+     "crank_memo": null,
+     "ticks": 0,
+     "fee_recipient": "E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL"
+    }
+   ],
+   "rejected": []
+  },
+  "HarmonicAgave": {
+   "class_stake_lamports": 87017401942675671,
+   "version": "4.3.2",
+   "version_stake_share": 1.0,
+   "relayer_port_stake_share": 0.0,
+   "leaders": [
+    {
+     "identity": "Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk",
+     "vote": "CcaHc2L43ZWjwCHART3oZoJvHLAe9hzT2DJNUpBzoTN1",
+     "names": [
+      "Figment"
+     ],
+     "client_id": "HarmonicAgave",
+     "version": "4.3.2",
+     "stake_lamports": 17006421921742277,
+     "class_stake_share": 0.195437,
+     "tpu_quic": "198.13.140.105:12341",
+     "gossip": "141.95.45.24:8001",
+     "windows": 4309,
+     "passing_by_eighth": [
+      551,
+      522,
+      549,
+      510,
+      518,
+      579,
+      540,
+      540
+     ],
+     "block_slot": 462241200,
+     "crank_memo": "MRV",
+     "ticks": 4,
+     "fee_recipient": "Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk"
+    },
+    {
+     "identity": "CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4",
+     "vote": "51JBzSTU5rAM8gLAVQKgp4WoZerQcSqWC7BitBzgUNAm",
+     "names": [
+      "Kraken 2"
+     ],
+     "client_id": "HarmonicAgave",
+     "version": "4.3.2",
+     "stake_lamports": 9464442570771363,
+     "class_stake_share": 0.108765,
+     "tpu_quic": "64.130.46.242:12291",
+     "gossip": "67.208.234.129:8000",
+     "windows": 2300,
+     "passing_by_eighth": [
+      264,
+      315,
+      273,
+      281,
+      293,
+      295,
+      286,
+      293
+     ],
+     "block_slot": 462240804,
+     "crank_memo": "FBA",
+     "ticks": 4,
+     "fee_recipient": "CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4"
+    }
+   ],
+   "rejected": []
+  },
+  "HarmonicFiredancer": {
+   "class_stake_lamports": 37639754467517344,
+   "version": "26.10.4",
+   "version_stake_share": 0.992018,
+   "relayer_port_stake_share": 0.0,
+   "leaders": [
+    {
+     "identity": "JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b",
+     "vote": "CatzoSMUkTRidT5DwBxAC2pEtnwMBTpkCepHkFgZDiqb",
+     "names": [
+      "Jupiter"
+     ],
+     "client_id": "HarmonicFiredancer",
+     "version": "26.10.4",
+     "stake_lamports": 9718548058072207,
+     "class_stake_share": 0.258199,
+     "tpu_quic": "198.13.140.105:12349",
+     "gossip": "88.216.36.133:8001",
+     "windows": 2409,
+     "passing_by_eighth": [
+      298,
+      298,
+      316,
+      329,
+      278,
+      310,
+      293,
+      287
+     ],
+     "block_slot": 462241384,
+     "crank_memo": "FBA",
+     "ticks": 4,
+     "fee_recipient": "JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b"
+    },
+    {
+     "identity": "Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM",
+     "vote": "DumiCKHVqoCQKD8roLApzR5Fit8qGV5fVQsJV9sTZk4a",
+     "names": [
+      "Staking Facilities | MEV \ud83d\udd25"
+     ],
+     "client_id": "HarmonicFiredancer",
+     "version": "26.10.4",
+     "stake_lamports": 6997044020318467,
+     "class_stake_share": 0.185895,
+     "tpu_quic": "198.13.140.105:12351",
+     "gossip": "94.158.242.125:8001",
+     "windows": 1727,
+     "passing_by_eighth": [
+      207,
+      233,
+      213,
+      207,
+      232,
+      237,
+      190,
+      208
+     ],
+     "block_slot": 462240672,
+     "crank_memo": "FBA",
+     "ticks": 4,
+     "fee_recipient": "Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM"
+    }
+   ],
+   "rejected": []
+  },
+  "Firedancer": {
+   "class_stake_lamports": 22608223074280984,
+   "version": "26.10.4",
+   "version_stake_share": 0.793827,
+   "relayer_port_stake_share": 0.0,
+   "leaders": [
+    {
+     "identity": "BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy",
+     "vote": "2hK2uke7ssm7QuBzbrgxBs2aStmFmdKyC12yV2iwvvPm",
+     "names": [],
+     "client_id": "Firedancer",
+     "version": "26.10.4",
+     "stake_lamports": 832293909300839,
+     "class_stake_share": 0.036814,
+     "tpu_quic": "137.239.202.126:9007",
+     "gossip": "137.239.202.126:8001",
+     "windows": 181,
+     "passing_by_eighth": [
+      22,
+      18,
+      24,
+      18,
+      23,
+      19,
+      36,
+      21
+     ],
+     "block_slot": 462241312,
+     "crank_memo": "BAL",
+     "ticks": 0,
+     "fee_recipient": "BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy"
+    },
+    {
+     "identity": "4VRs6A9zBRXz6MLcmQGsBiSoWE2JjHrmw7LintC3T4Nv",
+     "vote": "GMeW3doRSeroW6e7gEMLb2Ne8MfmeLzKSBs4XcWtkdBP",
+     "names": [],
+     "client_id": "Firedancer",
+     "version": "26.10.4",
+     "stake_lamports": 518766017669369,
+     "class_stake_share": 0.022946,
+     "tpu_quic": "64.130.63.145:9007",
+     "gossip": "64.130.63.145:8001",
+     "windows": 148,
+     "passing_by_eighth": [
+      18,
+      21,
+      20,
+      20,
+      16,
+      16,
+      13,
+      24
+     ],
+     "block_slot": 462239540,
+     "crank_memo": "BAL",
+     "ticks": 0,
+     "fee_recipient": "4VRs6A9zBRXz6MLcmQGsBiSoWE2JjHrmw7LintC3T4Nv"
+    }
+   ],
+   "rejected": [
+    {
+     "identity": "9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY",
+     "stake_lamports": 7041145739327549,
+     "block_slot": 462240896,
+     "reason": "crank memo 'FBA' in slot 462240896"
+    },
+    {
+     "identity": "JD549HsbJHeEKKUrKgg4Fj2iyv2RGjsV7NTZjZUrHybB",
+     "stake_lamports": 6051601742713120,
+     "block_slot": 462241292,
+     "reason": "crank memo 'BDL' in slot 462241292"
+    },
+    {
+     "identity": "DNVZMSqeRH18Xa4MCTrb1MndNf3Npg4MEwqswo23eWkf",
+     "stake_lamports": 1921286748791342,
+     "block_slot": null,
+     "reason": "version 26.10.5, the class runs 26.10.4"
+    },
+    {
+     "identity": "FBbqKvwLfKGZrKrfSbPJz4ymQ7zMarhRyZtu1RBkSe89",
+     "stake_lamports": 1918762297168247,
+     "block_slot": null,
+     "reason": "version 0.1.1, the class runs 26.10.4"
+    }
+   ]
+  },
+  "FireBAM": {
+   "class_stake_lamports": 8340742998337941,
+   "version": "26.10.4",
+   "version_stake_share": 1.0,
+   "relayer_port_stake_share": 0.0,
+   "leaders": [
+    {
+     "identity": "9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP",
+     "vote": "HZKopZYvv8v6un2H6KUNVQCnK5zM9emKKezvqhTBSpEc",
+     "names": [],
+     "client_id": "FireBAM",
+     "version": "26.10.4",
+     "stake_lamports": 4477329987787841,
+     "class_stake_share": 0.536802,
+     "tpu_quic": "198.13.140.227:5010",
+     "gossip": "64.130.40.243:8001",
+     "windows": 1142,
+     "passing_by_eighth": [
+      148,
+      141,
+      143,
+      124,
+      116,
+      132,
+      130,
+      142
+     ],
+     "block_slot": 462241108,
+     "crank_memo": "BAL",
+     "ticks": 8,
+     "fee_recipient": "9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP"
+    },
+    {
+     "identity": "LA1NEzryoih6CQW3gwQqJQffK2mKgnXcjSQZSRpM3wc",
+     "vote": "GE6atKoWiQ2pt3zL7N13pjNHjdLVys8LinG8qeJLcAiL",
+     "names": [
+      "Laine \u2764\ufe0f  by SOL Strategies"
+     ],
+     "client_id": "FireBAM",
+     "version": "26.10.4",
+     "stake_lamports": 418312464339880,
+     "class_stake_share": 0.050153,
+     "tpu_quic": "63.254.167.197:5010",
+     "gossip": "64.130.42.120:8001",
+     "windows": 89,
+     "passing_by_eighth": [
+      20,
+      10,
+      13,
+      7,
+      7,
+      7,
+      5,
+      12
+     ],
+     "block_slot": 462240280,
+     "crank_memo": "BAL",
+     "ticks": 5,
+     "fee_recipient": "LA1NEzryoih6CQW3gwQqJQffK2mKgnXcjSQZSRpM3wc"
+    }
+   ],
+   "rejected": []
+  },
+  "Rakurai": {
+   "class_stake_lamports": 4828505382797205,
+   "version": "4.3.2",
+   "version_stake_share": 1.0,
+   "relayer_port_stake_share": 0.063968,
+   "leaders": [
+    {
+     "identity": "ana2y2YvQ3ZPMwm6qhnN3nJoUSiT3qx5Pvetkq9xcfY",
+     "vote": "4AUED4uj6nSTuANzaAUnGBPJQRmhpDYDwoWJNkoUUBBW",
+     "names": [
+      "Anagram Staking"
+     ],
+     "client_id": "Rakurai",
+     "version": "4.3.2",
+     "stake_lamports": 2266172431520282,
+     "class_stake_share": 0.469332,
+     "tpu_quic": "45.77.64.138:8002",
+     "gossip": "45.77.64.138:8000",
+     "windows": 590,
+     "passing_by_eighth": [
+      80,
+      62,
+      83,
+      61,
+      80,
+      65,
+      83,
+      76
+     ],
+     "block_slot": 462241156,
+     "crank_memo": null,
+     "ticks": 0,
+     "fee_recipient": "ana2y2YvQ3ZPMwm6qhnN3nJoUSiT3qx5Pvetkq9xcfY"
+    },
+    {
+     "identity": "E3mDbFMr8yZcCAZx5wPUFCRmLX31u8Nnj4jPoPc54h3F",
+     "vote": "DierScgiTrz5AM7mddeJLHYNvafym3XhjjdM51AnKevU",
+     "names": [
+      "MAVAN"
+     ],
+     "client_id": "Rakurai",
+     "version": "4.3.2",
+     "stake_lamports": 888000320573785,
+     "class_stake_share": 0.183908,
+     "tpu_quic": "51.89.11.197:8002",
+     "gossip": "51.89.11.197:8000",
+     "windows": 210,
+     "passing_by_eighth": [
+      16,
+      22,
+      38,
+      20,
+      21,
+      34,
+      24,
+      35
+     ],
+     "block_slot": 462236288,
+     "crank_memo": null,
+     "ticks": 0,
+     "fee_recipient": "E3mDbFMr8yZcCAZx5wPUFCRmLX31u8Nnj4jPoPc54h3F"
+    }
+   ],
+   "rejected": []
+  },
+  "Agave": {
+   "class_stake_lamports": 4800084854373528,
+   "version": "4.3.2",
+   "version_stake_share": 0.780678,
+   "relayer_port_stake_share": 0.0,
+   "leaders": [
+    {
+     "identity": "7QQGNm3ptwinipDCyaCF7jY5katgmFUu1ieP2f7nwLpE",
+     "vote": "8BMMDVM8Tb88a2Hx1VSZ1TKmH1rMHbVU7xVafMk9JrEW",
+     "names": [],
+     "client_id": "Agave",
+     "version": "4.3.2",
+     "stake_lamports": 1875001953466200,
+     "class_stake_share": 0.390619,
+     "tpu_quic": "5.199.172.176:12002",
+     "gossip": "5.199.172.176:12000",
+     "windows": 444,
+     "passing_by_eighth": [
+      52,
+      65,
+      46,
+      57,
+      52,
+      50,
+      59,
+      63
+     ],
+     "block_slot": 462241260,
+     "crank_memo": null,
+     "ticks": 0,
+     "fee_recipient": "7QQGNm3ptwinipDCyaCF7jY5katgmFUu1ieP2f7nwLpE"
+    },
+    {
+     "identity": "5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS",
+     "vote": "AzbQjKoLepbDS8C6hgkRY7UCRwbwZZ9HqdtnWyef9WjX",
+     "names": [],
+     "client_id": "Agave",
+     "version": "4.3.2",
+     "stake_lamports": 1207980324911175,
+     "class_stake_share": 0.251658,
+     "tpu_quic": "185.189.44.172:12002",
+     "gossip": "185.189.44.172:12000",
+     "windows": 326,
+     "passing_by_eighth": [
+      37,
+      53,
+      37,
+      34,
+      62,
+      36,
+      38,
+      29
+     ],
+     "block_slot": 462239248,
+     "crank_memo": null,
+     "ticks": 0,
+     "fee_recipient": "5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS"
+    }
+   ],
+   "rejected": []
+  }
+ },
+ "short": [],
+ "blocks_read": 18,
+ "cluster_nodes_file": "cluster-nodes.json",
+ "leader_schedule_file": "leader-schedule.json",
+ "vote_accounts_file": "vote-accounts.json",
+ "validator_info_file": "validator-info.json"
+}
