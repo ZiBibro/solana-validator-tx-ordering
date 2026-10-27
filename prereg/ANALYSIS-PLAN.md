@@ -4,7 +4,7 @@ This file states how the measurements are analysed. It was written before the fi
 
 `python -m itb manifest --stage pilot` writes `prereg/manifest-pilot.json`, which lists the SHA-256 of this file and of the two files that fix the pilot's numbers, `prereg/pilot-table.json` and `itb/prereg.py`. Before the first live burst, `itb-probe anchor --stage pilot` sends one legacy transaction from the measuring wallet with a single Memo v2 instruction that reads `itb-prereg <SHA-256 of the manifest>`, and records its signature in `data/prereg-anchors.json`. `itb verify` then checks two things. Every file listed in the manifest must still carry its hash, and the memo's block time must come before the first inclusion of any burst of the stage. A second memo before the first burst of the main campaign anchors the minimum number of bursts computed from the pilot (section 5).
 
-Constants written in capitals live in `itb/prereg.py`. The code that carries out this plan is `itb/verdict.py` together with `itb/stats.py`, and `itb/analyze.py` draws the REPORT tables from them. Analysis uses the Python standard library only, so a judge can run it without Docker.
+Constants written in capitals live in `itb/prereg.py`. The code that carries out this plan is `itb/verdict.py` together with `itb/stats.py`, and `itb/analyze.py` draws the REPORT tables from them. Analysis uses the Python standard library only, so anyone can run it without Docker.
 
 ## 1. Data
 
@@ -76,7 +76,7 @@ The arrival estimate of a burst is the send offset from the node's `firstShredRe
 
 A burst also stays out of that comparison when `getSlot` at processed commitment ran `CLOCK_LAG_SKIP_SLOTS` = 2 or more slots ahead of the slot clock, since its arrival estimate rests on a lagging clock. Rows of schema version 1 predate this guard; for them the confirmed blockhash, fetched `BLOCKHASH_LEAD_SLOTS` = 6 slots before the window by the clock, must come from a slot before that point.
 
-The conclusion on tie resolution (H3 and H4) is drawn only from pre-window bursts, where all probes reach one scheduling pass. REPORT prints the median one-way latency estimate per class and per leader of each pair next to the pair test, so a judge sees whether a pair difference follows a difference in distance.
+The conclusion on tie resolution (H3 and H4) is drawn only from pre-window bursts, where all probes reach one scheduling pass. REPORT prints the median one-way latency estimate per class and per leader of each pair next to the pair test, so a reader sees whether a pair difference follows a difference in distance.
 
 ## 7. Stability across epochs
 
