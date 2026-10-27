@@ -377,8 +377,9 @@ def labels_block(items):
 
 
 def elsewhere_block(runs):
-    """Where delivered probes landed, per path and moment condition (README, interaction of probes)."""
-    acc = {}
+    """Where delivered probes landed, per path and moment condition and per class of the target
+    (README, interaction of probes)."""
+    acc, by_class = {}, {}
     for r in runs:
         for sig, p in r.probes.items():
             b = r.bursts.get(p["burst_seq"])
@@ -387,27 +388,37 @@ def elsewhere_block(runs):
                 continue
             e = acc.setdefault((b["path"], b["timing"]), {"delivered": 0, "window": 0, "same": 0, "other": 0,
                                                            "classes": {}})
+            t = by_class.setdefault(b["selection_class"], {"delivered": 0, "window": 0, "same": 0, "other": 0})
             e["delivered"] += 1
+            t["delivered"] += 1
             inc = r.inclusions.get(sig)
             if not inc or inc["status"] != "included":
                 continue
             if inc["in_target_window"]:
-                e["window"] += 1
+                kind = "window"
             elif inc["actual_leader"] == b["leader"]:
-                e["same"] += 1
+                kind = "same"
             else:
-                e["other"] += 1
+                kind = "other"
                 c = inc["actual_leader_class"] or "unknown"
                 e["classes"][c] = e["classes"].get(c, 0) + 1
+            e[kind] += 1
+            t[kind] += 1
     if not acc:
         return NO_RUNS
-    rows = []
-    for (path, timing), e in sorted(acc.items()):
+
+    def counts(e):
         missing = e["delivered"] - e["window"] - e["same"] - e["other"]
-        rows.append([path, timing, e["delivered"], e["window"], e["same"], e["other"], missing,
-                     ", ".join("%s %d" % kv for kv in sorted(e["classes"].items())) or "-"])
-    return _table(["Path", "Timing", "Delivered", "In target window", "Same leader, outside the window",
-                   "Another leader's block", "Not included", "Class of the other leaders"], rows)
+        return [e["delivered"], e["window"], e["same"], e["other"], missing]
+
+    landed = ["Delivered", "In target window", "Same leader, outside the window", "Another leader's block",
+              "Not included"]
+    rows = [[path, timing] + counts(e) + [", ".join("%s %d" % kv for kv in sorted(e["classes"].items())) or "-"]
+            for (path, timing), e in sorted(acc.items())]
+    order = list(prereg.CLASSES) + sorted(set(by_class) - set(prereg.CLASSES))
+    class_rows = [[cls] + counts(by_class[cls]) for cls in order if cls in by_class]
+    return (_table(["Path", "Timing"] + landed + ["Class of the other leaders"], rows)
+            + "\n\n" + _table(["Class of the target"] + landed, class_rows))
 
 
 def latency_block(items):

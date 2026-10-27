@@ -1248,6 +1248,13 @@ def report_checks():
     out.append(("report: the control table compares both measures in one leader-epoch stratum",
                 "| tau fee | 1 |" in control and "| inclusion share | 1 | 0.000 | 1 |" in control,
                 repr(control.split("\n")[2:4])))
+    parts = [[[c.strip() for c in line.split("|")[1:-1]] for line in part.split("\n")[2:]]
+             for part in tables.get("elsewhere", "").split("\n\n")]
+    by_class = parts[1] if len(parts) == 2 else []
+    out.append(("report: probes outside their window add up per class of the target",
+                [r[0] for r in by_class] == ["FireBAM"]
+                and [int(c) for c in by_class[0][1:]] == [sum(int(r[i]) for r in parts[0]) for i in range(2, 7)],
+                repr(by_class)))
     return out
 
 

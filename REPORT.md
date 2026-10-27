@@ -297,6 +297,17 @@ The arrival estimate is the send offset from the first-shred moment of the first
 |---|---|---|---|---|---|---|---|
 | quic | pre300 | 384 | 372 | 0 | 12 | 0 | HarmonicFiredancer 12 |
 | quic | slot2 | 427 | 427 | 0 | 0 | 0 | - |
+
+| Class of the target | Delivered | In target window | Same leader, outside the window | Another leader's block | Not included |
+|---|---|---|---|---|---|
+| AgaveBam | 108 | 108 | 0 | 0 | 0 |
+| JitoLabs | 96 | 96 | 0 | 0 | 0 |
+| HarmonicAgave | 108 | 108 | 0 | 0 | 0 |
+| HarmonicFiredancer | 108 | 96 | 0 | 12 | 0 |
+| Firedancer | 96 | 96 | 0 | 0 | 0 |
+| FireBAM | 103 | 103 | 0 | 0 | 0 |
+| Rakurai | 96 | 96 | 0 | 0 | 0 |
+| Agave | 96 | 96 | 0 | 0 | 0 |
 <!-- itb:end pilot-elsewhere -->
 
 ### 5.8 Path latency
@@ -573,7 +584,7 @@ On Harmonic the reports split. fomoles finds a fee sort in both Harmonic classes
 
 Fee per cost is the reading of two of these reports, so the campaign checks it independently in epochs 1071 and later with another design: bursts of 12 probes in one leader window, an arm that holds the fee equal, an arm that changes only the requested cost, and builder classes set against their base client.
 
-Two parts of this kit appear in none of these reports, by a text search of the public repositories on this question on 2026-10-27 with data files left out. The builder mark matches each slot of a builder class to its builder through the builder's tick in the block (section 7), and order is tested inside the segments between ticks (sections 5.4 and 6.4). The campaign also measures the same panel over four epochs, and its epoch tables describe how each rule holds over time (section 6.12).
+Two parts of this kit appear in none of these reports, by a text search of the public repositories on this question on 2026-10-27 with data files left out. The builder mark is checked on chain data: each slot of a builder class is matched to its builder through the builder's tick in the block (section 7), and the analysis plan tests order inside the segments between ticks (sections 5.4 and 6.4). The four epochs of the campaign are a description only: the epoch tables show how each rule holds over time (section 6.12), and the analysis plan fixes no test of stability for them (section 9).
 
 ## Appendix A. Every burst
 
