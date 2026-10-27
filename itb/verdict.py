@@ -107,6 +107,21 @@ def burst_pieces(probes):
     return out
 
 
+def segment_piece(probes):
+    """Piece of the pilot rounds test (section 10) for one block: send rank against
+    the tick segment, positive when the later-sent probe stands in the later segment.
+    None for a block without ticks or with every probe in one segment."""
+    if len(probes) < 2 or any(p.get("segment") is None for p in probes):
+        return None
+    seg = [p["segment"] for p in probes]
+    ties, sizes = _tie_pairs(seg)
+    if len(sizes) < 2:
+        return None
+    n0 = len(probes) * (len(probes) - 1) // 2
+    return Piece(stats.pair_s([p["send_rank"] for p in probes], seg), math.sqrt((n0 - ties) * n0),
+                 ("sizes", sizes))
+
+
 _NULLS = {}
 
 

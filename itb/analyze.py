@@ -147,6 +147,7 @@ def units_of(run):
             per_slot.setdefault(inc["slot"], []).append({
                 "pos": inc["tx_index"], "fee": p["priority_fee_lamports"],
                 "send_rank": p["send_rank"], "cu_limit": p["cu_limit"],
+                "segment": inc.get("tick_segment"),
             })
         blocks = [probes for _, probes in sorted(per_slot.items()) if len(probes) >= 2]
         if any(slot_bursts.get(slot, set()) - {seq} for slot in per_slot):
@@ -265,9 +266,39 @@ def analyze(runs, stages=("campaign",)):
         "stages": list(stages), "units": len(units), "kept": len(kept), "excluded": excluded,
         "families": {"verdict": verdict.VERDICT_FAMILY_M, "equivalence": verdict.EQUIV_FAMILY_M,
                      "pair": verdict.PAIR_FAMILY_M},
-        "cells": cell_rows, "pairs": pair_rows, "inclusion": inclusion_shares(
-            [r for r in runs if r.run["stage"] in stages]),
+        "cells": cell_rows, "pairs": pair_rows, "rounds_test": rounds_test(kept),
+        "inclusion": inclusion_shares([r for r in runs if r.run["stage"] in stages]),
     }
+
+
+ROUNDS_ARM, ROUNDS_TIMING = "equal_fee", "slot2"
+
+
+def rounds_test(kept):
+    """Pilot rounds test (section 10) over the kept equal-fee bursts of the slot-2
+    condition: tau of send rank against tick segment per class and pooled over every
+    burst. The prediction is a positive tau; a negative pooled S, the later-sent probe
+    more often in the earlier segment, refutes it."""
+    by_class = {}
+    for u in kept:
+        if u.burst["arm"] == ROUNDS_ARM and u.burst["timing"] == ROUNDS_TIMING:
+            pieces = [p for p in map(verdict.segment_piece, u.blocks) if p is not None]
+            by_class.setdefault(u.burst["selection_class"], []).append(pieces)
+    every = [b for bursts in by_class.values() for b in bursts if b]
+    pooled = verdict.class_test("segment", every)
+    if pooled is None:
+        form = "no data"
+    elif pooled.s < 0:
+        form = "refuted"
+    elif pooled.p < stats.ALPHA:
+        form = "supported"
+    else:
+        form = "not shown"
+    negative = sum(1 for b in every if sum(p.s for p in b) < 0)
+    return {"arm": ROUNDS_ARM, "timing": ROUNDS_TIMING, "bursts": sum(len(b) for b in by_class.values()),
+            "with_two_segments": len(every), "negative_share": negative / len(every) if every else None,
+            "classes": {cls: _tau_dict(verdict.class_test("segment", b)) for cls, b in sorted(by_class.items())},
+            "pooled": _tau_dict(pooled), "form": form}
 
 
 def pair_tests(kept):
@@ -332,4 +363,12 @@ def summary_lines(result):
         if r["strata"]:
             lines.append("pair %s vs %s %-6s %-5s %2d strata  diff %.3f  p %.3g  %s" % (
                 r["pair"][0], r["pair"][1], r["timing"], r["tau"], r["strata"], r["mean_diff"], r["p"], r["form"]))
+    rt = result.get("rounds_test")
+    if rt and rt["pooled"]:
+        lines.append("rounds test %s %s: %d bursts, %d with two segments, negative %.2f, pooled tau %.3f (p %.3g)  %s"
+                     % (rt["arm"], rt["timing"], rt["bursts"], rt["with_two_segments"], rt["negative_share"],
+                        rt["pooled"]["tau"], rt["pooled"]["p"], rt["form"]))
+    elif rt:
+        lines.append("rounds test %s %s: %d bursts, none with two segments  %s"
+                     % (rt["arm"], rt["timing"], rt["bursts"], rt["form"]))
     return lines

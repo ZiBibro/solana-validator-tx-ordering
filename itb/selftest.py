@@ -916,6 +916,44 @@ def campaign_checks():
     return out
 
 
+def _rounds_unit(cls, segments, arm="equal_fee", timing="slot2", reverse=False, seq=0):
+    n = len(segments)
+    block = [{"pos": i, "fee": 100, "send_rank": n - 1 - i if reverse else i, "cu_limit": 1400, "segment": s}
+             for i, s in enumerate(segments)]
+    burst = {"arm": arm, "timing": timing, "selection_class": cls}
+    return analyze.Unit("r", seq, burst, [block], [], None)
+
+
+def rounds_checks():
+    """Pilot rounds test (analysis plan section 10) on blocks with known segments."""
+    out = []
+    rounds = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3]
+    piece = verdict.segment_piece(_rounds_unit("a", rounds).blocks[0])
+    tau, s, d = stats.tau_b(list(range(12)), rounds)
+    out.append(("rounds test: a block in four rounds of three gives S 54 and the tau-b of send rank and segment",
+                piece.s == 54 and _close(piece.s / piece.d, tau, 1e-12) and _close(tau, math.sqrt(54 / 66), 1e-12),
+                "%.6f" % tau))
+    rt = analyze.rounds_test([_rounds_unit("a", rounds)])
+    out.append(("rounds test: one such burst is supported with the exact p 2/369600",
+                rt["form"] == "supported" and rt["pooled"]["p_exact"] == "1/184800", rt["pooled"]["p_exact"]))
+    one = _rounds_unit("a", [5] * 12)
+    blind = _rounds_unit("a", [None] * 12)
+    out.append(("rounds test: one segment or no ticks leaves a block out",
+                verdict.segment_piece(one.blocks[0]) is None and verdict.segment_piece(blind.blocks[0]) is None
+                and analyze.rounds_test([one, blind])["form"] == "no data", ""))
+    noise = [_rounds_unit("b", rounds, reverse=True, timing="pre300"),
+             _rounds_unit("b", rounds, reverse=True, arm="independent")]
+    rt = analyze.rounds_test([_rounds_unit("a", rounds)] + noise)
+    out.append(("rounds test: the pre-window condition and other arms stay out",
+                rt["bursts"] == 1 and list(rt["classes"]) == ["a"], str(rt["bursts"])))
+    rt = analyze.rounds_test([_rounds_unit("a", rounds), _rounds_unit("b", rounds, reverse=True, seq=1),
+                              _rounds_unit("b", rounds, reverse=True, seq=2)])
+    out.append(("rounds test: later-sent probes more often in earlier segments refute it, per class taus apart",
+                rt["form"] == "refuted" and rt["pooled"]["S"] == -54 and _close(rt["negative_share"], 2 / 3, 1e-12)
+                and rt["classes"]["a"]["S"] == 54 and rt["classes"]["b"]["S"] == -108, rt["form"]))
+    return out
+
+
 def timing_checks():
     """Moment bands (plan sections 5.1 and 10): the slot-2 reference and the final aim."""
     out = []
@@ -987,6 +1025,7 @@ def run_all():
               + end_to_end_checks() + chain_checks() + prereg_checks() + plan_checks() + panel_checks()
               + pilot_checks()
               + campaign_checks()
+              + rounds_checks()
               + timing_checks()
               + clock_guard_checks())
     lines = []
