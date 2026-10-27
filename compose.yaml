@@ -1,6 +1,6 @@
 # Inside the Block: how Solana leaders order transactions.
 #
-# Judges:   docker compose run --rm reproduce          (no key, no Rust build)
+# Check:    docker compose run --rm reproduce          (no key, no Rust build)
 #           docker compose run --rm reproduce verify   (one step for debugging)
 # Measure:  docker compose --profile measure run --rm plan plan --bursts 8   (draws data/plans/<id>/)
 #           docker compose --profile measure run --rm plan panel           (draws data/panels/<id>/)
