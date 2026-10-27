@@ -307,9 +307,12 @@ def part_bounds(round_index, rounds, epoch_first, slots_in_epoch):
 def place_epoch(epoch_table, seed, leaders, passing, epoch_first, slots_in_epoch, not_before):
     """([{"round", "anchor_slot", "slots"}], notes) for one epoch of the table.
 
-    Anchors and orders come from the seed alone, so the same table and schedule
-    give the same windows whenever the plan is drawn. A round whose anchor lies
-    before not_before is left out; a burst without a free passing window of its
+    Anchors and orders come from the seed alone, and the whole epoch is placed
+    before not_before is looked at, so the same table and schedule give the same
+    windows whenever the plan is drawn. A plan drawn again after a stopped run
+    therefore keeps the windows of the rounds still ahead and leaves out every
+    round with a window before not_before, the one in progress included, so no
+    burst of the table runs twice. A burst without a free passing window of its
     leader gets slot None."""
     rng = random.Random("itb-campaign-order:%s:%d" % (seed, epoch_table["epoch_index"]))
     rounds = epoch_table["rounds"]
@@ -320,24 +323,28 @@ def place_epoch(epoch_table, seed, leaders, passing, epoch_first, slots_in_epoch
         anchor = rng.randrange(lo, hi)
         rng.shuffle(order)
         draws.append((anchor, order))
-    taken, out, notes = [], [], []
+    taken, placed, notes = [], [], []
     for r, (anchor, order) in zip(rounds, draws):
-        if anchor < not_before:
-            notes.append("round %d: anchor slot %d lies before slot %d; round left out" % (r["round"], anchor, not_before))
-            continue
         slots = [None] * len(r["bursts"])
         for i in order:
             b = r["bursts"][i]
             leader = leaders[b["class"]][b["leader_rank"]]
-            nearest = sorted((w for w in passing.get(leader, []) if w >= not_before),
-                             key=lambda w: (abs(w - anchor), w))
+            nearest = sorted(passing.get(leader, []), key=lambda w: (abs(w - anchor), w))
             slots[i] = next((w for w in nearest if all(abs(w - t) >= plan.MIN_GAP_SLOTS for t in taken)), None)
             if slots[i] is None:
                 notes.append("round %d: no free passing window of %s leader %s; burst left out"
                              % (r["round"], b["class"], leader))
                 continue
             taken.append(slots[i])
-        out.append({"round": r["round"], "anchor_slot": anchor, "slots": slots})
+        placed.append({"round": r["round"], "anchor_slot": anchor, "slots": slots})
+    out = []
+    for p in placed:
+        got = [s for s in p["slots"] if s is not None]
+        if got and min(got) < not_before:
+            notes.append("round %d: its first window %d lies before slot %d; round left out"
+                         % (p["round"], min(got), not_before))
+            continue
+        out.append(p)
     return out, notes
 
 

@@ -9,6 +9,7 @@
 #           docker compose --profile measure run --rm plan campaign --panel data/panels/<id>/panel.json \
 #                     --epoch-index 0 --epoch <chain epoch>   (one epoch of prereg/campaign-table.json)
 #           python -m itb minimum; python -m itb campaign-table   (on the host, into prereg/)
+#           scripts/campaign.sh data/panels/<id>/panel.json <first epoch>   (live, epoch after epoch)
 #           docker compose --profile measure run --rm probe run --plan /data/plans/<id>/plan.json
 #                                                    (dry-run, the default)
 #           docker compose --profile measure run --rm probe run --plan ... --live --max-spend-lamports N

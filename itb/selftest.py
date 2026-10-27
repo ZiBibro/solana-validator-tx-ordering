@@ -857,10 +857,13 @@ def campaign_checks():
                 "; ".join(plan.check(built))))
     out.append(("campaign plan: same table and windows, same placement",
                 campaign.place_epoch(t["epochs"][0], t["seed"], leaders, passing, first, n, first - 900)[0] == placed, ""))
-    late, late_notes = campaign.place_epoch(t["epochs"][0], t["seed"], leaders, passing, first, n, first + n // 2)
-    out.append(("campaign plan: drawn mid-epoch, it leaves out the rounds whose anchor has passed and keeps the rest",
-                [p["round"] for p in late] == [4, 5, 6, 7] and len(late_notes) == 4
-                and [p["anchor_slot"] for p in late] == [p["anchor_slot"] for p in placed[4:]], ""))
+    cut = min(placed[4]["slots"])
+    late, late_notes = campaign.place_epoch(t["epochs"][0], t["seed"], leaders, passing, first, n, cut)
+    out.append(("campaign plan: drawn again mid-epoch, it keeps the windows of the rounds ahead and leaves out "
+                "the round in progress", late == placed[4:] and len(late_notes) == 4, str(late_notes[-1:])))
+    late, late_notes = campaign.place_epoch(t["epochs"][0], t["seed"], leaders, passing, first, n, cut + 1)
+    out.append(("campaign plan: a round with one window already passed is left out whole",
+                late == placed[5:] and len(late_notes) == 5, ""))
     gone = dict(passing, **{leaders["Rakurai"][1]: []})
     _, gone_notes = campaign.place_epoch(t["epochs"][0], t["seed"], leaders, gone, first, n, first - 900)
     out.append(("campaign plan: a leader without windows loses its bursts with a note, the epoch goes on",
