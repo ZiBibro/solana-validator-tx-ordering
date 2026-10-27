@@ -1,0 +1,588 @@
+{
+ "classes": {
+  "Agave": {
+   "bam_tick": {
+    "ci95": [
+     0.04,
+     1.42
+    ],
+    "k": 1,
+    "n": 394,
+    "pct": 0.25
+   },
+   "blocks": 394,
+   "empty": 4,
+   "harmonic_tick": {
+    "ci95": [
+     0.0,
+     0.97
+    ],
+    "k": 0,
+    "n": 394,
+    "pct": 0.0
+   },
+   "leaders_in_blocks": 20,
+   "no_tick": {
+    "ci95": [
+     98.58,
+     99.96
+    ],
+    "k": 393,
+    "n": 394,
+    "pct": 99.75
+   },
+   "no_tick_leaders": [
+    "5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS",
+    "7QQGNm3ptwinipDCyaCF7jY5katgmFUu1ieP2f7nwLpE",
+    "9D3o3EYeknhTrRvXS1PnD2euGXnMFa3HwpYBq5gPZJDA",
+    "9fa5wcqnAQqHyn58U1vHHLuZW5GXLcoho7hKT17jGJfZ",
+    "9hQqNe3DQTiwhspatewA8EXhz12e6sq5UJVJ2qNRwnTf",
+    "DiFeTctQSaNczJNmZ5121kYqLaBe9wDpM9sjCzTELJLE",
+    "dxa6QFqLcByyHykLCAW5tv1VYNVQFV3v6oovM2h8inH",
+    "dzBhD4wikyy7xqwiJvT49gdrKqWVjfs9M6cTssmRX8Y",
+    "mds1WWedpezW3qvgML4WgP341jZksYAy5SbMLwjP5KC",
+    "mds2fZEpJP688PqJHvfLxGyf2VFrcNkvjuUxNYCwjrq",
+    "mds3Df1ieBonG2qS8ZoKTqshq5MgTUNfZgc78cjiCdq",
+    "mds4GEuiSgQRqveGyktWpETBFCb4AS2wDnhqwLHcT6Z",
+    "rsbp8zMHbGCpLoRktmsjspYv77VcjxAzH1KxPCD9BiU",
+    "scb1Z7du8NVSaHFXsafSjRdXr6xBjWR3iugikL739Y1",
+    "scb2TYPmwHgKxXJaJNq6gHKwYkVyLKx58hz9RbCKZZR",
+    "sce1oTWYVXv7a7Hy2skxREozs5nwkQ4wDT8XJSi5tgE",
+    "sce2zXNjLpPMcSCATTrLiQhAAvHNNMKypTFVtg2H37U",
+    "sce3TfT81rxYYcdbP1kBFMcTK3ZBc8hvHVeXD6WLSzE",
+    "scs1NCSTafrUX6RBx113B9YDCepo1QdEzU8WwEkf25i",
+    "scs2Ra91pMbvqFAP7uitrN5U25SoyBTqZgBbhpVMJko"
+   ],
+   "other_signer": 0,
+   "population_leaders": 20,
+   "population_slots": 4796,
+   "read": 400,
+   "sampled": 400,
+   "skipped": 2
+  },
+  "AgaveBam": {
+   "bam_tick": {
+    "ci95": [
+     81.49,
+     88.52
+    ],
+    "k": 332,
+    "n": 389,
+    "pct": 85.35
+   },
+   "bam_tick_off_silent_host": {
+    "ci95": [
+     96.96,
+     99.53
+    ],
+    "k": 330,
+    "n": 334,
+    "pct": 98.8
+   },
+   "blocks": 389,
+   "empty": 11,
+   "harmonic_tick": {
+    "ci95": [
+     0.05,
+     1.44
+    ],
+    "k": 1,
+    "n": 389,
+    "pct": 0.26
+   },
+   "leaders_in_blocks": 140,
+   "no_tick": {
+    "ci95": [
+     11.26,
+     18.23
+    ],
+    "k": 56,
+    "n": 389,
+    "pct": 14.4
+   },
+   "no_tick_all_on_silent_host": false,
+   "no_tick_by_tpu_host": {
+    "64.130.61.195": {
+     "leaders": [
+      "krakeNd6ednDPEXxHAmoBs1qKVM8kLg79PvWF2mhXV1"
+     ],
+     "slots": 3
+    },
+    "88.216.192.50": {
+     "leaders": [
+      "2VKu11f8zc3huqDQUN6WJTFpX32PgHpXXjf72P6YvYMd",
+      "5DYpYgKgHV5aswMXBLp3UfJnbbzzFnGiJPpcxVAm56bG",
+      "5ejbTALcBsKQ7Cj1iSuu2mY5jqbYHqh9gF5ERXLiYj1z",
+      "6gL3uHvuUjaPp9mTBf2VZ4tpKiYhbWyPrAPboGByzEHd",
+      "6y7V8dL673XFzm9QyC5vvh3itWkp7wztahBd2yDqsyrK",
+      "8uJiHDJ1b7UDQ4KFsQGJXK9nUCkokdKRJymg1Wy9nxvM",
+      "9gFxqsXbFyrKXUkqpAatonn47uYZ7sEZSnMxhzQoXrUJ",
+      "BSVckjdW2f8kcXPGcrPPtV9kUDBZ8w8PjrrGVnxgEdwq",
+      "CwyVpfmfSiMeCexi3JgUNvaiDfYN14cLDjzT99zcBuD2",
+      "FWwwP9tNttSy9dJFxwf6ebXWfc6VJXqFNMTccrMiLFTH",
+      "HaLanfo94ezLc3JZ55qqxr7W3qbe1PprJyv2uEtriEqN",
+      "HpcB5Qg8Y9E73dUkot5e8HkgAJbExsYeUzniY4bCuKac"
+     ],
+     "slots": 53
+    }
+   },
+   "no_tick_leaders": [
+    "2VKu11f8zc3huqDQUN6WJTFpX32PgHpXXjf72P6YvYMd",
+    "5DYpYgKgHV5aswMXBLp3UfJnbbzzFnGiJPpcxVAm56bG",
+    "5ejbTALcBsKQ7Cj1iSuu2mY5jqbYHqh9gF5ERXLiYj1z",
+    "6gL3uHvuUjaPp9mTBf2VZ4tpKiYhbWyPrAPboGByzEHd",
+    "6y7V8dL673XFzm9QyC5vvh3itWkp7wztahBd2yDqsyrK",
+    "8uJiHDJ1b7UDQ4KFsQGJXK9nUCkokdKRJymg1Wy9nxvM",
+    "9gFxqsXbFyrKXUkqpAatonn47uYZ7sEZSnMxhzQoXrUJ",
+    "BSVckjdW2f8kcXPGcrPPtV9kUDBZ8w8PjrrGVnxgEdwq",
+    "CwyVpfmfSiMeCexi3JgUNvaiDfYN14cLDjzT99zcBuD2",
+    "FWwwP9tNttSy9dJFxwf6ebXWfc6VJXqFNMTccrMiLFTH",
+    "HaLanfo94ezLc3JZ55qqxr7W3qbe1PprJyv2uEtriEqN",
+    "HpcB5Qg8Y9E73dUkot5e8HkgAJbExsYeUzniY4bCuKac",
+    "krakeNd6ednDPEXxHAmoBs1qKVM8kLg79PvWF2mhXV1"
+   ],
+   "other_signer": 0,
+   "population_leaders": 355,
+   "population_slots": 152256,
+   "read": 400,
+   "sampled": 400,
+   "silent_host": {
+    "blocks": 55,
+    "leaders": 13,
+    "with_tick": 2
+   },
+   "skipped": 0
+  },
+  "FireBAM": {
+   "bam_tick": {
+    "ci95": [
+     87.79,
+     93.43
+    ],
+    "k": 364,
+    "n": 400,
+    "pct": 91.0
+   },
+   "bam_tick_off_silent_host": {
+    "ci95": [
+     91.81,
+     96.41
+    ],
+    "k": 364,
+    "n": 385,
+    "pct": 94.55
+   },
+   "blocks": 400,
+   "empty": 0,
+   "harmonic_tick": {
+    "ci95": [
+     0.0,
+     0.95
+    ],
+    "k": 0,
+    "n": 400,
+    "pct": 0.0
+   },
+   "leaders_in_blocks": 17,
+   "no_tick": {
+    "ci95": [
+     6.57,
+     12.21
+    ],
+    "k": 36,
+    "n": 400,
+    "pct": 9.0
+   },
+   "no_tick_all_on_silent_host": false,
+   "no_tick_by_tpu_host": {
+    "64.130.52.171": {
+     "leaders": [
+      "A4hyMd3FyvUJSRafDUSwtLLaQcxRP4r1BRC9w2AJ1to2"
+     ],
+     "slots": 21
+    },
+    "88.216.192.50": {
+     "leaders": [
+      "74Xkp2iLXm315h69sFRiCFjmKnaWkMV8W2LgJwPRSgN5"
+     ],
+     "slots": 15
+    }
+   },
+   "no_tick_leaders": [
+    "74Xkp2iLXm315h69sFRiCFjmKnaWkMV8W2LgJwPRSgN5",
+    "A4hyMd3FyvUJSRafDUSwtLLaQcxRP4r1BRC9w2AJ1to2"
+   ],
+   "other_signer": 0,
+   "population_leaders": 17,
+   "population_slots": 7528,
+   "read": 400,
+   "sampled": 400,
+   "silent_host": {
+    "blocks": 15,
+    "leaders": 1,
+    "with_tick": 0
+   },
+   "skipped": 0
+  },
+  "Firedancer": {
+   "bam_tick": {
+    "ci95": [
+     0.0,
+     0.95
+    ],
+    "k": 0,
+    "n": 400,
+    "pct": 0.0
+   },
+   "blocks": 400,
+   "empty": 0,
+   "harmonic_tick": {
+    "ci95": [
+     0.0,
+     0.95
+    ],
+    "k": 0,
+    "n": 400,
+    "pct": 0.0
+   },
+   "leaders_in_blocks": 20,
+   "no_tick": {
+    "ci95": [
+     99.05,
+     100.0
+    ],
+    "k": 400,
+    "n": 400,
+    "pct": 100.0
+   },
+   "no_tick_leaders": [
+    "4SNKY7GCp7ohY4AawND5Cc2D71sWMWN3Uifo854yvtks",
+    "4VRs6A9zBRXz6MLcmQGsBiSoWE2JjHrmw7LintC3T4Nv",
+    "6DTkuiey2RgMaBPC32dx2YpRKoNVfL19WdwBYih5SkVw",
+    "9WzPWqKSqbE5PT9hMsmCDFjzpurAXEYCE9qrpVWp28KR",
+    "9eGrDohdNTAo61DRHyfMuqKWXqYnA3i254Wiszxe8FoY",
+    "AHZxzLeRGRfNVFrCmP58iJgEwbcXyZeAkZ32CmbfEmYR",
+    "BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy",
+    "D2RV1q6FgePVVjrMa7AMzVbvvAeg5oS7TAV7qdNKSDsX",
+    "DNVZMSqeRH18Xa4MCTrb1MndNf3Npg4MEwqswo23eWkf",
+    "FBbqKvwLfKGZrKrfSbPJz4ymQ7zMarhRyZtu1RBkSe89",
+    "HDRqPft5ioWZnsV2XgNWpoyg9Js6Lnh6TxMSiDG843KD",
+    "HW4zorvt6xDwhU36RqjcWNwU8YMj9tiqnAafBKW4cqV",
+    "JD549HsbJHeEKKUrKgg4Fj2iyv2RGjsV7NTZjZUrHybB",
+    "Lake8NXDThihebhxS3Js7mFnj9fthmus93zEdsFNrsL",
+    "PKdLMugp1Mf88Ji1GkdqRDBewaUh2cqg79CBEo6eJoQ",
+    "RNXnAJV1DeBt6Lytjz4wYzvS3d6bhsfidS5Np4ovwZz",
+    "SWD1LwTcEtpCRL683CT4HYDaGgMyMZ9LpSa5Foarsq4",
+    "VQwCCSfW3o5NDx7n5FBr9SoYiLXVgetstHvaWBvv2YH",
+    "pebb1eQXvcuQfXkeyYjdoBVufKHwdKGL3G37GUts8Db",
+    "puffinQSvKFriPbyE5atyx1ptfnyytovbzxybr1jsyy"
+   ],
+   "other_signer": 0,
+   "population_leaders": 22,
+   "population_slots": 22968,
+   "read": 400,
+   "sampled": 400,
+   "skipped": 0
+  },
+  "HarmonicAgave": {
+   "bam_tick": {
+    "ci95": [
+     0.0,
+     0.95
+    ],
+    "k": 0,
+    "n": 400,
+    "pct": 0.0
+   },
+   "blocks": 400,
+   "empty": 0,
+   "harmonic_tick": {
+    "ci95": [
+     97.11,
+     99.46
+    ],
+    "k": 395,
+    "n": 400,
+    "pct": 98.75
+   },
+   "leaders_in_blocks": 38,
+   "no_tick": {
+    "ci95": [
+     0.54,
+     2.89
+    ],
+    "k": 5,
+    "n": 400,
+    "pct": 1.25
+   },
+   "no_tick_leaders": [
+    "9UM8wQ8F5oMiRcP5YdqD6Lr4krpBWCD8LtgQYoisJd9i",
+    "BtsmiEEvnSuUnKxqXj2PZRYpPJAc7C34mGz8gtJ1DAaH",
+    "Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk"
+   ],
+   "other_signer": 0,
+   "population_leaders": 48,
+   "population_slots": 93832,
+   "read": 400,
+   "sampled": 400,
+   "skipped": 0
+  },
+  "HarmonicFiredancer": {
+   "bam_tick": {
+    "ci95": [
+     0.0,
+     0.95
+    ],
+    "k": 0,
+    "n": 400,
+    "pct": 0.0
+   },
+   "blocks": 400,
+   "empty": 0,
+   "harmonic_tick": {
+    "ci95": [
+     99.05,
+     100.0
+    ],
+    "k": 400,
+    "n": 400,
+    "pct": 100.0
+   },
+   "leaders_in_blocks": 34,
+   "no_tick": {
+    "ci95": [
+     0.0,
+     0.95
+    ],
+    "k": 0,
+    "n": 400,
+    "pct": 0.0
+   },
+   "no_tick_leaders": [],
+   "other_signer": 0,
+   "population_leaders": 38,
+   "population_slots": 37124,
+   "read": 400,
+   "sampled": 400,
+   "skipped": 0
+  },
+  "JitoLabs": {
+   "bam_tick": {
+    "ci95": [
+     0.0,
+     0.96
+    ],
+    "k": 0,
+    "n": 397,
+    "pct": 0.0
+   },
+   "blocks": 397,
+   "empty": 0,
+   "harmonic_tick": {
+    "ci95": [
+     0.0,
+     0.96
+    ],
+    "k": 0,
+    "n": 397,
+    "pct": 0.0
+   },
+   "leaders_in_blocks": 78,
+   "no_tick": {
+    "ci95": [
+     97.8,
+     99.74
+    ],
+    "k": 394,
+    "n": 397,
+    "pct": 99.24
+   },
+   "no_tick_leaders": [
+    "2Df1aLCRYi3J1X24GXmASL4hjrZLHnvEF32KFWGJfR9E",
+    "2T9NfUEDBcFUGGX3GgguMboJaGTe9eZMGemptqXMnvzR",
+    "2oHUYyW2PU9VJh4XBs5TbGgzdernunvGqyKth3kxW4ns",
+    "32ke3uf1qL3xLqbwzU76T2sbG2XaJrGuSCNdUnien3zm",
+    "3SkE34PVeGck2ArEffFKjihrQgURsvnoTAhitsNXNzXd",
+    "3YVoK8UN62dyiPZnGBzBTkGdwsVmmK1MpRoLcxNRs9BE",
+    "3cZSHGfNdaULpFAvGbWbxpVwzXB4gHdk8NFucPNR5pgA",
+    "5FbKKGdEaFcxGxxaLKVvBes2JxiKbreh8w2ZpMcSQ2a5",
+    "5MAGJ3zShtXMMVXjZRoFqtFF7XhP8iLSyZrxdL7KpjcB",
+    "5pPRHniefFjkiaArbGX3Y8NUysJmQ9tMZg3FrFGwHzSm",
+    "6xWLi1TDSh65fWsSqE1zdvANTSuVDRMx4ghsGJwgunS8",
+    "74MzXStH8pLPZjbNxZKdtDGJehur2JgjZNeTPqSn37nE",
+    "7S22CYpfBRV1p8cTqWXFD4HwfqfNx3hAhfpdj8E2bYvJ",
+    "7Zm1pE4FubFYZDyAQ5Labh3A4cxDcvve1s3WCRgEAZ84",
+    "7cVfgArCheMR6Cs4t6vz5rfnqd56vZq4ndaBrY5xkxXy",
+    "8BwBBt23a6v8HgNsFybpLFiBKLV8vWko2Vft3D2DxGvR",
+    "8NpDWRcKHkBjn8mbHMYgDm2Z2DRvXXuDiSScPsGSdSgr",
+    "8gDfqHXZ5ektqQQrLrCGtSzYRwkWQrm3ANnAvQCt2LoM",
+    "8nbE53mcKhy74HLiGZ1q5HRocwiCvgh49csSaHSdtukr",
+    "8o8wWCYNwPRSCAasp8rYvWuo3Ku1R1i6SEo9j9B6fe5i",
+    "8pyp3vfVPRziYdAYEyqkwytdBbdVbQmHqfQAVDcRV3w",
+    "8tjFeSApQ85ThoQXT28acfF2KUfQr3TvTdirSkzNnYC7",
+    "99rG5AhkVagxJ7y8NpMAmy1h1u9GhT3h1Cimu2X3cwaJ",
+    "9rkJMARqK6VBkcxGfKBAwnA44gPAfGxPbPsfsggFNDSQ",
+    "A9mvukTd77EbRoBX4ydSCFQHdu5bsRFkNXTTRstA8FAC",
+    "ACvL73V4GNnxPVfZ7K89jCrYurLyzpEuE9qirjvh2Xmi",
+    "AEHqTB2RtJjegsR2ePjvoJSm6AA5pnYKWVbcsn6kqTBD",
+    "AwcMVMvmT1aCETVYV42WE1cSMCyNp4vZqVjLsvs6dM4o",
+    "BRAZAtTTzR2Es8c98hJvcngerTEyRGSdgkHU59n4A6GT",
+    "BkoS26vBuaXnSowACdChi4WKid8UwmuPNhEJWa8KsLHd",
+    "C8Bey3LKVJHVqN6xPTeW8WJfUgFQAeGNBpT4Rp99JP1k",
+    "ChorusmmK7i1AxXeiTtQgQZhQNiXYU84ULeaYF1EH15n",
+    "DDnAqxJVFo2GVTujibHt5cjevHMSE9bo8HJaydHoshdp",
+    "Df16xM2XWzTXEGYxFBXtwXRhCdE6hwBbxS162TyS4r65",
+    "DnQBmTJyLbBMgJYQLJDqJz25AJModNkyexL5LdVRGnG4",
+    "E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL",
+    "EQhTjikb1L2jvxsCaSW2o2TuRXh4Do6HzBEWCxpeM44W",
+    "EUcJwf7jXskRE6NZBtFPVH2EedNvNYko8LL2WT62XctB",
+    "EdFUcP2f6j9iBg5BqsgJn3WDr1JieiKCo41hZ5Zrsk6w",
+    "EvnRmnMrd69kFdbLMxWkTn1icZ7DCceRhvmb2SJXqDo4",
+    "FLwV8tm3pL8pZj6d927VASzPrgW51Gf4nRJuTewrfega",
+    "FbYX2uN573G5WsgiPdHU6fS5PNUyjdXfGfpZNkYUuT4k",
+    "Fudp7uPDYNYQRxoq1Q4JiwJnzyxhVz37bGqRki3PBzS",
+    "G8kUFxhR7eSmSyAtVYEAyhvkBKdR49n7d8BKqpBo55kJ",
+    "GiYSnFRrXrmkJMC54A1j3K4xT6ZMfx1NSThEe5X2WpDe",
+    "GkFT5nmcFVmJiLwuE98PjdF3LReMeq4WbejFHfwrnsgw",
+    "GnC339vkyXRm1jRX69dt9mapPPu2LbzXfSDoxc91qta6",
+    "Gv9gguvrAkgQtB5g5a3Un7trcHCxLYsk8vSojLmQMsWV",
+    "H4te9uzz1c74QeqfhyKeENoTvSseEPm4A3oFXBvqpF8Q",
+    "HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU",
+    "HH5dA42XF1HxNk1TRpG6LuKfLViMYNdAz5iWrFM4hWFi",
+    "HLXxkmjb47spcmbbKi3UCfZ2qmFY29t8MN562AEmh2Qh",
+    "HM19KBHDJy93DYEJv4iFayMmCbJ1QVAk2EDG6XDgmnJS",
+    "Ha1iade1AH3B12K9SccfWoPdFtQKKQsj2ZyWwxcjqJJU",
+    "HcZvwZ83PfjrQDiq3GLHxisTs17aGURs6bJ2LwtmL4qv",
+    "HnwMGBAw5PxaX56eSYc969MorEy2NzEMPLkmBkdnJmeq",
+    "Je6ckvDiPr7zKz49JVXFuhXRFLS3W57WnksbS2G8tbP",
+    "LeDbQ99QT342j9S5YdyXLrsq2Gu3T3dMGajExdAuE3V",
+    "MARiKM3t7pDCyXtvLq24ErWDAvYu84yXqCthkR1GS33",
+    "NdMV1C3XMCRqSBwBtNmoUNnKctYh95Ug4xb6FSTcAWr",
+    "Pid6HQnMCFb9izqX9i7X6ePdUPieGmjHoPxC1Jfooix",
+    "RAuSNo4DRjo83uGhdgg4fPqYBVszi1KsrQGpqcPHK1D",
+    "Raydiumm3w3a4nGanDBLkUtKxMFooSPmeg9qwUKMsMc",
+    "SA1LFXr4os2P4VKGUyRv84uFfuUYgcQkFh2uA4SmRcr",
+    "STaKesuXJH6UGRizuEVSWG1tyLu5ycKgWj3i1HUdvs5",
+    "UPSCQNqdbiaqrQou9X9y8mr43ZHzvoNpKC26Mo7GubF",
+    "anza1rXDVhy1NfVNtsbT3kSBh2jgB1BGZUKuUibSAJd",
+    "bitHUmbKSQDTGoyoiW3BeqaGWdyV5sS3nYt5SduUHfb",
+    "bxrAptB5ZpZBhoLedJpoGWY5hBjjt3zvVBr2323Rrq6",
+    "forb5u56XgvzxiKfRt4FVNFQKJrd2LWAfNCsCqL6P7q",
+    "icex1C6pnZxznQWiHZZANjGU8nZ8kNquFnjyY7XXrXE",
+    "mALL2W6DUgDDtcyurC9v5YTF2CMMeuRwPBkf6tEoG3y",
+    "mXv18ov8qCiQGs3ieoen981LdgZzYJjJak6reK6fpNC",
+    "privaEdSEmnMPGPoQACUkcDGkFBbTArVvsEGd7C5wUM",
+    "sTEAKPk59EtPPbixCweyv6oRLNCDEE8pnnef6gUfbiW",
+    "siidBVew9gpXxjM1y5spQiAyx1dyFrg9m6YjoxrYWbi",
+    "vu1sGn2f1Xim6voHNLt4nLn38zNkYdLasU7hEr1TC2D"
+   ],
+   "other_signer": 3,
+   "population_leaders": 141,
+   "population_slots": 107540,
+   "read": 400,
+   "sampled": 400,
+   "skipped": 3
+  },
+  "Rakurai": {
+   "bam_tick": {
+    "ci95": [
+     0.0,
+     0.96
+    ],
+    "k": 0,
+    "n": 397,
+    "pct": 0.0
+   },
+   "blocks": 397,
+   "empty": 1,
+   "harmonic_tick": {
+    "ci95": [
+     0.0,
+     0.96
+    ],
+    "k": 0,
+    "n": 397,
+    "pct": 0.0
+   },
+   "leaders_in_blocks": 9,
+   "no_tick": {
+    "ci95": [
+     99.04,
+     100.0
+    ],
+    "k": 397,
+    "n": 397,
+    "pct": 100.0
+   },
+   "no_tick_leaders": [
+    "2dfgsiSaZ51QYPsECMYMG247PXxyKdwkV9wTHoQb8YEC",
+    "3B2mGaZoFwzAnWCoZ4EAKdps4FbYbDKQ48jo8u1XWynU",
+    "7PdKhpKz7T39vZHFL1UfcYNDsLvay6hp4KPQq1aUckFf",
+    "BCeczqpTRPigndHVJu1KEzno1Uhb4hjrE7ttmAndrV1p",
+    "E3mDbFMr8yZcCAZx5wPUFCRmLX31u8Nnj4jPoPc54h3F",
+    "Ed9WjPnZfAXsPttcqxMwj94qsuXVRyBsyXnDkxFva2Zv",
+    "SLAY6uN1zZpXBTfbuDDCesNmM5D288xrz8uYvfS3n41",
+    "ana2y2YvQ3ZPMwm6qhnN3nJoUSiT3qx5Pvetkq9xcfY",
+    "gUvo3g5LfH4Pd8qnG7T6MPEFa5bPr8LhDdxDahwYqis"
+   ],
+   "other_signer": 0,
+   "population_leaders": 9,
+   "population_slots": 4984,
+   "read": 400,
+   "sampled": 400,
+   "skipped": 2
+  }
+ },
+ "epoch": 1069,
+ "gossip_utc": "2026-10-27T00:56:38.433405Z",
+ "per_class": 400,
+ "population": {
+  "Agave": {
+   "leaders": 20,
+   "slots": 4796
+  },
+  "AgaveBam": {
+   "leaders": 355,
+   "slots": 152256
+  },
+  "FireBAM": {
+   "leaders": 17,
+   "slots": 7528
+  },
+  "Firedancer": {
+   "leaders": 22,
+   "slots": 22968
+  },
+  "HarmonicAgave": {
+   "leaders": 48,
+   "slots": 93832
+  },
+  "HarmonicFiredancer": {
+   "leaders": 38,
+   "slots": 37124
+  },
+  "JitoLabs": {
+   "leaders": 141,
+   "slots": 107540
+  },
+  "Raiku": {
+   "leaders": 1,
+   "slots": 360
+  },
+  "Rakurai": {
+   "leaders": 9,
+   "slots": 4984
+  },
+  "Unknown(3478)": {
+   "leaders": 1,
+   "slots": 376
+  },
+  "not in gossip": {
+   "leaders": 1,
+   "slots": 236
+  }
+ },
+ "read": 3200,
+ "sampled": 3200,
+ "seed": 1069
+}

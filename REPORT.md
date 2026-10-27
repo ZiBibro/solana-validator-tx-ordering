@@ -542,10 +542,21 @@ The control path is compared with the direct path only within the same leader an
 In every pilot slot of a builder-class leader the block carried a tick from that builder's signer, and no slot of another class carried a tick from either signer.
 
 <!-- itb:begin tick-epoch -->
-No epoch sample yet.
+Epoch 1069, 400 slots per class drawn with seed 1069, classes by gossip at 2026-10-27 00:56:38 (`research/tick-scale/summary-e1069.json`):
+
+| Class | Slots in epoch | Blocks read | Leaders read | Skipped or empty | BAM tick (95% CI) | Harmonic tick (95% CI) | No tick (95% CI) |
+|---|---|---|---|---|---|---|---|
+| Agave | 4796 | 394 | 20 | 6 | 1 (0.2%; 0.0 to 1.4) | 0 (0.0%; 0.0 to 1.0) | 393 (99.8%; 98.6 to 100.0) |
+| AgaveBam | 152256 | 389 | 140 | 11 | 332 (85.3%; 81.5 to 88.5) | 1 (0.3%; 0.1 to 1.4) | 56 (14.4%; 11.3 to 18.2) |
+| FireBAM | 7528 | 400 | 17 | 0 | 364 (91.0%; 87.8 to 93.4) | 0 (0.0%; 0.0 to 0.9) | 36 (9.0%; 6.6 to 12.2) |
+| Firedancer | 22968 | 400 | 20 | 0 | 0 (0.0%; 0.0 to 0.9) | 0 (0.0%; 0.0 to 0.9) | 400 (100.0%; 99.0 to 100.0) |
+| HarmonicAgave | 93832 | 400 | 38 | 0 | 0 (0.0%; 0.0 to 0.9) | 395 (98.8%; 97.1 to 99.5) | 5 (1.2%; 0.5 to 2.9) |
+| HarmonicFiredancer | 37124 | 400 | 34 | 0 | 0 (0.0%; 0.0 to 0.9) | 400 (100.0%; 99.0 to 100.0) | 0 (0.0%; 0.0 to 0.9) |
+| JitoLabs | 107540 | 397 | 78 | 3 | 0 (0.0%; 0.0 to 1.0) | 0 (0.0%; 0.0 to 1.0) | 394 (99.2%; 97.8 to 99.7) |
+| Rakurai | 4984 | 397 | 9 | 3 | 0 (0.0%; 0.0 to 1.0) | 0 (0.0%; 0.0 to 1.0) | 397 (100.0%; 99.0 to 100.0) |
 <!-- itb:end tick-epoch -->
 
-The epoch table samples one whole epoch through RPC, stratified by the class of the slot's leader in gossip. Its script lies in [research/tick-scale](research/tick-scale/) together with the sample and the raw rows.
+The epoch table samples one whole epoch through RPC, stratified by the class of the slot's leader in gossip. Its script lies in [research/tick-scale](research/tick-scale/) together with the sample and the raw rows. Across the whole of epoch 1069 the builder's tick marks 85.3% of the AgaveBam blocks read and 91.0% of the FireBAM blocks, while the two Harmonic classes reach 98.8% and 100.0%. The campaign's pair tests take only blocks that carry their builder's tick ([campaign addendum, section 7](prereg/CAMPAIGN-ADDENDUM.md)), so the BAM classes are the ones that can lose blocks to the row without the tick.
 
 ## 8. Noise and what the kit does not separate
 
