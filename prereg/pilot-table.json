@@ -1,0 +1,6563 @@
+{
+ "table_version": 1,
+ "stage": "pilot",
+ "seed": "68c9b4cc1708156fe1b275eda8cd3332",
+ "rounds": [
+  {
+   "round": 0,
+   "arm": "denominator",
+   "first_leader_timing": "pre300",
+   "bursts": [
+    {
+     "class": "AgaveBam",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 6,
+     "arm": "denominator",
+     "timing": "pre300",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "AgaveBam",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 7,
+     "arm": "denominator",
+     "timing": "slot2",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "JitoLabs",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 6,
+     "arm": "denominator",
+     "timing": "pre300",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "JitoLabs",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 7,
+     "arm": "denominator",
+     "timing": "slot2",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 6,
+     "arm": "denominator",
+     "timing": "pre300",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 7,
+     "arm": "denominator",
+     "timing": "slot2",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 6,
+     "arm": "denominator",
+     "timing": "pre300",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 7,
+     "arm": "denominator",
+     "timing": "slot2",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Firedancer",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 6,
+     "arm": "denominator",
+     "timing": "pre300",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Firedancer",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 7,
+     "arm": "denominator",
+     "timing": "slot2",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 6,
+     "arm": "denominator",
+     "timing": "pre300",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 7,
+     "arm": "denominator",
+     "timing": "slot2",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Rakurai",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 6,
+     "arm": "denominator",
+     "timing": "pre300",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Rakurai",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 7,
+     "arm": "denominator",
+     "timing": "slot2",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Agave",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 6,
+     "arm": "denominator",
+     "timing": "pre300",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Agave",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 7,
+     "arm": "denominator",
+     "timing": "slot2",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 20000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "AgaveBam",
+     "leader_rank": 0,
+     "extra": true,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "round": 1,
+   "arm": "equal_fee",
+   "first_leader_timing": "slot2",
+   "bursts": [
+    {
+     "class": "AgaveBam",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "AgaveBam",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 4,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "JitoLabs",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "JitoLabs",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 4,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 4,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 4,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Firedancer",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Firedancer",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 4,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 4,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Rakurai",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 0,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Rakurai",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 4,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Agave",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Agave",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 4,
+     "arm": "equal_fee",
+     "timing": "pre300",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 1,
+     "extra": true,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 100,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "round": 2,
+   "arm": "independent",
+   "first_leader_timing": "slot2",
+   "bursts": [
+    {
+     "class": "AgaveBam",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 1,
+     "arm": "independent",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "AgaveBam",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "JitoLabs",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 1,
+     "arm": "independent",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "JitoLabs",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 1,
+     "arm": "independent",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 1,
+     "arm": "independent",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Firedancer",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 1,
+     "arm": "independent",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Firedancer",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 1,
+     "arm": "independent",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Rakurai",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 1,
+     "arm": "independent",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Rakurai",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Agave",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 1,
+     "arm": "independent",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Agave",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 0,
+     "arm": "independent",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 1,
+     "extra": true,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 1000,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "round": 3,
+   "arm": "shared",
+   "first_leader_timing": "pre300",
+   "bursts": [
+    {
+     "class": "AgaveBam",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 2,
+     "arm": "shared",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "AgaveBam",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 3,
+     "arm": "shared",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "JitoLabs",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 2,
+     "arm": "shared",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "JitoLabs",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 3,
+     "arm": "shared",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 5,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 0,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 2,
+     "arm": "shared",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicAgave",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 3,
+     "arm": "shared",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 2,
+     "arm": "shared",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 3,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "HarmonicFiredancer",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 3,
+     "arm": "shared",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 4,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Firedancer",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 2,
+     "arm": "shared",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Firedancer",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 3,
+     "arm": "shared",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 2,
+     "arm": "shared",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 3,
+     "arm": "shared",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 5,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 7,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 4,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 11,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Rakurai",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 2,
+     "arm": "shared",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 7,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 10,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 1,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Rakurai",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 3,
+     "arm": "shared",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 5,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 2,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 6,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 8,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Agave",
+     "leader_rank": 0,
+     "extra": false,
+     "cell": 2,
+     "arm": "shared",
+     "timing": "pre300",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 6,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 4,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 0,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 7,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 9,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 1,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 11,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 3,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "Agave",
+     "leader_rank": 1,
+     "extra": false,
+     "cell": 3,
+     "arm": "shared",
+     "timing": "slot2",
+     "equal_fee_lamports": null,
+     "send_interval_us": 0,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 1,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 8,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 6,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 10,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 11,
+       "priority_fee_lamports": 0,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 3,
+       "priority_fee_lamports": 100,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 2,
+       "priority_fee_lamports": 1000,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    },
+    {
+     "class": "FireBAM",
+     "leader_rank": 0,
+     "extra": true,
+     "cell": 5,
+     "arm": "equal_fee",
+     "timing": "slot2",
+     "equal_fee_lamports": 10,
+     "send_interval_us": 5000,
+     "probes": [
+      {
+       "payer_index": 1,
+       "send_rank": 10,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 2,
+       "send_rank": 8,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 3,
+       "send_rank": 2,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 4,
+       "send_rank": 9,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 5,
+       "send_rank": 1,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 6,
+       "send_rank": 4,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 7,
+       "send_rank": 11,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 8,
+       "send_rank": 3,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 9,
+       "send_rank": 6,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 10,
+       "send_rank": 0,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 11,
+       "send_rank": 5,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      },
+      {
+       "payer_index": 12,
+       "send_rank": 7,
+       "priority_fee_lamports": 10,
+       "cu_limit": 1000,
+       "loaded_data_limit": 32768
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

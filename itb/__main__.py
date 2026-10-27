@@ -8,15 +8,22 @@
     python -m itb collect [run]    write inclusion and slot rows of runs from the chain
     python -m itb check-raw FILE   validate raw files against schema/raw-format.json
     python -m itb plan             draw a test plan for the probe from the live leader schedule
+    python -m itb panel            pick the leader panel of an epoch by the section 3 rule
+    python -m itb table            draw the seeded pilot table (section 6) into prereg/
+    python -m itb pilot            put the pilot table into windows of the panel leaders
 
 In Docker: docker compose run --rm reproduce [subcommand ...]
 """
 
 import argparse
+import datetime
+import json
 import os
 import sys
 
 from . import __version__, analyze, collect, rawformat, rpc, selftest, verify
+from . import panel as panelmod
+from . import pilot as pilotmod
 from . import plan as planmod
 
 EXIT_OK = 0
@@ -26,6 +33,7 @@ EXIT_NOT_READY = 2
 REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_DATA = os.path.join(REPO_DIR, "data")
 DEFAULT_RPC = "https://api.mainnet-beta.solana.com"
+DEFAULT_TABLE = os.path.join(REPO_DIR, "prereg", "pilot-table.json")
 
 
 def _not_ready(name, when):
@@ -142,6 +150,94 @@ def cmd_check_raw(args):
     return EXIT_OK if bad == 0 else EXIT_FAIL
 
 
+def _stamp():
+    return planmod.utc_now().replace("-", "").replace(":", "").split(".")[0] + "Z"
+
+
+def cmd_panel(args):
+    network = _network(args)
+    try:
+        p, snapshots = panelmod.draw(_client(), network, args.epoch)
+    except (ValueError, rpc.RpcError) as e:
+        print("panel: %s" % e, file=sys.stderr)
+        return EXIT_FAIL
+    panel_dir = os.path.join(_data_dir(args), "panels", "%s-e%d-%s" % (network, p["epoch"], _stamp()))
+    path = panelmod.write(panel_dir, p, snapshots)
+    print("panel: %s (epoch %d, %d blocks read)" % (path, p["epoch"], p["blocks_read"]))
+    for line in panelmod.summary_lines(p):
+        print(line)
+    return EXIT_OK if not p["short"] else EXIT_FAIL
+
+
+def cmd_table(args):
+    path = args.out or DEFAULT_TABLE
+    if os.path.exists(path):
+        print("table: %s exists; a committed table is never drawn again" % path, file=sys.stderr)
+        return EXIT_FAIL
+    table = pilotmod.pilot_table(args.seed or planmod.new_seed())
+    problems = pilotmod.table_problems(table)
+    if problems:
+        print("table: %s" % "; ".join(problems), file=sys.stderr)
+        return EXIT_FAIL
+    digest = pilotmod.write_table(path, table)
+    print("table: %s sha256 %s, seed %s" % (path, digest, table["seed"]))
+    for r in table["rounds"]:
+        print("  round %d: %s, first leaders %s, %d bursts" % (r["round"], r["arm"], r["first_leader_timing"],
+                                                           len(r["bursts"])))
+    return EXIT_OK
+
+
+def _slot_ms(client):
+    samples = client.call("getRecentPerformanceSamples", [30])
+    slots = sum(x["numSlots"] for x in samples)
+    return 1000.0 * sum(x["samplePeriodSecs"] for x in samples) / slots if slots else None, len(samples)
+
+
+def cmd_pilot(args):
+    with open(args.panel, "rb") as f:
+        panel_doc = json.load(f)
+    table_path = args.table or DEFAULT_TABLE
+    with open(table_path, "rb") as f:
+        raw = f.read()
+    table = json.loads(raw)
+    problems = pilotmod.table_problems(table)
+    manifest_sha = None
+    if args.manifest:
+        with open(args.manifest, "rb") as f:
+            manifest_sha = pilotmod.sha256_bytes(f.read())
+    if problems:
+        print("pilot: table %s" % "; ".join(problems), file=sys.stderr)
+        return EXIT_FAIL
+    client = _client()
+    try:
+        p, snapshots, notes = pilotmod.draw(client, panel_doc, table, pilotmod.sha256_bytes(raw),
+                                            manifest_sha, args.lead_slots)
+        slot_ms, samples = _slot_ms(client)
+        now_slot = client.call("getSlot", [{"commitment": "confirmed"}])
+    except (ValueError, rpc.RpcError) as e:
+        print("pilot: %s" % e, file=sys.stderr)
+        return EXIT_FAIL
+    problems = planmod.check(p)
+    if problems:
+        print("pilot: %s" % "; ".join(problems), file=sys.stderr)
+        return EXIT_FAIL
+    plan_dir = os.path.join(_data_dir(args), "plans", "pilot-%s-%s" % (p["network"], _stamp()))
+    path = planmod.write(plan_dir, p, snapshots)
+    now = datetime.datetime.now(datetime.timezone.utc)
+    at = lambda slot: (now + datetime.timedelta(milliseconds=(slot - now_slot) * slot_ms)).strftime("%d.%m %H:%M UTC")
+    c = pilotmod.cost(p)
+    print("pilot: %s" % path)
+    print("pilot: %d bursts, %d probes, fees %d lamports (%d base, %d priority); %.1f ms per slot over %d samples"
+          % (c["bursts"], c["probes"], c["fee_lamports"], c["base_lamports"], c["priority_lamports"], slot_ms, samples))
+    for r in p["rounds"]:
+        first, last = r["bursts"][0]["first_slot"], r["bursts"][-1]["first_slot"]
+        print("  round %d: slots %d to %d (%d slots), about %s to %s" % (r["round"], first, last, last - first,
+                                                                       at(first), at(last)))
+    for note in notes:
+        print("pilot: note: " + note)
+    return EXIT_OK
+
+
 def cmd_plan(args):
     network = _network(args)
     stage = args.stage or (network if network in ("localnet", "devnet") else None)
@@ -161,7 +257,7 @@ def cmd_plan(args):
     if problems:
         print("plan: %s" % "; ".join(problems), file=sys.stderr)
         return EXIT_FAIL
-    stamp = planmod.utc_now().replace("-", "").replace(":", "").split(".")[0] + "Z"
+    stamp = _stamp()
     plan_dir = os.path.join(_data_dir(args), "plans", "%s-%s-%s" % (stage, network, stamp))
     path = planmod.write(plan_dir, p, snapshots)
     r = p["rounds"][0]
@@ -207,11 +303,25 @@ def main(argv=None):
     p.add_argument("--probes", type=int, default=planmod.PAYERS, help="probes per burst, 2 to 12")
     p.add_argument("--seed", help="seed of the draw (default: random, printed)")
     p.add_argument("--data", help="data directory (default: repo data/)")
+    p = sub.add_parser("table", help="draw the seeded pilot table")
+    p.add_argument("--seed", help="seed of the table (default: random, printed)")
+    p.add_argument("--out", help="table file (default: prereg/pilot-table.json)")
+    p = sub.add_parser("pilot", help="put the pilot table into windows of the panel leaders")
+    p.add_argument("--panel", required=True, help="panel.json from itb panel")
+    p.add_argument("--table", help="pilot table (default: prereg/pilot-table.json)")
+    p.add_argument("--manifest", help="prereg manifest whose sha256 the plan carries")
+    p.add_argument("--lead-slots", type=int, default=900, help="first window at least this many slots ahead")
+    p.add_argument("--data", help="data directory (default: repo data/)")
+    p = sub.add_parser("panel", help="pick the leader panel of an epoch")
+    p.add_argument("--network", help="network (default: ITB_NETWORK or mainnet)")
+    p.add_argument("--epoch", type=int, help="current epoch (default) or the next one")
+    p.add_argument("--data", help="data directory (default: repo data/)")
     args = parser.parse_args(argv)
     handlers = {
         "reproduce": cmd_reproduce, "selftest": cmd_selftest, "verify": cmd_verify,
         "analyze": cmd_analyze, "claim": cmd_claim, "collect": cmd_collect,
-        "check-raw": cmd_check_raw, "plan": cmd_plan, None: cmd_reproduce,
+        "check-raw": cmd_check_raw, "plan": cmd_plan, "panel": cmd_panel, "table": cmd_table,
+        "pilot": cmd_pilot, None: cmd_reproduce,
     }
     return handlers[args.cmd](args)
 

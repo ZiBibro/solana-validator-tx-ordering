@@ -14,7 +14,8 @@ import random
 import tempfile
 from fractions import Fraction
 
-from . import analyze, b58, collect, fakechain, plan, rawformat, rpc, stats, synth, verdict, verify
+from . import (analyze, b58, collect, fakechain, panel, pilot, plan, prereg, rawformat, rpc, stats, synth,
+               verdict, verify)
 
 
 def sample_run(burst_seq=7, n=12):
@@ -502,6 +503,214 @@ def plan_checks():
     return out
 
 
+_PANEL_SPEC = (
+    ("AB1", "AgaveBam", 900), ("AB2", "AgaveBam", 800), ("AB3", "AgaveBam", 700), ("AB4", "AgaveBam", 600),
+    ("JL1", "JitoLabs", 900), ("JL2", "JitoLabs", 800), ("JL3", "JitoLabs", 700), ("JL4", "JitoLabs", 600),
+    ("HA1", "HarmonicAgave", 900), ("HA2", "HarmonicAgave", 800), ("HA3", "HarmonicAgave", 700),
+    ("HF1", "HarmonicFiredancer", 900), ("HF2", "HarmonicFiredancer", 800),
+    ("HF3", "HarmonicFiredancer", 700), ("HF4", "HarmonicFiredancer", 600),
+    ("FD1", "Firedancer", 900), ("FD2", "Firedancer", 800), ("FD3", "Firedancer", 700),
+    ("FB1", "FireBAM", 900), ("FB2", "FireBAM", 800), ("FB3", "FireBAM", 700),
+    ("RK1", "Rakurai", 900), ("RK2", "Rakurai", 800), ("RK3", "Rakurai", 700), ("RK4", "Rakurai", 600),
+    ("AG0", "Agave", 1000), ("AG1", "Agave", 900), ("AG2", "Agave", 800), ("AG3", "Agave", 700),
+    ("AG4", "Agave", 600),
+)
+_PANEL_EPOCH_FIRST = 10000
+_PANEL_WINDOWS_PER_EIGHTH = 64
+
+
+def _panel_world():
+    """A cluster where each panel rule turns away exactly one candidate: two
+    windows per eighth for every node, 16 in the epoch, except RK1 with 15;
+    in eighth 3 both windows of HF1 follow XS, which shares its tpuQuic."""
+    nodes = []
+    for k, (ident, cls, _) in enumerate(_PANEL_SPEC):
+        ip = "10.0.%d.1" % k
+        nodes.append({"pubkey": ident, "clientId": cls, "version": "v1",
+                      "gossip": ip + ":8001", "tpuQuic": ip + ":8009"})
+    by = {n["pubkey"]: n for n in nodes}
+    by["FB1"]["version"] = "v0"
+    by["JL1"]["tpuQuic"] = "10.0.4.1:%d" % prereg.RELAYER_PORT
+    by["JL2"]["tpuQuic"] = "10.9.9.9:8009"
+    by["AG0"]["tpuQuic"] = None
+    nodes.append({"pubkey": "XS", "clientId": "Unknown(9)", "version": "v1",
+                  "gossip": "10.8.8.8:8001", "tpuQuic": by["HF1"]["tpuQuic"]})
+    vote_accounts = {
+        "current": [{"nodePubkey": i, "votePubkey": "V" + i, "activatedStake": s}
+                    for i, _, s in _PANEL_SPEC if i != "AG1"],
+        "delinquent": [{"nodePubkey": "AG1", "votePubkey": "VAG1", "activatedStake": 900}],
+    }
+    leaders = [i for i, _, _ in _PANEL_SPEC]
+    seq = []
+    for e in range(panel.EIGHTHS):
+        part = leaders + leaders
+        if e == 3:
+            part = [x for i in part for x in (("XS", i) if i == "HF1" else (i,))]
+        if e == 5:
+            part.remove("RK1")
+        seq += part + ["FILL"] * (_PANEL_WINDOWS_PER_EIGHTH - len(part))
+    schedule = {}
+    for w, leader in enumerate(seq):
+        schedule.setdefault(leader, []).extend(range(w * 4, w * 4 + 4))
+    blocks = {i: {"slot": 100 + k, "crank_memo": None, "fee_recipient": i,
+                  "ticks": 3 if cls in panel.TICK_CLASSES else 0}
+              for k, (i, cls, _) in enumerate(_PANEL_SPEC)}
+    blocks["AB1"]["ticks"] = 0
+    blocks["FD1"]["crank_memo"] = "BUN"
+    blocks["FD3"]["crank_memo"] = "BAL"
+    for i, memo in (("HA1", "MRV"), ("HA2", "MRV"), ("HA3", "FBA")):
+        blocks[i]["crank_memo"] = memo
+    blocks["RK2"]["fee_recipient"] = "Collector1"
+    del blocks["HF2"]
+    names = {"AG2": ["Op One"], "AG3": [" op  ONE "]}
+    return nodes, vote_accounts, schedule, blocks, names
+
+
+def _panel_select(world, exclude=()):
+    nodes, vote_accounts, schedule, blocks, names = world
+    stake, votes, late = panel.stakes(vote_accounts)
+    slots = panel.EIGHTHS * _PANEL_WINDOWS_PER_EIGHTH * plan.SLOTS_PER_WINDOW
+    facts = panel.window_facts(schedule, _PANEL_EPOCH_FIRST, slots, {n["pubkey"]: n.get("tpuQuic") for n in nodes})
+    asked = []
+
+    def block_of(identity):
+        asked.append(identity)
+        return blocks.get(identity)
+
+    return panel.select(nodes, stake, votes, late, names, facts, block_of, exclude), asked
+
+
+def panel_checks():
+    """Leader panel (plan section 3): each rule turns away the candidate built to fail it."""
+    out = []
+    world = _panel_world()
+    got, asked = _panel_select(world)
+    picks = {cls: [p["identity"] for p in got[cls]["leaders"]] for cls in prereg.CLASSES}
+    why = {r["identity"]: r["reason"] for c in got.values() for r in c["rejected"]}
+
+    def turned(cls, want, ident, reason):
+        return picks[cls] == want and why.get(ident, "").startswith(reason)
+
+    out.append(("panel: two leaders in each of the 8 classes",
+                all(len(v) == panel.PER_CLASS for v in picks.values()), str(picks)))
+    for name, cls, want, ident, reason in (
+            ("a version off the largest stake share of the class", "FireBAM", ["FB2", "FB3"], "FB1", "version v0"),
+            ("a delinquent vote account", "Agave", ["AG2", "AG4"], "AG1", "delinquent"),
+            ("a node without tpuQuic", "Agave", ["AG2", "AG4"], "AG0", "no tpuQuic"),
+            ("tpuQuic off the gossip IP in a class without a builder", "JitoLabs", ["JL3", "JL4"], "JL2",
+             "tpuQuic 10.9.9.9"),
+            ("tpuQuic on the relayer port", "JitoLabs", ["JL3", "JL4"], "JL1", "tpuQuic on the relayer port"),
+            ("15 windows in the epoch, while 16 pass", "Rakurai", ["RK3", "RK4"], "RK1", "15 leader windows"),
+            ("an eighth whose windows all follow another validator on the same tpuQuic",
+             "HarmonicFiredancer", ["HF3", "HF4"], "HF1", "no passing window in eighth 3"),
+            ("no block in the last windows", "HarmonicFiredancer", ["HF3", "HF4"], "HF2", "no block"),
+            ("a Fee reward to another collector", "Rakurai", ["RK3", "RK4"], "RK2", "Fee reward"),
+            ("a BAM leader without ticks", "AgaveBam", ["AB2", "AB3"], "AB1", "no tick"),
+            ("a Firedancer crank memo outside PRF and BAL, while no memo passes", "Firedancer", ["FD2", "FD3"],
+             "FD1", "crank memo 'BUN'"),
+            ("a second MRV leader in HarmonicAgave, which takes one MRV and one FBA", "HarmonicAgave",
+             ["HA1", "HA3"], "HA2", "strategy MRV already"),
+            ("the operator name of the first leader, compared without case and spacing", "Agave",
+             ["AG2", "AG4"], "AG3", "operator"),
+    ):
+        out.append(("panel: turns away %s" % name, turned(cls, want, ident, reason),
+                    "%s picks %s, %s: %s" % (cls, picks[cls], ident, why.get(ident))))
+    cheap_only = {"JL1", "JL2", "HF1", "FB1", "RK1", "AG0", "AG1", "AG3"}
+    out.append(("panel: blocks are read only past the rules without a block, and only until two leaders",
+                not cheap_only & set(asked) and "AB4" not in asked and len(asked) == len(set(asked)) == 21,
+                "%d reads" % len(asked)))
+    again, _ = _panel_select(_panel_world(), exclude=("AB2",))
+    out.append(("panel: an excluded leader gives way to the next one by the same rule",
+                [p["identity"] for p in again["AgaveBam"]["leaders"]] == ["AB3", "AB4"], ""))
+    out.append(("panel: same inputs, same panel", _panel_select(_panel_world())[0] == got, ""))
+    out.append(("panel: relayer port stake share of a class",
+                got["JitoLabs"]["relayer_port_stake_share"] == 0.3 and got["Agave"]["relayer_port_stake_share"] == 0,
+                str(got["JitoLabs"]["relayer_port_stake_share"])))
+    info = [{"account": {"data": {"parsed": {"type": "validatorInfo", "info": {
+        "keys": [{"pubkey": "Va1idator1nfo111111111111111111111111111111", "signer": False},
+                 {"pubkey": "AG2", "signer": True}], "configData": {"name": " Op One "}}}}}},
+            {"account": {"data": {"parsed": {"type": "config", "info": {}}}}},
+            {"account": {"data": ["", "base64"]}}]
+    out.append(("panel: operator names come from the signer key of validator info",
+                panel.operator_names(info) == {"AG2": ["Op One"]}, str(panel.operator_names(info))))
+    out.append(("panel: host and port of IPv4 and IPv6 addresses",
+                panel.host_port("1.2.3.4:8009") == ("1.2.3.4", 8009) and panel.host_port("[::1]:9") == ("::1", 9)
+                and panel.host_port(None) == (None, None), ""))
+    return out
+
+
+def _first_burst(table, **match):
+    return next(b for r in table["rounds"] for b in r["bursts"] if all(b[k] == v for k, v in match.items()))
+
+
+def _flip_timing(table):
+    b = _first_burst(table, extra=False, leader_rank=0)
+    b["timing"] = "slot2" if b["timing"] == "pre300" else "pre300"
+    b["cell"] = plan.CELLS.index((b["arm"], b["timing"]))
+
+
+def _move_extra(table):
+    rounds = table["rounds"]
+    extra = next(b for b in rounds[0]["bursts"] if b["extra"])
+    rounds[0]["bursts"].remove(extra)
+    rounds[1]["bursts"].append(extra)
+
+
+def pilot_checks():
+    """Seeded pilot table and the placement of its bursts in windows (plan sections 6 and 7)."""
+    out = []
+    t = pilot.pilot_table("selftest")
+    problems = pilot.table_problems(t)
+    out.append(("pilot table: each class gets each cell once, classes share the cells of a round, fees balanced",
+                problems == [], "; ".join(problems)))
+    out.append(("pilot table: 68 bursts, 4 of them extra equal-fee bursts of builder classes",
+                sum(len(r["bursts"]) for r in t["rounds"]) == 68
+                and sorted(b["class"] for r in t["rounds"] for b in r["bursts"] if b["extra"]) == sorted(pilot.BUILDER_CLASSES),
+                ""))
+    out.append(("pilot table: same seed, same table; another seed, another table",
+                pilot.pilot_table("selftest") == t and pilot.pilot_table("other") != t, ""))
+    for name, change in (
+            ("a class with one cell twice", _flip_timing),
+            ("an extra burst in another cell", lambda x: _first_burst(x, extra=True).update(arm="independent")),
+            ("two extra bursts in one round", _move_extra),
+            ("a shared fee level moved", lambda x: _first_burst(x, extra=False, arm="denominator").update(
+                equal_fee_lamports=_first_burst(x, extra=False, arm="denominator")["equal_fee_lamports"] + 1)),
+            ("a probe fee raised by 1 lamport", lambda x: _first_burst(x, arm="independent")["probes"][0].update(
+                priority_fee_lamports=_first_burst(x, arm="independent")["probes"][0]["priority_fee_lamports"] + 1)),
+    ):
+        bad = copy.deepcopy(t)
+        change(bad)
+        out.append(("pilot table: the balance check catches %s" % name, bool(pilot.table_problems(bad)), ""))
+    leaders = {cls: ["%s-a" % cls, "%s-b" % cls] for cls in prereg.CLASSES}
+    idents = [i for cls in prereg.CLASSES for i in leaders[cls]]
+    passing = {ident: list(range(1000 + 4 * k, 400000, 4 * 40)) for k, ident in enumerate(idents)}
+    placed = pilot.place(t, leaders, passing, 5000)
+    ok, prev_end = True, None
+    for r, p in zip(t["rounds"], placed):
+        slots = sorted(p["slots"])
+        ok &= all(b - a >= 160 for a, b in zip(slots, slots[1:])) and slots[0] >= p["anchor_slot"]
+        ok &= all(s in passing[leaders[b["class"]][b["leader_rank"]]] for b, s in zip(r["bursts"], p["slots"]))
+        ok &= prev_end is None or p["anchor_slot"] == prev_end + 160
+        prev_end = slots[-1]
+    out.append(("pilot plan: windows of the burst's leader, 160 slots apart, rounds one after another",
+                ok and placed[0]["anchor_slot"] == 5000, str([p["anchor_slot"] for p in placed])))
+    doc = {"network": "mainnet", "classes": {cls: {"leaders": [{"identity": i} for i in leaders[cls]]}
+                                             for cls in prereg.CLASSES}}
+    built = pilot.build(t, "aa", None, doc, placed, 7, 0, 432000, "2026-10-27T00:00:00Z", {}, None, None)
+    out.append(("pilot plan: the built plan passes the probe's checks with stage pilot",
+                plan.check(built) == [] and built["stage"] == "pilot"
+                and pilot.cost(built)["priority_lamports"] * 4 == pilot.cost(built)["probes"] * sum(plan.FEES),
+                "; ".join(plan.check(built))))
+    out.append(("pilot plan: same table and windows, same placement", pilot.place(t, leaders, passing, 5000) == placed, ""))
+    try:
+        pilot.place(t, leaders, dict(passing, **{leaders["Rakurai"][1]: [900]}), 5000)
+        refused = False
+    except ValueError:
+        refused = True
+    out.append(("pilot plan: a leader without a window past the anchor stops the draw", refused, ""))
+    return out
+
+
 def timing_checks():
     """Moment bands (plan sections 5.1 and 10): the slot-2 reference and the final aim."""
     out = []
@@ -566,7 +775,8 @@ def clock_guard_checks():
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
-              + end_to_end_checks() + chain_checks() + plan_checks() + timing_checks()
+              + end_to_end_checks() + chain_checks() + plan_checks() + panel_checks() + pilot_checks()
+              + timing_checks()
               + clock_guard_checks())
     lines = []
     failed = 0
