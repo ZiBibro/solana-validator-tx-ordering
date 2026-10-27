@@ -11,6 +11,9 @@
     python -m itb panel            pick the leader panel of an epoch by the section 3 rule
     python -m itb table            draw the seeded pilot table (section 6) into prereg/
     python -m itb pilot            put the pilot table into windows of the panel leaders
+    python -m itb minimum          minimum bursts per class and cell from the pilot runs, into prereg/
+    python -m itb campaign-table   draw the seeded campaign table into prereg/
+    python -m itb campaign         put one epoch of the campaign table into windows of the panel leaders
     python -m itb manifest         hash the pre-registered files of a stage into prereg/
 
 In Docker: docker compose run --rm reproduce [subcommand ...]
@@ -23,6 +26,7 @@ import os
 import sys
 
 from . import __version__, analyze, collect, rawformat, rpc, selftest, verify
+from . import campaign as campaignmod
 from . import panel as panelmod
 from . import pilot as pilotmod
 from . import plan as planmod
@@ -35,6 +39,8 @@ REPO_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_DATA = os.path.join(REPO_DIR, "data")
 DEFAULT_RPC = "https://api.mainnet-beta.solana.com"
 DEFAULT_TABLE = os.path.join(REPO_DIR, "prereg", "pilot-table.json")
+DEFAULT_CAMPAIGN_TABLE = os.path.join(REPO_DIR, "prereg", "campaign-table.json")
+DEFAULT_MINIMUM = os.path.join(REPO_DIR, "prereg", "campaign-minimum.json")
 
 
 def _not_ready(name, when):
@@ -188,6 +194,120 @@ def cmd_table(args):
     return EXIT_OK
 
 
+def cmd_minimum(args):
+    path = args.out or DEFAULT_MINIMUM
+    if os.path.exists(path):
+        print("minimum: %s exists; a committed minimum is never computed again" % path, file=sys.stderr)
+        return EXIT_FAIL
+    runs = [r for r in analyze.load_runs(_data_dir(args)) if r.run["stage"] == "pilot"]
+    if not runs:
+        print("minimum: no pilot run in %s" % _data_dir(args), file=sys.stderr)
+        return EXIT_FAIL
+    if any(not r.inclusions for r in runs):
+        print("minimum: a pilot run has no collect rows; run itb collect first", file=sys.stderr)
+        return EXIT_FAIL
+    m = campaignmod.pilot_minimum(runs)
+    data = pilotmod.dumps(m).encode()
+    with open(path, "wb") as f:
+        f.write(data)
+    print("minimum: %s sha256 %s" % (path, pilotmod.sha256_bytes(data)))
+    print("minimum: %d pilot bursts, %d kept, excluded %s" % (m["pilot_bursts"], m["kept"], m["excluded"]))
+    for s in m["slots"]:
+        print("  %s/%s: %d bursts, df %d, sigma %s, minimum %s" % (
+            s["arm"], s["tau"], s["bursts"], s["df"],
+            "-" if s["sigma"] is None else "%.4f" % s["sigma"], s["min_bursts"]))
+    print("minimum: B = %s per class and cell; the campaign gives %d, reached %s"
+          % (m["min_bursts"], m["campaign_bursts_per_class_cell"], m["reached"]))
+    return EXIT_OK
+
+
+def cmd_campaign_table(args):
+    path = args.out or DEFAULT_CAMPAIGN_TABLE
+    if os.path.exists(path):
+        print("campaign-table: %s exists; a committed table is never drawn again" % path, file=sys.stderr)
+        return EXIT_FAIL
+    try:
+        seed = args.seed or campaignmod.seed_from_anchors(verify.read_anchors(_data_dir(args)))
+    except ValueError as e:
+        print("campaign-table: %s; give --seed" % e, file=sys.stderr)
+        return EXIT_FAIL
+    table = campaignmod.campaign_table(seed, doubling=not args.no_doubling)
+    problems = campaignmod.table_problems(table)
+    if problems:
+        print("campaign-table: %s" % "; ".join(problems), file=sys.stderr)
+        return EXIT_FAIL
+    digest = campaignmod.write_table(path, table)
+    bursts = [b for ep in table["epochs"] for r in ep["rounds"] for b in r["bursts"]]
+    print("campaign-table: %s sha256 %s, seed %s" % (path, digest, seed))
+    print("campaign-table: %d epochs, %d bursts (%d control path), %d probes, doubling %s" % (
+        len(table["epochs"]), len(bursts), sum(b["path"] == "rpc" for b in bursts),
+        sum(len(b["probes"]) for b in bursts), table["doubling"]))
+    for ep in table["epochs"]:
+        print("  epoch %d: %s" % (ep["epoch_index"], ", ".join(
+            "%s/%s" % (r["arm"], r["first_leader_timing"]) for r in ep["rounds"])))
+    return EXIT_OK
+
+
+def cmd_campaign(args):
+    with open(args.panel, "rb") as f:
+        panel_doc = json.load(f)
+    table_path = args.table or DEFAULT_CAMPAIGN_TABLE
+    with open(table_path, "rb") as f:
+        raw = f.read()
+    table = json.loads(raw)
+    problems = campaignmod.table_problems(table)
+    if problems:
+        print("campaign: table %s" % "; ".join(problems), file=sys.stderr)
+        return EXIT_FAIL
+    if not 0 <= args.epoch_index < len(table["epochs"]):
+        print("campaign: --epoch-index %d outside the table's %d epochs" % (args.epoch_index, len(table["epochs"])),
+              file=sys.stderr)
+        return EXIT_FAIL
+    # A live campaign run refuses a plan without the anchored manifest hash (section 10).
+    manifest = args.manifest or verify.manifest_path(REPO_DIR, "campaign")
+    manifest_sha = None
+    if os.path.exists(manifest):
+        with open(manifest, "rb") as f:
+            manifest_sha = pilotmod.sha256_bytes(f.read())
+        print("campaign: plan carries prereg manifest %s sha256 %s" % (manifest, manifest_sha))
+    elif args.manifest:
+        print("campaign: manifest %s not found" % manifest, file=sys.stderr)
+        return EXIT_FAIL
+    else:
+        print("campaign: note: no %s; a live run refuses this plan" % manifest)
+    client = _client()
+    try:
+        p, snapshots, notes = campaignmod.draw(client, panel_doc, table, pilotmod.sha256_bytes(raw), manifest_sha,
+                                               args.epoch_index, args.epoch, args.lead_slots)
+        slot_ms, samples = _slot_ms(client)
+        now_slot = client.call("getSlot", [{"commitment": "confirmed"}])
+    except (ValueError, rpc.RpcError) as e:
+        print("campaign: %s" % e, file=sys.stderr)
+        return EXIT_FAIL
+    problems = planmod.check(p)
+    if problems:
+        print("campaign: %s" % "; ".join(problems), file=sys.stderr)
+        return EXIT_FAIL
+    snapshots["draw-notes.json"] = {"epoch_index": args.epoch_index, "epoch": args.epoch, "notes": notes}
+    plan_dir = os.path.join(_data_dir(args), "plans", "campaign-%s-e%d-%s" % (p["network"], args.epoch, _stamp()))
+    path = planmod.write(plan_dir, p, snapshots)
+    now = datetime.datetime.now(datetime.timezone.utc)
+    at = lambda slot: (now + datetime.timedelta(milliseconds=(slot - now_slot) * slot_ms)).strftime("%d.%m %H:%M UTC")
+    c = pilotmod.cost(p)
+    print("campaign: %s" % path)
+    print("campaign: epoch index %d in epoch %d, %d bursts, %d probes, fees %d lamports (%d base, %d priority); "
+          "%.1f ms per slot over %d samples" % (args.epoch_index, args.epoch, c["bursts"], c["probes"],
+                                                c["fee_lamports"], c["base_lamports"], c["priority_lamports"],
+                                                slot_ms, samples))
+    for r in p["rounds"]:
+        first, last = r["bursts"][0]["first_slot"], r["bursts"][-1]["first_slot"]
+        print("  round %d (part %d): %d bursts, slots %d to %d (%d slots), about %s to %s" % (
+            r["round"], r["part"], len(r["bursts"]), first, last, last - first, at(first), at(last)))
+    for note in notes:
+        print("campaign: note: " + note)
+    return EXIT_OK
+
+
 def _slot_ms(client):
     samples = client.call("getRecentPerformanceSamples", [30])
     slots = sum(x["numSlots"] for x in samples)
@@ -248,7 +368,7 @@ def cmd_pilot(args):
 
 
 def cmd_manifest(args):
-    files = args.file or (verify.PILOT_MANIFEST_FILES if args.stage == "pilot" else None)
+    files = args.file or verify.MANIFEST_FILES.get(args.stage)
     if not files:
         print("manifest: stage %s lists its files with --file" % args.stage, file=sys.stderr)
         return EXIT_FAIL
@@ -348,6 +468,23 @@ def main(argv=None):
                                       "(default: prereg/manifest-pilot.json when it exists)")
     p.add_argument("--lead-slots", type=int, default=900, help="first window at least this many slots ahead")
     p.add_argument("--data", help="data directory (default: repo data/)")
+    p = sub.add_parser("minimum", help="minimum bursts per class and cell from the pilot runs")
+    p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
+    p.add_argument("--out", help="minimum file (default: prereg/campaign-minimum.json)")
+    p = sub.add_parser("campaign-table", help="draw the seeded campaign table")
+    p.add_argument("--seed", help="seed of the table (default: campaign: plus the pilot anchor's signature)")
+    p.add_argument("--no-doubling", action="store_true", help="four rounds per epoch, the fallback mode")
+    p.add_argument("--out", help="table file (default: prereg/campaign-table.json)")
+    p.add_argument("--data", help="data directory with prereg-anchors.json (default: repo data/)")
+    p = sub.add_parser("campaign", help="put one epoch of the campaign table into windows of the panel leaders")
+    p.add_argument("--panel", required=True, help="panel.json from itb panel")
+    p.add_argument("--epoch-index", type=int, required=True, help="epoch of the table, 0 to 3")
+    p.add_argument("--epoch", type=int, required=True, help="chain epoch it runs in: the current or the next")
+    p.add_argument("--table", help="campaign table (default: prereg/campaign-table.json)")
+    p.add_argument("--manifest", help="prereg manifest whose sha256 the plan carries "
+                                      "(default: prereg/manifest-campaign.json when it exists)")
+    p.add_argument("--lead-slots", type=int, default=900, help="no window earlier than this many slots ahead")
+    p.add_argument("--data", help="data directory (default: repo data/)")
     p = sub.add_parser("panel", help="pick the leader panel of an epoch")
     p.add_argument("--network", help="network (default: ITB_NETWORK or mainnet)")
     p.add_argument("--epoch", type=int, help="current epoch (default) or the next one")
@@ -355,14 +492,15 @@ def main(argv=None):
     p = sub.add_parser("manifest", help="hash the pre-registered files of a stage into prereg/")
     p.add_argument("--stage", required=True, choices=verify.PREREG_STAGES)
     p.add_argument("--file", action="append",
-                   help="repository file to list (repeatable; pilot default: PILOT_MANIFEST_FILES of verify.py)")
+                   help="repository file to list (repeatable; default: MANIFEST_FILES of verify.py)")
     p.add_argument("--data", help="data directory with prereg-anchors.json (default: repo data/)")
     args = parser.parse_args(argv)
     handlers = {
         "reproduce": cmd_reproduce, "selftest": cmd_selftest, "verify": cmd_verify,
         "analyze": cmd_analyze, "claim": cmd_claim, "collect": cmd_collect,
         "check-raw": cmd_check_raw, "plan": cmd_plan, "panel": cmd_panel, "table": cmd_table,
-        "pilot": cmd_pilot, "manifest": cmd_manifest, None: cmd_reproduce,
+        "pilot": cmd_pilot, "minimum": cmd_minimum, "campaign-table": cmd_campaign_table,
+        "campaign": cmd_campaign, "manifest": cmd_manifest, None: cmd_reproduce,
     }
     return handlers[args.cmd](args)
 

@@ -6,6 +6,9 @@
 #           docker compose --profile measure run --rm plan panel           (draws data/panels/<id>/)
 #           docker compose --profile measure run --rm plan pilot --panel data/panels/<id>/panel.json
 #                                                    (puts prereg/pilot-table.json into data/plans/pilot-<id>/)
+#           docker compose --profile measure run --rm plan campaign --panel data/panels/<id>/panel.json \
+#                     --epoch-index 0 --epoch <chain epoch>   (one epoch of prereg/campaign-table.json)
+#           python -m itb minimum; python -m itb campaign-table   (on the host, into prereg/)
 #           docker compose --profile measure run --rm probe run --plan /data/plans/<id>/plan.json
 #                                                    (dry-run, the default)
 #           docker compose --profile measure run --rm probe run --plan ... --live --max-spend-lamports N
@@ -28,6 +31,9 @@ x-python: &python
     ITB_NETWORK: ${ITB_NETWORK:-mainnet}
     ITB_RPC_URL: ${ITB_RPC_URL:-https://api.mainnet-beta.solana.com}
     ITB_LOG_LEVEL: ${ITB_LOG_LEVEL:-info}
+    # PEM root of a TLS-inspecting antivirus, trusted next to the system roots for the
+    # validators.app request only (itb/pilot.py extra_ca); empty on a clean machine.
+    ITB_EXTRA_CA_PEM: ${ITB_EXTRA_CA_PEM:-}
     PYTHONDONTWRITEBYTECODE: "1"
     PYTHONUNBUFFERED: "1"
   read_only: true

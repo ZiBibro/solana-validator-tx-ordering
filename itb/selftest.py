@@ -14,8 +14,8 @@ import random
 import tempfile
 from fractions import Fraction
 
-from . import (analyze, b58, collect, fakechain, panel, pilot, plan, prereg, rawformat, rpc, stats, synth,
-               verdict, verify)
+from . import (analyze, b58, campaign, collect, fakechain, panel, pilot, plan, prereg, rawformat, rpc, stats,
+               synth, verdict, verify)
 
 
 def sample_run(burst_seq=7, n=12):
@@ -782,6 +782,137 @@ def pilot_checks():
     return out
 
 
+def _campaign_burst(t, **match):
+    return next(b for ep in t["epochs"] for r in ep["rounds"] for b in r["bursts"]
+                if all(b[k] == v for k, v in match.items()))
+
+
+def _move_control(t):
+    ep = t["epochs"][0]
+    src = next(r for r in ep["rounds"] if any(b["path"] == "rpc" for b in r["bursts"]))
+    dst = next(r for r in ep["rounds"] if r["arm"] != campaign.CONTROL_ARM)
+    b = next(b for b in src["bursts"] if b["path"] == "rpc")
+    src["bursts"].remove(b)
+    dst["bursts"].append(b)
+
+
+def campaign_checks():
+    """Seeded campaign table, epoch placement and the pilot minimum (plan sections
+    5.2, 6 and 7; analysis plan section 5)."""
+    out = []
+    t = campaign.campaign_table("selftest")
+    problems = campaign.table_problems(t)
+    bursts = [b for ep in t["epochs"] for r in ep["rounds"] for b in r["bursts"]]
+    out.append(("campaign table: each leader gets each cell 4 times and one independent condition per epoch, "
+                "classes share the cells of a round, fees balanced", problems == [], "; ".join(problems)))
+    out.append(("campaign table: 576 bursts, 64 of them on the control path, 6912 probes",
+                len(bursts) == 576 and sum(b["path"] == "rpc" for b in bursts) == 64
+                and sum(len(b["probes"]) for b in bursts) == 6912, ""))
+    single = campaign.campaign_table("selftest", doubling=False)
+    out.append(("campaign table without doubling: 320 bursts, each cell twice per leader, balanced",
+                campaign.table_problems(single) == []
+                and sum(len(r["bursts"]) for ep in single["epochs"] for r in ep["rounds"]) == 320,
+                "; ".join(campaign.table_problems(single))))
+    out.append(("campaign table: same seed, same table; another seed, another table",
+                campaign.campaign_table("selftest") == t and campaign.campaign_table("other") != t, ""))
+    out.append(("campaign table: its seed comes from the one pilot anchor",
+                campaign.seed_from_anchors([{"stage": "pilot", "signature": "abc"}]) == "campaign:abc", ""))
+    for name, change in (
+            ("a leader with one cell twice", lambda x: _campaign_burst(x, path="quic", arm="shared").update(
+                timing=prereg.TIMINGS[1 - prereg.TIMINGS.index(_campaign_burst(x, path="quic", arm="shared")["timing"])],
+                cell=plan.CELLS.index(("shared", prereg.TIMINGS[1 - prereg.TIMINGS.index(
+                    _campaign_burst(x, path="quic", arm="shared")["timing"])])))),
+            ("a control burst in a round of another arm", _move_control),
+            ("a control burst in the other condition", lambda x: _campaign_burst(x, path="rpc").update(
+                timing=prereg.TIMINGS[1 - prereg.TIMINGS.index(_campaign_burst(x, path="rpc")["timing"])])),
+            ("a shared fee level moved", lambda x: _campaign_burst(x, arm="equal_fee").update(
+                equal_fee_lamports=_campaign_burst(x, arm="equal_fee")["equal_fee_lamports"] + 1)),
+            ("a probe fee raised by 1 lamport", lambda x: _campaign_burst(x, arm="independent")["probes"][0].update(
+                priority_fee_lamports=_campaign_burst(x, arm="independent")["probes"][0]["priority_fee_lamports"] + 1)),
+    ):
+        bad = copy.deepcopy(t)
+        change(bad)
+        out.append(("campaign table: the balance check catches %s" % name, bool(campaign.table_problems(bad)), ""))
+
+    leaders = {cls: ["%s-a" % cls, "%s-b" % cls] for cls in prereg.CLASSES}
+    idents = [i for cls in prereg.CLASSES for i in leaders[cls]]
+    first, n = 1_000_000, 432_000
+    passing = {ident: list(range(first + 4 * k, first + n, 4 * 40)) for k, ident in enumerate(idents)}
+    placed, notes = campaign.place_epoch(t["epochs"][0], t["seed"], leaders, passing, first, n, first - 900)
+    slots = sorted(s for p in placed for s in p["slots"])
+    ok = not notes and len(slots) == 144 and all(b - a >= plan.MIN_GAP_SLOTS for a, b in zip(slots, slots[1:]))
+    for r, p in zip(t["epochs"][0]["rounds"], placed):
+        lo, hi = campaign.part_bounds(r["round"], len(placed), first, n)
+        ok &= lo <= p["anchor_slot"] < hi
+        ok &= all(s in passing[leaders[b["class"]][b["leader_rank"]]] for b, s in zip(r["bursts"], p["slots"]))
+    out.append(("campaign plan: windows of the burst's leader, each round anchored in its eighth, "
+                "160 slots apart over the epoch", ok, "%d windows, notes %s" % (len(slots), notes[:2])))
+    doc = {"network": "mainnet", "classes": {cls: {"leaders": [{"identity": i} for i in leaders[cls]]}
+                                             for cls in prereg.CLASSES}}
+    built = campaign.build(t, 0, "aa", "bb", doc, placed, 1071, first, n, "2026-10-28T00:00:00Z", {}, None, None)
+    out.append(("campaign plan: the built plan passes the probe's checks with stage campaign and doubling",
+                plan.check(built) == [] and built["stage"] == "campaign" and built["doubling"]
+                and [r["part"] for r in built["rounds"]] == list(range(8))
+                and sum(b["path"] == "rpc" for r in built["rounds"] for b in r["bursts"]) == 16,
+                "; ".join(plan.check(built))))
+    out.append(("campaign plan: same table and windows, same placement",
+                campaign.place_epoch(t["epochs"][0], t["seed"], leaders, passing, first, n, first - 900)[0] == placed, ""))
+    late, late_notes = campaign.place_epoch(t["epochs"][0], t["seed"], leaders, passing, first, n, first + n // 2)
+    out.append(("campaign plan: drawn mid-epoch, it leaves out the rounds whose anchor has passed and keeps the rest",
+                [p["round"] for p in late] == [4, 5, 6, 7] and len(late_notes) == 4
+                and [p["anchor_slot"] for p in late] == [p["anchor_slot"] for p in placed[4:]], ""))
+    gone = dict(passing, **{leaders["Rakurai"][1]: []})
+    _, gone_notes = campaign.place_epoch(t["epochs"][0], t["seed"], leaders, gone, first, n, first - 900)
+    out.append(("campaign plan: a leader without windows loses its bursts with a note, the epoch goes on",
+                len(gone_notes) == 9 and all("Rakurai" in x for x in gone_notes), str(len(gone_notes))))
+
+    rnd = random.Random("itb-selftest-sigma")
+    a = {cls: rnd.uniform(-0.3, 0.3) for cls in prereg.CLASSES}
+    pts = [(cls, k, a[cls] + 0.1 * j + rnd.gauss(0, 0.2)) for cls in prereg.CLASSES
+           for j, k in enumerate(prereg.TIMINGS)]
+    y = {(c, k): v for c, k, v in pts}
+    row = {c: sum(y[(c, k)] for k in prereg.TIMINGS) / 2 for c in prereg.CLASSES}
+    col = {k: sum(y[(c, k)] for c in prereg.CLASSES) / 8 for k in prereg.TIMINGS}
+    grand = sum(y.values()) / 16
+    rss = sum((y[(c, k)] - row[c] - col[k] + grand) ** 2 for c in prereg.CLASSES for k in prereg.TIMINGS)
+    fit = campaign.slot_sigma(pts)
+    out.append(("minimum: class plus cell residual sd equals the two-way closed form, 7 degrees of freedom",
+                fit["df"] == 7 and abs(fit["sigma"] - math.sqrt(rss / 7)) < 1e-12,
+                "%s vs %.6f" % (fit["sigma"], math.sqrt(rss / 7))))
+    exact = campaign.slot_sigma([(c, k, a[c] + 0.1 * j) for c in prereg.CLASSES for j, k in enumerate(prereg.TIMINGS)])
+    one = campaign.slot_sigma([(c, prereg.TIMINGS[0], a[c]) for c in prereg.CLASSES])
+    out.append(("minimum: an exactly additive slot leaves no residual; one burst per class leaves no degree of freedom",
+                exact["sigma"] < 1e-9 and one["sigma"] is None and one["df"] == 0, ""))
+    null = _null_sigma("independent")
+    out.append(("minimum: the null sigma of one burst gives a minimum above the 8 bursts the doubled campaign has",
+                verdict.min_bursts_formula(null) > 8, str(verdict.min_bursts_formula(null))))
+
+    class Reply:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+        def read(self):
+            return b'[{"account": "A", "software_client": "Agave", "software_version": "4.3.2"}]'
+
+    seen = []
+    pilot.validators_app("mainnet", lambda req, **kw: seen.append(kw) or Reply(), env={})
+    try:
+        pilot.validators_app("mainnet", lambda req, **kw: Reply(), env={pilot.EXTRA_CA_ENV: "not a pem"})
+        bad_root = None
+    except OSError as e:
+        bad_root = e
+    out.append(("validators.app: no extra root, no own TLS context; a broken extra root fails as OSError, "
+                "which the draw turns into a note", seen == [{"timeout": 90}] and bad_root is not None, ""))
+    snap = pilot.va_snapshot("u", {"A": {}}, env={pilot.EXTRA_CA_ENV: "pem"})
+    out.append(("validators.app: the snapshot records the sha256 of an extra root and null without one",
+                snap["extra_ca_sha256"] == pilot.sha256_bytes(b"pem")
+                and pilot.va_snapshot("u", {}, env={})["extra_ca_sha256"] is None, ""))
+    return out
+
+
 def timing_checks():
     """Moment bands (plan sections 5.1 and 10): the slot-2 reference and the final aim."""
     out = []
@@ -852,6 +983,7 @@ def run_all():
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
               + end_to_end_checks() + chain_checks() + prereg_checks() + plan_checks() + panel_checks()
               + pilot_checks()
+              + campaign_checks()
               + timing_checks()
               + clock_guard_checks())
     lines = []

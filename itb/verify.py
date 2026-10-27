@@ -26,6 +26,10 @@ PREREG_STAGES = ("pilot", "campaign")
 # analysis constants. Code that carries out the plan stays outside, so a bug fix after
 # the anchor does not break the hash; the plan and its numbers bind that code.
 PILOT_MANIFEST_FILES = ("prereg/ANALYSIS-PLAN.md", "prereg/pilot-table.json", "itb/prereg.py")
+# The campaign manifest adds the campaign table and the minimum computed from the pilot.
+CAMPAIGN_MANIFEST_FILES = ("prereg/ANALYSIS-PLAN.md", "prereg/campaign-table.json",
+                           "prereg/campaign-minimum.json", "itb/prereg.py")
+MANIFEST_FILES = {"pilot": PILOT_MANIFEST_FILES, "campaign": CAMPAIGN_MANIFEST_FILES}
 ANCHORS_FILE = "prereg-anchors.json"
 
 

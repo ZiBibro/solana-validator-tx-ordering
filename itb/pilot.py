@@ -25,6 +25,7 @@ import hashlib
 import json
 import os
 import random
+import ssl
 import urllib.request
 
 from . import __version__, panel, plan, prereg
@@ -38,6 +39,7 @@ BASE_FEE_LAMPORTS = 5000
 VALIDATORS_APP_URL = "https://www.validators.app/api/v1/validators/%s.json?limit=9999"
 VALIDATORS_APP_FIELDS = ("account", "software_client", "software_version", "updated_at",
                          "active_stake", "delinquent")
+EXTRA_CA_ENV = "ITB_EXTRA_CA_PEM"
 
 
 def _burst(cls, rank, arm, timing, fee, rng, extra=False):
@@ -156,15 +158,43 @@ def place(table, leaders, passing, start_slot):
     return out
 
 
-def validators_app(network, opener=urllib.request.urlopen):
+def extra_ca(env=os.environ):
+    """PEM text of ITB_EXTRA_CA_PEM, or None. A machine whose antivirus re-signs
+    the validators.app certificate sets it to that antivirus root; the system
+    roots stay trusted next to it, and only the validators.app request uses it."""
+    pem = env.get(EXTRA_CA_ENV, "").strip()
+    return pem or None
+
+
+def validators_app(network, opener=urllib.request.urlopen, env=os.environ):
     """(snapshot utc, {identity: trimmed record}) from validators.app, the second
     label channel of section 3."""
     utc = plan.utc_now()
     request = urllib.request.Request(VALIDATORS_APP_URL % network,
                                      headers={"user-agent": "inside-the-block/" + __version__})
-    with opener(request, timeout=90) as reply:
+    kwargs = {"timeout": 90}
+    pem = extra_ca(env)
+    if pem:
+        kwargs["context"] = ssl.create_default_context()
+        kwargs["context"].load_verify_locations(cadata=pem)
+    with opener(request, **kwargs) as reply:
         records = json.loads(reply.read())
     return utc, {r["account"]: {k: r.get(k) for k in VALIDATORS_APP_FIELDS} for r in records if r.get("account")}
+
+
+def plan_burst(b, slot, leader, votes, va, va_utc):
+    """The plan entry of table burst b in the window at slot."""
+    rec = va.get(leader) if va is not None else None
+    return {
+        "cell": b["cell"], "arm": b["arm"], "timing": b["timing"], "path": b.get("path", "quic"),
+        "first_slot": slot, "window_len": plan.SLOTS_PER_WINDOW, "selection_class": b["class"],
+        "leader": leader, "leader_vote": votes.get(leader),
+        "validators_app": None if rec is None else {
+            "software_client": rec["software_client"], "software_version": rec["software_version"],
+            "snapshot_utc": va_utc},
+        "equal_fee_lamports": b["equal_fee_lamports"], "send_interval_us": b["send_interval_us"],
+        "probes": b["probes"],
+    }
 
 
 def build(table, table_sha, manifest_sha, panel_doc, placed, epoch, epoch_first, slots_in_epoch,
@@ -172,20 +202,8 @@ def build(table, table_sha, manifest_sha, panel_doc, placed, epoch, epoch_first,
     leaders = leaders_of(panel_doc)
     rounds = []
     for r, p in zip(table["rounds"], placed):
-        bursts = []
-        for b, slot in zip(r["bursts"], p["slots"]):
-            leader = leaders[b["class"]][b["leader_rank"]]
-            rec = va.get(leader) if va is not None else None
-            bursts.append({
-                "cell": b["cell"], "arm": b["arm"], "timing": b["timing"], "path": "quic",
-                "first_slot": slot, "window_len": plan.SLOTS_PER_WINDOW, "selection_class": b["class"],
-                "leader": leader, "leader_vote": votes.get(leader),
-                "validators_app": None if rec is None else {
-                    "software_client": rec["software_client"], "software_version": rec["software_version"],
-                    "snapshot_utc": va_utc},
-                "equal_fee_lamports": b["equal_fee_lamports"], "send_interval_us": b["send_interval_us"],
-                "probes": b["probes"],
-            })
+        bursts = [plan_burst(b, slot, leaders[b["class"]][b["leader_rank"]], votes, va, va_utc)
+                  for b, slot in zip(r["bursts"], p["slots"])]
         bursts.sort(key=lambda x: x["first_slot"])
         rounds.append({
             "round": r["round"], "epoch": epoch,
@@ -241,8 +259,14 @@ def draw(client, panel_doc, table, table_sha, manifest_sha, lead_slots, va_fetch
                                  "schedule": schedule},
     }
     if va is not None:
-        snapshots["validators-app.json"] = {"utc": va_utc, "records": list(va.values())}
+        snapshots["validators-app.json"] = va_snapshot(va_utc, va)
     return p, snapshots, notes
+
+
+def va_snapshot(va_utc, va, env=os.environ):
+    pem = extra_ca(env)
+    return {"utc": va_utc, "extra_ca_sha256": sha256_bytes(pem.encode()) if pem else None,
+            "records": list(va.values())}
 
 
 def cost(plan_doc):
