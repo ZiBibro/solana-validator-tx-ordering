@@ -31,11 +31,13 @@ POWER_PER_TAU = 0.9
 
 # Moment condition bands, ms from the target as (low, high): an estimated arrival
 # (send offset from the first slot start plus half the RTT) inside the band
-# counts as the condition; bursts outside go to a separate group. Both bands
-# run 100 ms either side of the target; the pair form lets one side move
-# without touching the other.
+# counts as the condition; bursts outside go to a separate group. The pre-window
+# band runs from 500 to 200 ms before the first slot: its late edge guards the
+# condition, and the early edge sits 200 ms out because every early miss of the
+# mainnet dry-run of 27.10.2026 tracked a late window start of the same size.
+# The slot-2 band runs 100 ms either side of the start of slot 2.
 TIMING_TARGET_MS = {"pre300": -300.0, "slot2": None}  # slot2 target = start of slot 2, analyze.slot2_ms
-TIMING_BAND_MS = {"pre300": (-100.0, 100.0), "slot2": (-100.0, 100.0)}
+TIMING_BAND_MS = {"pre300": (-200.0, 100.0), "slot2": (-100.0, 100.0)}
 
 # Section 5.1: slot clock guard. getSlot at processed commitment this many slots
 # or more ahead of the slot the clock gave for the same moment means the burst

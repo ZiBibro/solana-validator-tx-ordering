@@ -802,9 +802,9 @@ def timing_checks():
     out.append(("timing: 130 ms is in the band of a slot 2 seen at 42 ms, out of one at 243 ms",
                 analyze.timing_in_band(burst, est, seen) and not analyze.timing_in_band(burst, est, None), ""))
     pre = dict(burst, timing="pre300")
-    inside = [ms for ms in (-450.0, -400.0, -300.0, -200.0, -150.0) if analyze.timing_in_band(pre, ms)]
-    out.append(("timing: the pre-window band runs from 400 ms to 200 ms before the first slot",
-                inside == [-400.0, -300.0, -200.0], str(inside)))
+    inside = [ms for ms in (-550.0, -500.0, -450.0, -300.0, -200.0, -150.0) if analyze.timing_in_band(pre, ms)]
+    out.append(("timing: the pre-window band runs from 500 ms to 200 ms before the first slot",
+                inside == [-500.0, -450.0, -300.0, -200.0], str(inside)))
     # Schema version 2: the node timestamps hold when a WebSocket backlog delays receipt.
     late = dict(seen, first_shred_ns=[3_000_000_000, 3_400_000_000], first_send_offset_ns=-1_890_000_000,
                 node_ts_ms=[1_793_044_800_000, 1_793_044_800_044], first_send_node_offset_ns=110_000_000)

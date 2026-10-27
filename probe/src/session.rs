@@ -49,7 +49,7 @@ pub(crate) const RESOLVE_WAIT: Duration = Duration::from_secs(180);
 /// Moment-condition targets and bands of itb/prereg.py TIMING_TARGET_MS and TIMING_BAND_MS:
 /// (low, high) in ms from the target; the slot-2 target is the start of slot 2.
 const PRE300_TARGET_MS: f64 = -300.0;
-const PRE300_BAND_MS: (f64, f64) = (-100.0, 100.0);
+const PRE300_BAND_MS: (f64, f64) = (-200.0, 100.0);
 const SLOT2_BAND_MS: (f64, f64) = (-100.0, 100.0);
 
 fn in_band(timing: &str, arrival_ms: f64, slot2_ms: f64) -> bool {
@@ -1185,8 +1185,8 @@ mod tests {
 
     #[test]
     fn bands_match_itb_prereg() {
-        let pre: Vec<f64> = [-450.0, -400.0, -300.0, -200.0, -150.0].into_iter().filter(|a| in_band("pre300", *a, 0.0)).collect();
-        assert_eq!(pre, vec![-400.0, -300.0, -200.0]);
+        let pre: Vec<f64> = [-550.0, -500.0, -450.0, -300.0, -200.0, -150.0].into_iter().filter(|a| in_band("pre300", *a, 0.0)).collect();
+        assert_eq!(pre, vec![-500.0, -450.0, -300.0, -200.0]);
         assert!(in_band("slot2", 130.0, 42.0));
         assert!(!in_band("slot2", 130.0, 243.0));
     }
