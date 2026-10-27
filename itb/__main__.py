@@ -15,6 +15,7 @@
     python -m itb campaign-table   draw the seeded campaign table into prereg/
     python -m itb campaign         put one epoch of the campaign table into windows of the panel leaders
     python -m itb manifest         hash the pre-registered files of a stage into prereg/
+    python -m itb channel          line health of a run round by round, getSlot round trips, campaign watch
 
 In Docker: docker compose run --rm reproduce [subcommand ...]
 """
@@ -25,7 +26,7 @@ import json
 import os
 import sys
 
-from . import __version__, analyze, collect, rawformat, rpc, selftest, verify
+from . import __version__, analyze, channel, collect, rawformat, rpc, selftest, verify
 from . import campaign as campaignmod
 from . import panel as panelmod
 from . import pilot as pilotmod
@@ -401,7 +402,11 @@ def cmd_plan(args):
               file=sys.stderr)
         return EXIT_FAIL
     seed = args.seed or planmod.new_seed()
-    leaders = args.leader or None
+    leaders = list(args.leader or [])
+    if args.panel:
+        with open(args.panel, encoding="utf-8") as f:
+            leaders += [i for ids in pilotmod.leaders_of(json.load(f)).values() for i in ids]
+    leaders = leaders or None
     try:
         p, snapshots = planmod.draw(_client(), network, stage, args.bursts, args.lead_slots, seed,
                                     leaders, args.per_leader, args.path, args.probes)
@@ -423,6 +428,35 @@ def cmd_plan(args):
         print("  slot %d %s %s %s %s fee %s" % (b["first_slot"], b["leader"], b["arm"], b["timing"],
                                                 b["path"], b["equal_fee_lamports"]))
     return EXIT_OK
+
+
+def cmd_channel(args):
+    """rounds: one JSON line per round of a run; rpc: getSlot round trips; watch:
+    journal the rounds of the live runs. --gate and watch exit 3 below a threshold."""
+    logs = args.logs or os.path.join(REPO_DIR, "logs")
+    if args.what == "rounds":
+        try:
+            found = channel.run_rounds(_data_dir(args), logs, args.run_id, args.all)
+        except ValueError as e:
+            print("channel: %s" % e, file=sys.stderr)
+            return EXIT_FAIL
+        for r in found:
+            print(json.dumps(r, sort_keys=True))
+        if not found:
+            print("channel: no finished round in run %s" % args.run_id, file=sys.stderr)
+            return EXIT_NOT_READY
+        return channel.EXIT_BELOW if args.gate and any(r["below"] for r in found) else EXIT_OK
+    if args.what == "rpc":
+        url = os.environ.get("ITB_RPC_URL", DEFAULT_RPC)
+        result = channel.rpc_rtt(url, args.seconds, args.interval)
+        result["rpc"] = rpc.origin(url)
+        print(json.dumps(result, sort_keys=True))
+        return channel.EXIT_BELOW if args.gate and result["below"] else EXIT_OK
+    if not args.journal:
+        print("channel watch: --journal is required", file=sys.stderr)
+        return EXIT_FAIL
+    return channel.watch(_data_dir(args), logs, args.journal, args.stage, args.transcript, args.poll,
+                         say=lambda line: print(line, flush=True))
 
 
 def main(argv=None):
@@ -453,6 +487,7 @@ def main(argv=None):
     p.add_argument("--lead-slots", type=int, default=900,
                    help="first window at least this many slots ahead (default 900)")
     p.add_argument("--leader", action="append", help="allowed leader identity (repeatable)")
+    p.add_argument("--panel", help="allow the leaders of this panel.json (adds to --leader)")
     p.add_argument("--per-leader", type=int, help="at most this many windows per leader")
     p.add_argument("--path", choices=("quic", "rpc"), default="quic")
     p.add_argument("--probes", type=int, default=planmod.PAYERS, help="probes per burst, 2 to 12")
@@ -494,7 +529,22 @@ def main(argv=None):
     p.add_argument("--file", action="append",
                    help="repository file to list (repeatable; default: MANIFEST_FILES of verify.py)")
     p.add_argument("--data", help="data directory with prereg-anchors.json (default: repo data/)")
+    p = sub.add_parser("channel", help="line health: rounds of a run, getSlot round trips, campaign watch")
+    p.add_argument("what", choices=("rounds", "rpc", "watch"))
+    p.add_argument("run_id", nargs="?", help="run of rounds")
+    p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
+    p.add_argument("--logs", help="directory of the run logs (default: repo logs/)")
+    p.add_argument("--all", action="store_true", help="rounds: also rounds whose windows are not all done")
+    p.add_argument("--gate", action="store_true", help="rounds, rpc: exit 3 when a threshold is missed")
+    p.add_argument("--seconds", type=float, default=180.0, help="rpc: length of the series (default 180)")
+    p.add_argument("--interval", type=float, default=2.0, help="rpc: seconds between requests (default 2)")
+    p.add_argument("--journal", help="watch: JSON-lines journal the finished rounds are appended to")
+    p.add_argument("--stage", default="campaign", help="watch: stage of the live runs (default campaign)")
+    p.add_argument("--transcript", help="watch: campaign.sh transcript; its last line ends the watch")
+    p.add_argument("--poll", type=float, default=60.0, help="watch: seconds between reads (default 60)")
     args = parser.parse_args(argv)
+    if args.cmd == "channel" and args.what == "rounds" and not args.run_id:
+        parser.error("channel rounds needs a run id")
     # Operator names carry emoji; a Windows console in a legacy code page prints them escaped.
     for stream in (sys.stdout, sys.stderr):
         if hasattr(stream, "reconfigure"):
@@ -504,7 +554,7 @@ def main(argv=None):
         "analyze": cmd_analyze, "claim": cmd_claim, "collect": cmd_collect,
         "check-raw": cmd_check_raw, "plan": cmd_plan, "panel": cmd_panel, "table": cmd_table,
         "pilot": cmd_pilot, "minimum": cmd_minimum, "campaign-table": cmd_campaign_table,
-        "campaign": cmd_campaign, "manifest": cmd_manifest, None: cmd_reproduce,
+        "campaign": cmd_campaign, "manifest": cmd_manifest, "channel": cmd_channel, None: cmd_reproduce,
     }
     return handlers[args.cmd](args)
 

@@ -149,6 +149,13 @@ A round whose first window has already passed when the plan is drawn is left out
 scripts/campaign.sh data/panels/<id>/panel.json <first epoch>
 ```
 
+A campaign runs for days on one network line, and other traffic on that line spoils timing before it shows anywhere else. Half the RTT sets the send moment and also enters the arrival estimate, so delay that grows in one direction only moves the real arrival while the estimate stays in the band. [itb/channel.py](itb/channel.py) therefore watches the RTT next to the band. Per round it reports the share of bursts in the timing band, bursts skipped because the slot clock fell behind, the largest clock lag, failed handshakes, and the median QUIC handshake and getSlot round trips. Each check has a threshold derived from the pilot, and the reasoning sits in a comment beside it. [scripts/channel-check.sh](scripts/channel-check.sh) checks the line before the start with three minutes of getSlot round trips and a dry-run on the nearest windows of the panel leaders. During the campaign the watch journals every finished round and exits with code 3 at the first one below a threshold:
+
+```bash
+scripts/channel-check.sh data/panels/<id>/panel.json
+python -m itb channel watch --journal logs/channel-<stamp>.jsonl --transcript logs/campaign-<stamp>.txt
+```
+
 The comments at the top of [compose.yaml](compose.yaml) list every command.
 
 Keys are never part of the repository. The sender reads the wallet key from a Compose secret whose file is given by `ITB_WALLET_KEY_FILE` (by default the git-ignored `secrets/wallet-key.json`), or from an environment variable through `compose.key-from-env.yaml`. Logs and raw rows never carry key bytes, and `tests/keyscan.py` searches everything a run wrote for them in every encoding.
@@ -182,7 +189,7 @@ The plan step reads the second client label from validators.app, and a web shiel
 | `schema/raw-format.json` | the format of every raw row, shared by both languages |
 | `data/` | inputs and raw data of every run, failed ones included |
 | `logs/` | operational logs, kept apart from raw data |
-| `scripts/` | the live campaign runner, one epoch after another |
+| `scripts/` | the live campaign runner, one epoch after another, and the line check before it |
 | `tests/` | the devnet pipeline test, the mainnet dry-run, the key scanner, and unit tests for the scanner and the raw format |
 
 ## License

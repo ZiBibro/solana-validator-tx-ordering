@@ -14,8 +14,8 @@ import random
 import tempfile
 from fractions import Fraction
 
-from . import (analyze, b58, campaign, collect, fakechain, panel, pilot, plan, prereg, rawformat, rpc, stats,
-               synth, verdict, verify)
+from . import (analyze, b58, campaign, channel, collect, fakechain, panel, pilot, plan, prereg, rawformat, rpc,
+               stats, synth, verdict, verify)
 
 
 def sample_run(burst_seq=7, n=12):
@@ -1033,6 +1033,108 @@ def clock_guard_checks():
     return out
 
 
+def _channel_run(arrivals, rtt_ms=40.0):
+    """Rows and log events of a live run with one round of len(arrivals) pre300
+    windows; an arrival of None is a burst the probe skipped for its clock."""
+    rows = [{"kind": "run", "run_id": "c", "stage": "campaign", "mode": "live"},
+            {"kind": "round", "run_id": "c", "round": 0, "epoch": 1,
+             "windows": [{"burst_seq": s, "leader": "L", "first_slot": 100 * s} for s in range(len(arrivals))]}]
+    events = []
+    for s, ms in enumerate(arrivals):
+        if ms is None:
+            events.append({"event": "burst_skipped", "burst_seq": s,
+                           "data": {"reason": "slot clock 3 slots behind getSlot processed 5 (first_shred on node_ts)"}})
+            continue
+        rows.append({"kind": "burst", "run_id": "c", "burst_seq": s, "round": 0, "timing": "pre300", "path": "quic",
+                     "slot_ms": 400.0, "rtt_ns": int(rtt_ms * 1e6), "send_at_ns": 0, "predicted_first_slot_ns": 0,
+                     "handshake": None, "clock_lag_slots": 0, "http_slot_rtt_ns": 50_000_000})
+        # arrival_ms adds half the RTT to the send offset, so the offset gives ms exactly.
+        rows.append({"kind": "burst_end", "run_id": "c", "burst_seq": s, "send_rtt_ns": int(rtt_ms * 1e6),
+                     "first_send_node_offset_ns": int(ms * 1e6 - rtt_ms * 5e5), "reconnects": 0})
+    return rows, events
+
+
+class _FakeRpc:
+    """HTTPS connection stand-in for channel.rpc_rtt: each reply takes 50 ms on the
+    fake clock and request number fail_at raises."""
+
+    def __init__(self, now, count, fail_at):
+        self.now, self.count, self.fail_at = now, count, fail_at
+
+    def request(self, *a):
+        self.count[0] += 1
+        if self.count[0] == self.fail_at:
+            raise OSError("reset")
+
+    def getresponse(self):
+        return self
+
+    status = 200
+
+    def read(self):
+        self.now[0] += 0.05
+        return b'{"jsonrpc":"2.0","id":1,"result":5}'
+
+    def close(self):
+        pass
+
+
+def channel_checks():
+    """Line health of plan-implementation section 11: round summaries, thresholds,
+    the journal of the campaign watch and getSlot round trips."""
+    out = []
+    one = lambda arrivals, **kw: channel.rounds(*_channel_run(arrivals, **kw))
+    r = one([-300.0] * 4 + [0.0])
+    out.append(("channel: 4 of 5 bursts in the band pass the three-quarter share",
+                len(r) == 1 and r[0]["in_band"] == 4 and r[0]["in_band_share"] == 0.8 and not r[0]["below"], str(r)))
+    r = one([-300.0] * 3 + [0.0, 0.0])
+    out.append(("channel: 3 of 5 in the band miss it", r[0]["below"] == ["in_band_share"], str(r[0]["below"])))
+    r = one([-300.0] * 2 + [0.0])
+    out.append(("channel: a round of 3 written bursts gets no share verdict", r[0]["below"] == [], str(r[0]["below"])))
+    r = one([-300.0] * 8 + [None, None])
+    out.append(("channel: 2 clock skips of 10 windows miss the skip share, the 8 written stay in the band",
+                r[0]["skipped_clock"] == 2 and r[0]["written"] == 8 and r[0]["below"] == ["clock_skip_share"],
+                str(r[0])))
+    rows, events = _channel_run([-300.0] * 5)
+    cut = rows[:-1]
+    out.append(("channel: a round with a window not done waits; partial shows it, the run summary ends it",
+                channel.rounds(cut, events) == [] and channel.rounds(cut, events, partial=True)[0]["complete"] is False
+                and channel.rounds(cut, events + [{"event": "summary"}])[0]["complete"] is True, ""))
+    hs = [{"event": "quic_connected", "burst_seq": s, "data": {"rtt_ns": 200_000_000}} for s in range(5)]
+    r = channel.rounds(rows, events + hs)
+    out.append(("channel: the handshake RTT of the run log wins over the burst row and misses 150 ms",
+                r[0]["quic_rtt_ms"] == [200.0, 200.0, 200.0] and r[0]["below"] == ["quic_rtt_median"], str(r[0])))
+    with tempfile.TemporaryDirectory() as tmp:
+        path = os.path.join(tmp, "x.jsonl")
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            f.write('{"a": 1}\n{"b": ')
+        try:
+            got = channel.read_rows(path)
+        except ValueError as e:
+            got = e
+        out.append(("channel: a cut last line waits for the next read", got == [{"a": 1}], str(got)))
+        rows, events = _channel_run([-300.0] * 3 + [0.0, 0.0])
+        os.makedirs(os.path.join(tmp, "data", "runs", "c"))
+        os.makedirs(os.path.join(tmp, "logs"))
+        _write(os.path.join(tmp, "data", "runs", "c", "probes.jsonl"), rows)
+        _write(os.path.join(tmp, "logs", "c.jsonl"), events)
+        journal = os.path.join(tmp, "logs", "channel.jsonl")
+        args = (os.path.join(tmp, "data"), os.path.join(tmp, "logs"), journal)
+        first = channel.watch(*args, once=True, say=lambda line: None)
+        second = channel.watch(*args, once=True, say=lambda line: None)
+        lines = channel.read_rows(journal)
+    out.append(("channel: the watch journals a round below a threshold once and stops at it",
+                first == channel.EXIT_BELOW and second == 0 and len(lines) == 1 and lines[0]["below"] == ["in_band_share"],
+                "%s %s %d" % (first, second, len(lines))))
+    now, count = [0.0], [0]
+    res = channel.rpc_rtt("https://rpc.example", 10, 1.0, clock=lambda: now[0],
+                          sleep=lambda s: now.__setitem__(0, now[0] + s), connect=lambda: _FakeRpc(now, count, 4))
+    out.append(("channel: getSlot round trips leave out the first request of each connection and count a failure",
+                res["samples"] == 7 and res["failed"] == 1 and res["http_rtt_ms"] == [50.0, 50.0, 50.0]
+                and res["below"] == ["rpc_fail_share"], str(res)))
+    return out
+
+
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
@@ -1041,7 +1143,8 @@ def run_all():
               + campaign_checks()
               + rounds_checks()
               + timing_checks()
-              + clock_guard_checks())
+              + clock_guard_checks()
+              + channel_checks())
     lines = []
     failed = 0
     for name, ok, detail in checks:

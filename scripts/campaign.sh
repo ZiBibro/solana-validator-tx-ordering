@@ -23,7 +23,10 @@
 # wallet key file in ITB_WALLET_KEY_FILE, which only the probe container reads.
 # ITB_EXTRA_CA_PEM, when set, reaches the plan service (README, TLS-inspecting proxy);
 # ITB_EXTRA_CA_FILE names the same root as a file, and the script passes on its text.
-# The transcript lands in logs/campaign-<stamp>.txt.
+# The transcript lands in logs/campaign-<stamp>.txt. scripts/channel-check.sh checks the
+# line before the start; `python -m itb channel watch --journal logs/channel-<stamp>.jsonl
+# --transcript logs/campaign-<stamp>.txt` on the host journals every finished round
+# while the campaign runs and exits 3 at the first round below a threshold.
 set -uo pipefail
 export MSYS_NO_PATHCONV=1
 
@@ -98,6 +101,8 @@ for e in $(seq "$from" "$to"); do
                     ccode=$?
                     echo "collect $run_id exit $ccode"
                     [ $ccode -eq 0 ] || code=$ccode
+                    # Line health of each round (itb/channel.py); it only reports.
+                    dc run --rm --no-deps -T plan channel rounds "$run_id" --all
                 fi
                 dc run --rm --no-deps -T probe status
             fi
