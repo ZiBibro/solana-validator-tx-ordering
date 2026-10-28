@@ -58,6 +58,20 @@ fn in_band(timing: &str, arrival_ms: f64, slot2_ms: f64) -> bool {
     let (target, (low, high)) = if timing == "pre300" { (PRE300_TARGET_MS, PRE300_BAND_MS) } else { (slot2_ms, SLOT2_BAND_MS) };
     (target + low..=target + high).contains(&arrival_ms)
 }
+
+/// Start of the window's first slot and the arrival target from one model, as (correction
+/// applied, predicted, target). The leader correction enters the first-slot prediction
+/// until the anchor is that slot itself, and the slot-2 target is that prediction plus the
+/// model's step to slot 2.
+fn aim_at(m: &Model, first_slot: u64, timing: &str, lead_ns: i64) -> (i64, i64, i64) {
+    let correction = if m.anchor_slot < first_slot { lead_ns } else { 0 };
+    let predicted = m.predict(first_slot) + correction;
+    let target = if timing == "pre300" { predicted - PRE300_NS } else { predicted + m.predict(first_slot + 1) - m.predict(first_slot) };
+    (correction, predicted, target)
+}
+
+/// Longest run of slots before the window that burst_end keeps first shreds of.
+const SHREDS_BEFORE_MAX: u64 = 64;
 /// The send moment is re-aimed from the freshest slot event until this close to it.
 const AIM_FINAL_NS: i64 = 2_000_000;
 /// Clock guard (section 5.1): a burst is skipped when getSlot at processed commitment is
@@ -193,6 +207,8 @@ struct BurstNote {
 /// The send moment as finally aimed, from the freshest slot event before it (section 5.1).
 struct Aim {
     anchor_slot: u64,
+    /// Leader correction inside `predicted`; 0 once the anchor is the window's first slot.
+    correction: i64,
     predicted: i64,
     target: i64,
     rtt_ns: Option<i64>,
@@ -711,9 +727,16 @@ impl Session {
         }
         let prepare = b.first_slot.saturating_sub(PREPARE_SLOTS);
         let latest = b.first_slot.saturating_sub(LATEST_BLOCKHASH_SLOTS);
+        // The leader correction reads the schedule over the whole stream, which may reach into
+        // the previous epoch: that schedule is fetched now rather than in the slots before the window.
+        let oldest = self.clock.lock().unwrap().first_shred.keys().next().copied();
+        if let Some(s) = oldest {
+            self.leaders.leader(&mut self.rpc, s);
+        }
         let Some(model) = wait_for_slot(prepare, latest, model, || self.model(), mono_ns, sleep_until_ns) else {
             return Ok(BurstEnd::Skipped("woke after the window".into()));
         };
+        let lead = self.leader_correction(b, &model);
 
         // Gossip at the burst (section 5.3): clientId and tpuQuic can change between windows.
         let nodes = self.rpc.cluster_nodes()?;
@@ -773,8 +796,7 @@ impl Session {
                 model.basis.name()
             )));
         }
-        let predicted = model.predict(b.first_slot);
-        let target = if b.timing == "pre300" { predicted - PRE300_NS } else { model.predict(b.first_slot + 1) };
+        let (correction, predicted, target) = aim_at(&model, b.first_slot, &b.timing, lead.0);
         let rtt_ns = conn.as_ref().map(|c| c.rtt().as_nanos() as i64);
         let send_at = target - rtt_ns.unwrap_or(0) / 2;
         let anchor_leader = self.leaders.leader(&mut self.rpc, model.anchor_slot);
@@ -787,7 +809,8 @@ impl Session {
         // the macro recursion limit.
         let guard = json!({"slot_clock_basis": model.basis.name(), "clock_offset_ns": model.offset_ns,
                            "http_slot": check.http_slot, "http_slot_rtt_ns": check.rtt_ns,
-                           "clock_slot_at_http": check.clock_slot, "clock_lag_slots": check.lag});
+                           "clock_slot_at_http": check.clock_slot, "clock_lag_slots": check.lag,
+                           "leader_correction_ns": correction, "leader_correction_n": lead.1});
         let mut row = json!({"run_id": self.run_id, "burst_seq": seq, "round": round.round, "cell": b.cell, "arm": b.arm,
                    "timing": b.timing, "path": b.path, "epoch": self.leaders.schedule.epoch_of(b.first_slot),
                    "first_slot": b.first_slot, "window_len": b.window_len, "selection_class": b.selection_class,
@@ -834,12 +857,12 @@ impl Session {
         if self.live && !deliverable {
             let why = handshake.as_ref().and_then(|h| h["error"].as_str()).unwrap_or("no connection").to_string();
             self.not_sent(seq, &built, &format!("not sent: {why}"))?;
-            self.end_row(seq, None, b, predicted, None, &[], reconnects)?;
-            let slot2_ms = (model.predict(b.first_slot + 1) - predicted) as f64 / 1e6;
+            self.end_row(seq, None, b, predicted, None, lead.1, &[], reconnects)?;
+            let slot2_ms = (model.predict(b.first_slot + 1) - model.predict(b.first_slot)) as f64 / 1e6;
             return Ok(BurstEnd::Done(BurstNote { timing: b.timing.clone(), slot2_ms, arrival_ms: None, handshake_ok: Some(false), rtt_ms: None }));
         }
 
-        let aim = self.aim(b, conn.as_ref(), model);
+        let aim = self.aim(b, conn.as_ref(), model, lead.0);
         let send_at = aim.send_at;
         sleep_until_ns(send_at);
         let interval = b.send_interval_us as i64 * 1000;
@@ -923,7 +946,7 @@ impl Session {
         let sends: Vec<i64> = outcomes.iter().filter_map(|o| o.send_end_ns).collect();
         // The log line and the summary read the same events as burst_end, so they agree
         // with itb/analyze.py.
-        let [(fs1, ts1, n1), (fs2, ts2, _)] = self.end_row(seq, conn.as_ref(), b, predicted, Some(&aim), &sends, reconnects)?;
+        let [(fs1, ts1, n1), (fs2, ts2, _)] = self.end_row(seq, conn.as_ref(), b, predicted, Some(&aim), lead.1, &sends, reconnects)?;
         if let Some(c) = conn.as_ref() {
             if self.live {
                 quic::close(c, b"burst end");
@@ -941,7 +964,10 @@ impl Session {
                 (Some(a), Some(c), _, _) => c as f64 - a as f64,
                 (_, _, Some(a), Some(c)) => (c - a) as f64 / 1e6,
                 _ if b.timing == "slot2" => (aim.target - aim.predicted) as f64 / 1e6,
-                _ => (self.model().unwrap_or(model).predict(b.first_slot + 1) - aim.predicted) as f64 / 1e6,
+                _ => {
+                    let m = self.model().unwrap_or(model);
+                    (m.predict(b.first_slot + 1) - m.predict(b.first_slot)) as f64 / 1e6
+                }
             },
             arrival_ms,
             handshake_ok: (b.path == "quic").then_some(conn.is_some()),
@@ -952,7 +978,8 @@ impl Session {
             "burst_done",
             Some(seq),
             json!({"first_slot": b.first_slot, "leader": b.leader, "arm": b.arm, "timing": b.timing, "path": b.path,
-                   "arrival_ms": arrival_ms, "rtt_ms": note.rtt_ms, "results": if self.live { json!(results) } else { Value::Null }}),
+                   "arrival_ms": arrival_ms, "rtt_ms": note.rtt_ms, "results": if self.live { json!(results) } else { Value::Null },
+                   "leader_correction_ms": aim.correction as f64 / 1e6, "leader_correction_n": lead.1}),
         );
         println!(
             "burst {seq} slot {} {} {} {}: est. arrival {} ms from slot start, rtt {} ms",
@@ -1024,19 +1051,35 @@ impl Session {
 
     /// Re-aim the send from the freshest slot event and RTT until the moment is close;
     /// the burst row keeps the aim at signing time, burst_end the final one.
-    fn aim(&self, b: &Burst, conn: Option<&quinn::Connection>, fallback: Model) -> Aim {
+    fn aim(&self, b: &Burst, conn: Option<&quinn::Connection>, fallback: Model, lead_ns: i64) -> Aim {
         loop {
             let m = self.model().unwrap_or(fallback);
-            let predicted = m.predict(b.first_slot);
-            let target = if b.timing == "pre300" { predicted - PRE300_NS } else { m.predict(b.first_slot + 1) };
+            let (correction, predicted, target) = aim_at(&m, b.first_slot, &b.timing, lead_ns);
             let rtt_ns = conn.map(|c| c.rtt().as_nanos() as i64);
             let send_at = target - rtt_ns.unwrap_or(0) / 2;
             let left = send_at - mono_ns();
             if left <= AIM_FINAL_NS {
-                return Aim { anchor_slot: m.anchor_slot, predicted, target, rtt_ns, send_at };
+                return Aim { anchor_slot: m.anchor_slot, correction, predicted, target, rtt_ns, send_at };
             }
             std::thread::sleep(Duration::from_nanos((left - AIM_FINAL_NS) as u64).min(AIM_POLL));
         }
+    }
+
+    /// Leader correction of the burst's window and the windows it stands on (slots::
+    /// leader_correction); (0, 0) when the slot before the window belongs to the same
+    /// leader, whose delay an anchor there already carries.
+    fn leader_correction(&mut self, b: &Burst, model: &Model) -> (i64, usize) {
+        if b.first_slot == 0 || self.leaders.leader(&mut self.rpc, b.first_slot - 1).as_deref() == Some(b.leader.as_str()) {
+            return (0, 0);
+        }
+        let range = {
+            let st = self.clock.lock().unwrap();
+            st.first_shred.keys().next().copied().zip(st.first_shred.keys().next_back().copied())
+        };
+        let Some((lo, hi)) = range else { return (0, 0) };
+        let firsts = self.leaders.handoffs_to(&mut self.rpc, &b.leader, lo, hi);
+        let residuals = self.clock.lock().unwrap().handoff_residuals(&firsts, model);
+        slots::leader_correction(&residuals)
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -1047,6 +1090,7 @@ impl Session {
         b: &Burst,
         predicted: i64,
         aim: Option<&Aim>,
+        lead_n: usize,
         sends: &[i64],
         reconnects: u64,
     ) -> Result<[FirstShred; 2], String> {
@@ -1055,9 +1099,17 @@ impl Session {
         let offset = self.clock.lock().unwrap().node_offset_ns();
         let send_anchor_leader = aim.and_then(|a| self.leaders.leader(&mut self.rpc, a.anchor_slot));
         let final_prediction = aim.map_or(predicted, |a| a.predicted);
-        self.rows.write(
-            "burst_end",
-            json!({"run_id": self.run_id, "burst_seq": seq, "quic_stats": conn.map(quic::stats_json),
+        // Node-time first shreds from the final anchor to slot 2, where the aim's error forms;
+        // the analysis does not read them.
+        let shreds_from = aim.map(|a| a.anchor_slot.min(b.first_slot).max(b.first_slot.saturating_sub(SHREDS_BEFORE_MAX)));
+        let shreds = shreds_from.map(|from| {
+            let st = self.clock.lock().unwrap();
+            (from..=b.first_slot + 1).map(|s| st.node_time(s, offset)).collect::<Vec<_>>()
+        });
+        // Schema version 3 fields; one json! of all fields would pass the macro recursion limit.
+        let v3 = json!({"leader_correction_ns": aim.map(|a| a.correction), "leader_correction_n": lead_n,
+                        "shreds_from_slot": shreds_from, "shreds_node_ns": shreds});
+        let mut row = json!({"run_id": self.run_id, "burst_seq": seq, "quic_stats": conn.map(quic::stats_json),
                    "first_shred_ns": [fs1, fs2], "node_ts_ms": [ts1, ts2],
                    "first_shred_node_ns": [n1, n2], "clock_offset_ns": offset,
                    "first_send_offset_ns": fs1.and_then(|f| sends.first().map(|s| s - f)),
@@ -1067,8 +1119,11 @@ impl Session {
                    "send_anchor_slot": aim.map(|a| a.anchor_slot), "send_anchor_leader": send_anchor_leader,
                    "send_predicted_first_slot_ns": aim.map(|a| a.predicted),
                    "send_target_arrival_ns": aim.map(|a| a.target), "send_rtt_ns": aim.and_then(|a| a.rtt_ns),
-                   "reconnects": reconnects, "utc_end": utc_now()}),
-        )?;
+                   "reconnects": reconnects, "utc_end": utc_now()});
+        if let (Some(r), Value::Object(f)) = (row.as_object_mut(), v3) {
+            r.extend(f);
+        }
+        self.rows.write("burst_end", row)?;
         Ok([(fs1, ts1, n1), (fs2, ts2, n2)])
     }
 
@@ -1224,6 +1279,28 @@ mod tests {
         assert_eq!(pre, vec![-500.0, -450.0, -300.0, -200.0]);
         assert!(in_band("slot2", 130.0, 42.0));
         assert!(!in_band("slot2", 130.0, 243.0));
+    }
+
+    #[test]
+    fn aim_takes_the_leader_correction_until_the_anchor_is_the_window() {
+        let st = slots::tests::late_leader_stream(2000, 80);
+        let m = st.model().expect("model");
+        let lead = slots::leader_correction(&st.handoff_residuals(&(1..166).map(|k| k * 12).collect::<Vec<_>>(), &m));
+        assert_eq!(lead.0, 80_000_000);
+        // From an anchor in the window before the far leader's window at slot 1992, both
+        // targets land on the window's own first shreds.
+        let off = m.offset_ns;
+        let at = |s: u64| st.node_time(s, off).unwrap();
+        let before = Model { anchor_slot: 1991, anchor_ns: at(1991), ..m };
+        let (c, predicted, target) = aim_at(&before, 1992, "slot2", lead.0);
+        assert_eq!((c, predicted, target), (80_000_000, at(1992), at(1993)));
+        let (_, _, target) = aim_at(&before, 1992, "pre300", lead.0);
+        assert_eq!(target, at(1992) - PRE300_NS);
+        // Without it the slot-2 target falls 80 ms early.
+        assert_eq!(aim_at(&before, 1992, "slot2", 0).2, at(1993) - 80_000_000);
+        // An anchor on the window's first slot already carries the delay.
+        let inside = Model { anchor_slot: 1992, anchor_ns: at(1992), ..m };
+        assert_eq!(aim_at(&inside, 1992, "slot2", lead.0), (0, at(1992), at(1993)));
     }
 
     #[test]

@@ -1,7 +1,7 @@
 {
   "schema": "itb-raw",
-  "version": 2,
-  "about": "Canonical format of every raw row the tool writes. Python (itb/rawformat.py) validates rows against this file and the Rust probe checks its own rows against it in cargo test, so the two sides cannot drift apart. Type grammar: str, int, num, bool, obj, list<T>, enum:a|b; a trailing ? allows null. Unknown fields are errors. Every row carries v (schema version) and kind. A field with since N belongs to rows of version N and later: older rows stay valid without it, and a row of an older version may not carry it. Version 2 (2026-10-27) adds the node-time slot clock and its guard (plan section 5.1).",
+  "version": 3,
+  "about": "Canonical format of every raw row the tool writes. Python (itb/rawformat.py) validates rows against this file and the Rust probe checks its own rows against it in cargo test, so the two sides cannot drift apart. Type grammar: str, int, num, bool, obj, list<T>, enum:a|b; a trailing ? allows null. Unknown fields are errors. Every row carries v (schema version) and kind. A field with since N belongs to rows of version N and later: older rows stay valid without it, and a row of an older version may not carry it. Version 2 (2026-10-27) adds the node-time slot clock and its guard (plan section 5.1). Version 3 (2026-10-28) adds the leader correction of the aim and the first shreds from the final anchor to slot 2 (logs/aim-diagnosis-20261028.txt).",
   "files": {
     "data/runs/<run_id>/probes.jsonl": "written by probe: run, round, burst, probe, send, burst_end rows; probe rows are fsynced before the transaction leaves the machine",
     "data/runs/<run_id>/collect.jsonl": "written by collect: slot and inclusion rows",
@@ -96,6 +96,8 @@
         "http_slot_rtt_ns": {"type": "int", "min": 0, "since": 2, "doc": "duration of that call"},
         "clock_slot_at_http": {"type": "int", "min": 0, "since": 2, "doc": "slot the clock gives for the midpoint of the call"},
         "clock_lag_slots": {"type": "int?", "since": 2, "doc": "http_slot minus clock_slot_at_http; the probe skips the burst at 2 or more and writes no row, analyze excludes it by the same bound (itb/prereg.py CLOCK_LAG_SKIP_SLOTS)"},
+        "leader_correction_ns": {"type": "int", "since": 3, "doc": "leader correction inside predicted_first_slot_ns and target_arrival_ns: median over this leader's earlier windows in the slot stream of the first window slot's node time minus its prediction from the window before (probe/src/slots.rs); 0 under the minimum number of windows"},
+        "leader_correction_n": {"type": "int", "min": 0, "since": 3, "doc": "windows of this leader the correction stands on; 0 when the slot before the window belongs to the same leader"},
         "slot_ms": {"type": "num", "doc": "slot duration measured in this run"},
         "anchor_slot": {"type": "int", "min": 0, "doc": "last slot the send moment was predicted from at signing; burst_end holds the final aim"},
         "anchor_leader": {"type": "str?", "format": "pubkey"},
@@ -157,13 +159,17 @@
         "first_send_node_offset_ns": {"type": "int?", "since": 2, "doc": "first send minus first_shred_node_ns of slot 1; analyze takes it before first_send_offset_ns"},
         "first_send_offset_ns": {"type": "int?", "doc": "first send minus firstShredReceived of slot 1"},
         "last_send_offset_ns": {"type": "int?"},
-        "prediction_residual_ns": {"type": "int?", "doc": "observed minus the final prediction (send_predicted_first_slot_ns) of the start of slot 1, observed on node time when known (version 2), else on receipt; zero when the final anchor is slot 1 itself"},
+        "prediction_residual_ns": {"type": "int?", "doc": "observed minus the final prediction (send_predicted_first_slot_ns) of the start of slot 1, observed on node time when known (version 2), else on receipt; zero when the final anchor is slot 1 itself; from version 3 the prediction holds the leader correction"},
         "send_anchor_slot": {"type": "int?", "min": 0, "doc": "freshest slot event the send moment was finally aimed from, about 2 ms before the send; null when nothing was sent"},
         "send_anchor_leader": {"type": "str?", "format": "pubkey"},
-        "send_predicted_first_slot_ns": {"type": "int?", "doc": "start of slot 1 as finally predicted"},
+        "send_predicted_first_slot_ns": {"type": "int?", "doc": "start of slot 1 as finally predicted, leader correction included (version 3)"},
         "send_target_arrival_ns": {"type": "int?"},
         "send_rtt_ns": {"type": "int?", "min": 0, "doc": "Connection::rtt() at the final aim; the send moment is the target minus half of it"},
         "reconnects": {"type": "int", "min": 0},
+        "leader_correction_ns": {"type": "int?", "since": 3, "doc": "leader correction inside the final prediction: as in the burst row while the final anchor lies before slot 1, else 0; null when nothing was sent"},
+        "leader_correction_n": {"type": "int", "min": 0, "since": 3, "doc": "windows the correction stands on, as in the burst row"},
+        "shreds_from_slot": {"type": "int?", "min": 0, "since": 3, "doc": "first slot of shreds_node_ns: send_anchor_slot, at most 64 slots before slot 1 and at most slot 1; null when nothing was sent"},
+        "shreds_node_ns": {"type": "list<int?>?", "since": 3, "doc": "firstShredReceived on node time of every slot from shreds_from_slot to slot 2 of the window, null for a slot without an event; kept for diagnosis of the aim, the analysis does not read it"},
         "utc_end": {"type": "str", "format": "utc"}
       }
     },

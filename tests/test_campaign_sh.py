@@ -162,6 +162,7 @@ class CampaignScript(unittest.TestCase):
         self.assertTrue(runs[0].endswith("-T probe run --plan /data/plans/campaign-mainnet-e1071-20261028T021233Z/plan.json"
                                          " --live --max-spend-lamports %d --close-after" % LIMIT), runs[0])
         self.assertTrue(any(c.endswith("collect collect campaign-mainnet-20261028T021300Z --network mainnet") for c in calls), calls)
+        self.assertTrue(any(c.endswith("plan channel rounds campaign-mainnet-20261028T021300Z --all") for c in calls), calls)
         self.assertIn("campaign done", out)
 
     def test_run_line_pattern_finds_no_number_and_never_sends(self):

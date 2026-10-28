@@ -104,6 +104,20 @@ impl Leaders {
         }
         self.epochs[&epoch].as_ref()?.leader(slot).map(String::from)
     }
+
+    /// First slots in lo..=hi of the windows `leader` takes over from another leader.
+    pub fn handoffs_to(&mut self, rpc: &mut Rpc, leader: &str, lo: u64, hi: u64) -> Vec<u64> {
+        let w = crate::slots::WINDOW_SLOTS;
+        let mut out = vec![];
+        let mut s = lo.max(1).div_ceil(w) * w;
+        while s <= hi {
+            if self.leader(rpc, s).as_deref() == Some(leader) && self.leader(rpc, s - 1).as_deref() != Some(leader) {
+                out.push(s);
+            }
+            s += w;
+        }
+        out
+    }
 }
 
 /// The gossip entry of one identity from getClusterNodes.

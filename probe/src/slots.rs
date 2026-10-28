@@ -37,6 +37,19 @@ const STEP_HORIZON: u64 = 16;
 const OFFSET_SLOTS: u64 = 1_500;
 /// Observed consecutive pairs needed per position.
 const MIN_STEP_SAMPLES: usize = 5;
+/// Leader correction (logs/aim-diagnosis-20261028.txt, finding 3): the per-position steps
+/// are medians over all leaders, while the first shred of a far leader's window reaches
+/// the node later; one leader at 162-165 ms RTT came 74-113 ms after the prediction from a
+/// fresh anchor. The correction is the median, over this leader's earlier windows in the
+/// stream, of the first window slot's node time minus its prediction from the last event
+/// of the window before. Both numbers below come from a firstShredReceived stream of the
+/// public mainnet node on 2026-10-28 (REPORT section 6). From 3 earlier windows on, their
+/// median cuts the error of the next window about as far as longer runs do, and 3 is the
+/// shortest run whose median one outlying window cannot move. Every leader median there
+/// stays well inside the bound, while single windows run past it, so the bound stops only a
+/// median no leader showed.
+pub const LEADER_MIN_WINDOWS: usize = 3;
+pub const LEADER_MAX_NS: i64 = 250_000_000;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Source {
@@ -170,6 +183,21 @@ impl State {
         Some(ts as i64 * 1_000_000 + offset_ns?)
     }
 
+    /// Handoff residuals of the windows starting at `firsts`: node time of the first shred
+    /// of the window's first slot minus its prediction by `m` from the last event of the
+    /// window before. Node time only, and a window without either event is left out.
+    pub fn handoff_residuals(&self, firsts: &[u64], m: &Model) -> Vec<i64> {
+        let Some(off) = m.offset_ns else { return vec![] };
+        firsts
+            .iter()
+            .filter_map(|&s| {
+                let at = self.node_time(s, Some(off))?;
+                let (a, a_ns) = (s.saturating_sub(WINDOW_SLOTS)..s).rev().find_map(|a| self.node_time(a, Some(off)).map(|n| (a, n)))?;
+                Some(at - Model { anchor_slot: a, anchor_ns: a_ns, ..*m }.predict(s))
+            })
+            .collect()
+    }
+
     pub fn model(&self) -> Option<Model> {
         let now = mono_ns();
         let shred: BTreeMap<u64, i64> = self.first_shred.iter().map(|(s, (t, _))| (*s, *t)).collect();
@@ -233,6 +261,19 @@ impl State {
     }
 }
 
+/// The leader correction from handoff residuals and the windows it stands on: their median
+/// bounded by LEADER_MAX_NS, or 0 under LEADER_MIN_WINDOWS.
+pub fn leader_correction(residuals: &[i64]) -> (i64, usize) {
+    let n = residuals.len();
+    if n == 0 || n < LEADER_MIN_WINDOWS {
+        return (0, n);
+    }
+    let mut v = residuals.to_vec();
+    v.sort_unstable();
+    let median = if n % 2 == 1 { v[n / 2] } else { (v[n / 2 - 1] + v[n / 2]) / 2 };
+    (median.clamp(-LEADER_MAX_NS, LEADER_MAX_NS), n)
+}
+
 pub type Shared = Arc<Mutex<State>>;
 
 /// firstShredReceived drives the clock and slotSubscribe is its fallback.
@@ -285,7 +326,7 @@ fn run_once(ws_url: &str, methods: &[&str], state: &Shared) -> Result<(), String
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
 
     /// ts 0 leaves the timestamp out, so the clock stays on receipt times.
@@ -377,6 +418,54 @@ mod tests {
         assert_eq!(m.predict(404) - m.anchor_ns, 1_350_000_000);
         // Far ahead the fitted mean takes over.
         assert_eq!(m.predict(799) - m.anchor_ns, (400.0 * m.slot_ns).round() as i64);
+    }
+
+    /// Node-time stream of 4-slot windows, 150 ms inside a window and 450 ms to the next;
+    /// the windows starting at multiples of 12 belong to a far leader whose shreds reach the
+    /// node `late_ms` later. Receipts end now, 40 ms after the node stamps.
+    pub(crate) fn late_leader_stream(slots: u64, late_ms: u64) -> State {
+        let mut st = State::default();
+        let mut node_ms: Vec<u64> = vec![];
+        let mut t: u64 = 1_800_000_000_000;
+        for s in 0..slots {
+            node_ms.push(t + if s % 12 < 4 { late_ms } else { 0 });
+            t += if s % 4 == 3 { 450 } else { 150 };
+        }
+        let base = mono_ns() - 40_000_000 - *node_ms.last().unwrap() as i64 * 1_000_000;
+        for (s, ms) in node_ms.iter().enumerate() {
+            assert!(st.apply(&shred(s as u64, *ms), base + *ms as i64 * 1_000_000 + 40_000_000));
+        }
+        st
+    }
+
+    #[test]
+    fn leader_correction_from_a_late_leader() {
+        let st = late_leader_stream(2000, 80);
+        let m = st.model().expect("model");
+        assert_eq!((m.basis, m.step_ns), (Basis::NodeTs, Some([150e6, 150e6, 150e6, 450e6])));
+        let far: Vec<u64> = (1..2000 / 12).map(|k| k * 12).collect();
+        let res = st.handoff_residuals(&far, &m);
+        assert_eq!(res.len(), far.len());
+        assert!(res.iter().all(|r| *r == 80_000_000), "{:?}", &res[..5]);
+        assert_eq!(leader_correction(&res), (80_000_000, far.len()));
+        // A near leader's window after a near one sits where the steps put it.
+        let near: Vec<u64> = (0..2000 / 12).map(|k| k * 12 + 8).collect();
+        assert_eq!(leader_correction(&st.handoff_residuals(&near, &m)), (0, near.len()));
+        // A window whose first slot or window before has no event is left out.
+        assert!(st.handoff_residuals(&[0, 5000], &m).is_empty());
+    }
+
+    #[test]
+    fn leader_correction_needs_windows_and_stays_bounded() {
+        let few = vec![80_000_000i64; LEADER_MIN_WINDOWS - 1];
+        assert_eq!(leader_correction(&few), (0, LEADER_MIN_WINDOWS - 1));
+        let enough = vec![80_000_000i64; LEADER_MIN_WINDOWS];
+        assert_eq!(leader_correction(&enough), (80_000_000, LEADER_MIN_WINDOWS));
+        let far_out = vec![LEADER_MAX_NS + 300_000_000; LEADER_MIN_WINDOWS];
+        assert_eq!(leader_correction(&far_out).0, LEADER_MAX_NS);
+        let early = vec![-LEADER_MAX_NS - 300_000_000; LEADER_MIN_WINDOWS];
+        assert_eq!(leader_correction(&early).0, -LEADER_MAX_NS);
+        assert_eq!(leader_correction(&[]), (0, 0));
     }
 
     #[test]

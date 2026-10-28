@@ -31,6 +31,20 @@ def sample_run(burst_seq=7, n=12):
     return [run] + synth.burst_rows(run, burst_seq, probes)
 
 
+def _version3(rows):
+    """The same burst as a version 3 run: the probe's leader correction in burst and
+    burst_end, and the first shreds from the final anchor to slot 2 in burst_end."""
+    out = copy.deepcopy(rows)
+    for r in out:
+        r["v"] = 3
+        if r["kind"] == "burst":
+            r.update({"leader_correction_ns": 80_000_000, "leader_correction_n": 12})
+        elif r["kind"] == "burst_end":
+            r.update({"leader_correction_ns": 80_000_000, "leader_correction_n": 12,
+                      "shreds_from_slot": r["send_anchor_slot"], "shreds_node_ns": [1, None, 3]})
+    return out
+
+
 def _mutations(rows):
     """Single-change variants that a correct checker must reject."""
     first_probe = next(i for i, r in enumerate(rows) if r["kind"] == "probe")
@@ -58,7 +72,8 @@ def _mutations(rows):
         ("bool where int expected", edit(lambda m: m[first_probe].__setitem__("cu_limit", True))),
         ("rank out of range", edit(lambda m: m[first_probe].__setitem__("send_rank", 12))),
         ("first row is not run", edit(lambda m: m.pop(0))),
-        ("schema version from the future", edit(lambda m: m[1].__setitem__("v", 3))),
+        ("schema version from the future",
+         edit(lambda m: m[1].__setitem__("v", rawformat.load_schema()["version"] + 1))),
         ("version 2 field missing", edit(lambda m: m[1].pop("clock_lag_slots"))),
         ("version 2 field on a version 1 row", edit(lambda m: m[1].__setitem__("v", 1))),
         ("RPC URL with an API key in the query",
@@ -86,6 +101,23 @@ def raw_format_checks():
         n, problems = rawformat.check_probe_file(path, schema)
         out.append(("raw format: valid burst passes", n == len(rows) and not problems,
                     "%d rows, %d problems %s" % (n, len(problems), problems[:3])))
+        v3 = _version3(rows)
+        _write(path, v3)
+        n, problems = rawformat.check_probe_file(path, schema)
+        out.append(("raw format: version 3 burst passes", n == len(v3) and not problems,
+                    "%d rows, %d problems %s" % (n, len(problems), problems[:3])))
+        end = next(i for i, r in enumerate(v3) if r["kind"] == "burst_end")
+        v3_muts = [
+            ("version 3 field missing", [dict(r) for r in v3]),
+            ("version 3 field on a version 2 row", [dict(r) for r in v3]),
+        ]
+        v3_muts[0][1][end].pop("shreds_node_ns")
+        v3_muts[1][1][end]["v"] = 2
+        for name, mrows in v3_muts:
+            _write(path, mrows)
+            _, problems = rawformat.check_probe_file(path, schema)
+            out.append(("raw format rejects: " + name, bool(problems),
+                        problems[0] if problems else "accepted"))
         muts = _mutations(rows)
         out.append(("raw format: mutation set is not empty", len(muts) > 0, "%d mutations" % len(muts)))
         for name, mrows in muts:
