@@ -31,6 +31,8 @@ const PREPARE_SLOTS: u64 = 30;
 /// Blockhash with commitment confirmed 4 to 8 slots before the window (section 4).
 const BLOCKHASH_SLOTS: u64 = 6;
 const LATEST_BLOCKHASH_SLOTS: u64 = 4;
+/// Longest single sleep on the way to a window; see wait_for_slot.
+const WAIT_STEP_NS: i64 = 30_000_000_000;
 const PRE300_NS: i64 = 300_000_000;
 /// Waiting after the predicted window end before burst_end is written.
 const WINDOW_TAIL_NS: i64 = 300_000_000;
@@ -460,6 +462,35 @@ fn open_regular(path: &Path) -> std::io::Result<std::fs::File> {
     Ok(file)
 }
 
+/// Sleep until the slot clock puts `slot` at hand. The slope of the model comes from the
+/// last few hundred slots. Over the gaps between campaign rounds, 13 660 to 88 532 slots,
+/// the pilot's slopes erred by up to 37 s at 40 000 slots ahead, and a slope from 20 000
+/// slots of block times erred by up to 100 s at 80 000 (2026-10-28), while PREPARE_SLOTS
+/// leaves about 6 s. So no single sleep is longer than WAIT_STEP_NS, and each step reads the
+/// model again. Returns the model read after the wake, or None when the wake came after
+/// slot `latest`, as after a sleep that overran: a burst sent then lands in a later leader's
+/// slots, and the fresh model would not show it to the clock guard.
+fn wait_for_slot(
+    slot: u64,
+    latest: u64,
+    mut model: Model,
+    mut fresh: impl FnMut() -> Option<Model>,
+    mut now: impl FnMut() -> i64,
+    mut sleep_until: impl FnMut(i64),
+) -> Option<Model> {
+    loop {
+        let at = model.predict(slot);
+        let t = now();
+        if at - t <= WAIT_STEP_NS {
+            sleep_until(at);
+            let model = fresh().unwrap_or(model);
+            return (now() <= model.predict(latest)).then_some(model);
+        }
+        sleep_until(t + WAIT_STEP_NS);
+        model = fresh().unwrap_or(model);
+    }
+}
+
 fn config_of(p: &ProbeSpec) -> Config {
     Config { priority_fee: p.priority_fee_lamports, cu_limit: p.cu_limit, loaded_data_limit: p.loaded_data_limit }
 }
@@ -678,7 +709,11 @@ impl Session {
                 return Ok(BurstEnd::Skipped(format!("leader schedule gives {l:?} for slot {slot}, the plan {}", b.leader)));
             }
         }
-        sleep_until_ns(model.predict(b.first_slot.saturating_sub(PREPARE_SLOTS)));
+        let prepare = b.first_slot.saturating_sub(PREPARE_SLOTS);
+        let latest = b.first_slot.saturating_sub(LATEST_BLOCKHASH_SLOTS);
+        let Some(model) = wait_for_slot(prepare, latest, model, || self.model(), mono_ns, sleep_until_ns) else {
+            return Ok(BurstEnd::Skipped("woke after the window".into()));
+        };
 
         // Gossip at the burst (section 5.3): clientId and tpuQuic can change between windows.
         let nodes = self.rpc.cluster_nodes()?;
@@ -1189,6 +1224,40 @@ mod tests {
         assert_eq!(pre, vec![-500.0, -450.0, -300.0, -200.0]);
         assert!(in_band("slot2", 130.0, 42.0));
         assert!(!in_band("slot2", 130.0, 243.0));
+    }
+
+    #[test]
+    fn long_wait_reads_the_slot_clock_again() {
+        let model = |slot_ms: f64| Model {
+            source: slots::Source::FirstShred,
+            basis: slots::Basis::Receipt,
+            offset_ns: None,
+            anchor_slot: 0,
+            anchor_ns: 0,
+            slot_ns: slot_ms * 1e6,
+            step_ns: None,
+        };
+        // A slope 1 ms too long puts slot 433 000 about 433 s late; the model read during
+        // the wait has the rate of the chain.
+        let (stale, chain) = (model(213.0), model(212.0));
+        let (slot, latest) = (433_000, 433_026);
+        let now = std::cell::Cell::new(0i64);
+        let mut steps = vec![];
+        let end = wait_for_slot(slot, latest, stale, || Some(chain), || now.get(), |t| {
+            steps.push(t - now.get());
+            now.set(now.get().max(t));
+        });
+        assert_eq!(end.map(|m| m.slot_ns), Some(chain.slot_ns));
+        assert_eq!(now.get(), chain.predict(slot));
+        assert!(steps.len() > 1 && steps.iter().all(|s| *s <= WAIT_STEP_NS), "{steps:?}");
+        // Without a fresh model the wait keeps the one it has.
+        now.set(0);
+        let end = wait_for_slot(slot, latest, stale, || None, || now.get(), |t| now.set(now.get().max(t)));
+        assert_eq!((end.map(|m| m.slot_ns), now.get()), (Some(stale.slot_ns), stale.predict(slot)));
+        // A sleep that overruns by 20 s wakes past slot `latest`, 26 slots after `slot`.
+        now.set(0);
+        let end = wait_for_slot(slot, latest, stale, || Some(chain), || now.get(), |t| now.set(now.get().max(t) + 20_000_000_000));
+        assert!(end.is_none());
     }
 
     #[test]
