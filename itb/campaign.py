@@ -436,3 +436,28 @@ def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, 
     if va is not None:
         snapshots["validators-app.json"] = pilot.va_snapshot(va_utc, va)
     return p, snapshots, notes
+
+
+def first_plan_nodes(plans_dir, network, epoch_index, epoch, manifest_sha):
+    """cluster-nodes.json of the first campaign plan of one epoch index in one chain epoch under
+    one manifest, or None (campaign addendum, section 5): every later plan of that index scans
+    the windows with this gossip snapshot, within one run of scripts/campaign.sh or after a resume."""
+    prefix = "campaign-%s-e%d-" % (network, epoch)
+    names = sorted(n for n in os.listdir(plans_dir) if n.startswith(prefix)) if os.path.isdir(plans_dir) else []
+    for name in names:
+        d = os.path.join(plans_dir, name)
+        try:
+            with open(os.path.join(d, "draw-notes.json"), encoding="utf-8") as f:
+                notes = json.load(f)
+            with open(os.path.join(d, "plan.json"), encoding="utf-8") as f:
+                p = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if (notes.get("epoch_index"), notes.get("epoch")) != (epoch_index, epoch):
+            continue
+        if p.get("stage") != "campaign" or p.get("prereg_manifest_sha256") != manifest_sha:
+            continue
+        nodes = os.path.join(d, "cluster-nodes.json")
+        if os.path.exists(nodes):
+            return nodes
+    return None

@@ -4,9 +4,12 @@ Each check returns (name, ok, detail). A failed check stops reproduce before
 verify starts.
 """
 
+import argparse
+import contextlib
 import copy
 import gzip
 import http.client
+import io
 import itertools
 import json
 import math
@@ -1263,7 +1266,8 @@ def report_checks():
     finally:
         stats.fisher_yates = real
     out.append(("report: a stratum set past the exact limit draws its labels with the own Fisher-Yates",
-                method == "%d draws" % prereg.LABEL_TEST_B and len(calls) == 3 * prereg.LABEL_TEST_B,
+                method.startswith("%d draws, seed %s, Monte Carlo SE " % (prereg.LABEL_TEST_B, prereg.LABEL_TEST_SEED))
+                and len(calls) == 3 * prereg.LABEL_TEST_B,
                 "%s, %d shuffles" % (method, len(calls))))
     parts = [[[c.strip() for c in line.split("|")[1:-1]] for line in part.split("\n")[2:]]
              for part in tables.get("elsewhere", "").split("\n\n")]
@@ -1288,6 +1292,25 @@ def report_checks():
         near = report.neighbours_block(tmp)
     out.append(("report: a neighbour on the same IP with another port is counted, one on another IP is not",
                 "| `p` | HarmonicAgave | 2 | 1 | 0.500 |" in near, near.split("\n")[-1]))
+
+    def hyp_cell(cls, tau, sig, eq):
+        return {"class": cls, "arm": "equal_fee", "timing": "pre300", "bursts": 10, "significant": {"send": sig},
+                "equivalent": {"send": eq}, "taus": {"send": {"tau": tau, "ci95": [tau - 0.1, tau + 0.1], "p": 0.001}}}
+
+    def outcomes(cells):
+        text = report.hypotheses_block({"cells": cells})
+        return {row.split(" | ")[0].strip("| "): row.rstrip(" |").rsplit(" | ", 1)[1]
+                for row in text.split("\n")[2:]}
+
+    negative = outcomes([hyp_cell("Firedancer", -0.3, True, False), hyp_cell("Agave", -0.3, True, False),
+                         hyp_cell("FireBAM", -0.3, True, False)])
+    flat = outcomes([hyp_cell("Firedancer", 0.0, False, True), hyp_cell("Agave", 0.0, False, True)])
+    out.append(("report: H3 holds on a negative significant tau send of Firedancer, H4 on Agave never holds and "
+                "agrees with the fresh-key part or, on a passed TOST, the recycled-key part; other classes compare",
+                negative["Firedancer"] == "holds" and negative["Agave"] == "agrees with the fresh-key part"
+                and negative["FireBAM"] == "-" and flat["Firedancer"] == "fails"
+                and flat["Agave"] == "agrees with the recycled-key part" and negative["AgaveBam"] == "-",
+                "%s; %s" % (negative, flat)))
     return out
 
 
@@ -1302,6 +1325,34 @@ class _EpochClient:
             return {"epoch": self.epoch, "absoluteSlot": 432000 * self.epoch + 100, "slotIndex": 100,
                     "slotsInEpoch": 432000}
         return None
+
+
+class _GossipClient(_EpochClient):
+    """campaign.draw's calls in a chain epoch whose live gossip has moved leader A to another IP."""
+
+    def call(self, method, params):
+        if method == "getLeaderSchedule":
+            return {"A": [0, 1, 2, 3]}
+        if method == "getClusterNodes":
+            return [{"pubkey": "A", "tpuQuic": "10.0.0.9:8009"}]
+        if method == "getVoteAccounts":
+            return {"current": [], "delinquent": []}
+        return super().call(method, params)
+
+
+def _module_copy(name, old=None, new=None):
+    """A fresh copy of itb/<name>.py with the text old replaced once by new: a mutant of the
+    source itself, for a rule that lives in a line of a command rather than in a function."""
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), name + ".py")
+    with open(path, encoding="utf-8") as f:
+        src = f.read()
+    if old is not None:
+        if src.count(old) != 1:
+            raise RuntimeError("selftest: the mutant text occurs %d times in itb/%s.py" % (src.count(old), name))
+        src = src.replace(old, new)
+    ns = {"__name__": "itb._selftest_" + name.strip("_"), "__package__": __package__, "__file__": path}
+    exec(compile(src, path, "exec"), ns)
+    return ns
 
 
 def _patched(owner, name, value, fn):
@@ -1323,7 +1374,7 @@ def _raises(fn):
 
 
 def addendum_checks():
-    """Rules the campaign addendum states in words (sections 5, 7 and 8). Each
+    """Rules the campaign addendum states in words (sections 5 to 9). Each
     check comes with a mutant that removes the rule and must turn it red."""
     out = []
     # Section 8: A's first window follows N on A's IP with another port, its second follows O on another IP.
@@ -1432,10 +1483,157 @@ def addendum_checks():
                 "%s; mutant %s" % (control.split("\n")[2], mutant.split("\n")[2])))
 
     twice = analyze_spec(spec[:2] + spec[:1], "selftest-repeat")
-    refused = _raises(twice)
-    kept = _patched(analyze, "repeated_bursts", lambda runs, stages: [], lambda: _raises(twice))
-    out.append(("addendum: analyze refuses a table burst that ran twice; the mutant without the check takes both",
-                refused is not None and "ran again" in refused and kept is None, "%s; mutant %s" % (refused, kept)))
+    res = twice()
+    got = (res["units"], res["excluded"].get("repeated-burst", 0))
+    res_m = _patched(analyze, "later_copies", lambda runs, stages=None: frozenset(), twice)
+    mut = (res_m["units"], res_m["excluded"].get("repeated-burst", 0))
+    out.append(("addendum: a table burst sent twice keeps its earliest send and the later copy leaves the tests "
+                "with the reason repeated-burst; the mutant without the rule keeps both",
+                got == (3, 1) and mut == (3, 0), "%s; mutant %s" % (got, mut)))
+
+    # Section 7: a BAM tick in a Firedancer slot fails the BAM label; the FireBAM pair keeps its tests in the
+    # family of 16 with p 1 and reads as a failed label.
+    with tempfile.TemporaryDirectory() as tmp:
+        run_dir = os.path.join(tmp, "runs", "selftest-label")
+        os.makedirs(run_dir)
+        prows, crows = synth.campaign_rows("selftest-label", spec, "itb-selftest:label")
+        fd_slot = min(r["slot"] for r in crows if r["kind"] == "inclusion" and r["actual_leader_class"] == "Firedancer")
+        for r in crows:
+            if r["kind"] == "slot" and r["slot"] == fd_slot:
+                r["ticks"] = [{"index": 0, "signer": analyze.BAM_SIGNER, "timestamp_ns": 1793044800 * 10 ** 9,
+                               "interval_ns": 50_000_000}]
+        _write(os.path.join(run_dir, "probes.jsonl"), prows)
+        _write(os.path.join(run_dir, "collect.jsonl"), crows)
+        label_runs = analyze.load_runs(tmp)
+
+    def label_rows():
+        result = analyze.analyze(label_runs, stages=("test",))
+        rows = [r for r in result["pairs"] if r["pair"] == ["FireBAM", "Firedancer"] and r["strata"]
+                and not r.get("without_label")]
+        return sorted({(r["form"], r["p"], r["tost_p"]) for r in rows}), result["label_failures"]
+
+    got = label_rows()
+    mut = _patched(analyze, "label_failures", lambda runs, stages=None: {}, label_rows)
+    out.append(("addendum: a BAM tick in a Firedancer slot fails the BAM label and the FireBAM pair keeps its "
+                "tests with p 1 as builder-label-failed; the mutant without the label check tests the pair",
+                got == ([("builder-label-failed", 1.0, 1.0)], {analyze.BAM_SIGNER: [fd_slot]})
+                and mut[0] and all(form != "builder-label-failed" for form, _, _ in mut[0]),
+                "%s; mutant %s" % (got, mut)))
+
+    # Section 6: with a standard error of zero the TOST of the code gives p 0 when the difference lies inside
+    # plus or minus delta and 1 otherwise, so a pair with zero spread inside delta reads as
+    # builder-does-not-change-order, as the pilot's FireBAM against Firedancer did; df below 1 or a NaN
+    # standard error give 1.
+    d = verdict.DELTA_PAIR
+
+    def pair_forms():
+        res = []
+        for diffs in ([0.0, 0.0], [d / 2, d / 2], [d, d], [2 * d, 2 * d]):
+            p, _, _, _, _, _, tost = verdict.pair_test(diffs, seed=prereg.LABEL_TEST_SEED)
+            sig = verdict.holm_decisions({"k": p}, m=verdict.PAIR_FAMILY_M)["k"]
+            eq = verdict.holm_decisions({"k": tost}, m=verdict.PAIR_FAMILY_M)["k"]
+            res.append((tost, verdict.pair_form(sig, eq)))
+        return res
+
+    same = "builder-does-not-change-order"
+    want = [(0.0, same), (0.0, same), (1.0, "undetermined"), (1.0, "undetermined")]
+    got = pair_forms()
+    edges = (stats.tost_p(0.0, float("nan"), 3, d), stats.tost_p(0.0, 0.0, 0, d))
+    rule = "return 0.0 if -delta < theta < delta else 1.0"
+    wide = _patched(stats, "tost_p", _module_copy("stats", rule, "return 0.0")["tost_p"], pair_forms)
+    never = _patched(stats, "tost_p", _module_copy("stats", rule, "return 1.0")["tost_p"], pair_forms)
+    out.append(("addendum: at zero spread the pair TOST gives 0 inside delta and 1 at or past it, and 1 at df 0 or "
+                "a NaN error; the mutant without delta passes 2 delta, the mutant without the rule fails 0",
+                got == want and edges == (1.0, 1.0) and wide[3][1] == same and never[0][1] == "undetermined",
+                "%s; %s; mutants %s, %s" % (got, edges, wide[3], never[0])))
+
+    # Section 5: a plan drawn again scans the windows with the gossip snapshot it is given (--nodes), not
+    # live gossip that has moved a leader since the first plan.
+    snapshot = {"utc": "2026-10-28T00:00:00Z", "nodes": [{"pubkey": "A", "tpuQuic": "10.0.0.1:8009"}]}
+
+    def scanned(draw_fn, nodes_doc):
+        seen = []
+
+        def scan(schedule, first, tpu):
+            seen.append(dict(tpu))
+            raise ValueError("selftest stops at the scan")
+
+        _patched(panel, "scan", scan, lambda: _raises(lambda: draw_fn(
+            _GossipClient(1071), doc, {"epochs": [], "seed": "s"}, "aa", "bb", 0, 1071, 150, nodes_doc=nodes_doc)))
+        return seen[0] if seen else None
+
+    live = scanned(campaign.draw, None)
+    again = scanned(campaign.draw, snapshot)
+    gossip = 'client.call("getClusterNodes", []) if nodes_doc is None else nodes_doc["nodes"]'
+    mutant = scanned(_module_copy("campaign", gossip, 'client.call("getClusterNodes", [])')["draw"], snapshot)
+    out.append(("addendum: a plan drawn again with --nodes scans the snapshot's address of the leader, not the "
+                "live one; the mutant that ignores the snapshot scans the live address",
+                live == {"A": "10.0.0.9:8009"} and again == {"A": "10.0.0.1:8009"} and mutant == live,
+                "%s; %s; mutant %s" % (live, again, mutant)))
+
+    # Sections 5 and 8 through the command: cmd_campaign refuses a panel the manifest does not pin and a
+    # missing manifest before any draw, and --nodes-from-first-plan hands the draw the gossip of the first
+    # plan of the index, chain epoch and manifest under data/plans.
+    with tempfile.TemporaryDirectory() as tmp:
+        def put(rel, obj):
+            path = os.path.join(tmp, rel)
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "w", encoding="utf-8", newline="\n") as f:
+                json.dump(obj, f)
+                f.write("\n")
+            return path
+
+        panel_path = put("panel.json", {"epoch": 1071, "network": "mainnet", "classes": {}})
+        other_panel = put("other-panel.json", {"epoch": 1071, "network": "mainnet", "classes": {}, "x": 1})
+        manifest = put("manifest.json", {"files": {"data/panels/x/panel.json": verify.sha256_file(panel_path)}})
+        absent = os.path.join(tmp, "absent.json")
+        with open(manifest, "rb") as f:
+            sha = pilot.sha256_bytes(f.read())
+        for stamp, index, msha, utc in (("20261028T000000Z", 0, "ff" * 32, "another manifest"),
+                                        ("20261028T010000Z", 1, sha, "another index"),
+                                        ("20261028T020000Z", 0, sha, "first plan"),
+                                        ("20261028T030000Z", 0, sha, "second plan")):
+            plan_dir = os.path.join("plans", "campaign-mainnet-e1071-" + stamp)
+            put(os.path.join(plan_dir, "draw-notes.json"), {"epoch_index": index, "epoch": 1071, "notes": []})
+            put(os.path.join(plan_dir, "plan.json"), {"stage": "campaign", "prereg_manifest_sha256": msha})
+            put(os.path.join(plan_dir, "cluster-nodes.json"), {"utc": utc, "nodes": []})
+
+        def command(ns, panel_file, manifest_file):
+            got = {}
+
+            def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, lead_slots,
+                     nodes_doc=None):
+                got["nodes"] = nodes_doc["utc"] if nodes_doc else "live"
+                raise ValueError("selftest stops before the chain")
+
+            ns["_client"] = lambda: None
+            args = argparse.Namespace(panel=panel_file, table=None, epoch_index=0, epoch=1071, nodes=None,
+                                      nodes_from_first_plan=True, manifest=manifest_file, lead_slots=900,
+                                      data=tmp, network="mainnet")
+            err = io.StringIO()
+            with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(err):
+                code = _patched(campaign, "draw", draw, lambda: ns["cmd_campaign"](args))
+            return code, got.get("nodes"), err.getvalue()
+
+        main = _module_copy("__main__")
+        resumed = command(main, panel_path, manifest)
+        foreign = command(main, other_panel, manifest)
+        missing = command(main, panel_path, absent)
+        no_pin = command(_module_copy("__main__", "problem = verify.panel_pin_problem(json.loads(manifest_raw), "
+                                                  "args.panel)", "problem = None"), other_panel, manifest)
+        no_refusal = command(_module_copy("__main__", 'pins the panel" % manifest, file=sys.stderr)\n'
+                                                      "        return EXIT_FAIL\n",
+                                          'pins the panel" % manifest, file=sys.stderr)\n'), panel_path, absent)
+        no_lookup = command(_module_copy("__main__", "if args.nodes_from_first_plan and not nodes:", "if False:"),
+                            panel_path, manifest)
+    out.append(("addendum: cmd_campaign refuses a panel the manifest does not pin and a missing manifest before "
+                "any draw; the copies of __main__.py without the pin check or without the refusal reach the draw",
+                foreign[:2] == (1, None) and "hashes" in foreign[2] and missing[:2] == (1, None)
+                and "not found" in missing[2] and no_pin[1] is not None and no_refusal[1] is not None,
+                "%s; %s; mutants %s, %s" % (foreign[:2], missing[:2], no_pin[1], no_refusal[1])))
+    out.append(("addendum: cmd_campaign --nodes-from-first-plan hands the draw the gossip of the first plan of "
+                "the index, chain epoch and manifest; the copy without the lookup draws with live gossip",
+                resumed[1] == "first plan" and no_lookup[1] == "live", "%s; mutant %s" % (resumed[1], no_lookup[1])))
     return out
 
 

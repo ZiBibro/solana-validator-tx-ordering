@@ -68,6 +68,11 @@ def _p(x):
     return "%.3g" % x
 
 
+def _drawn(p, b):
+    """How a p drawn from b arrangements came about (analysis plan line 39)."""
+    return "%d draws, seed %s, Monte Carlo SE %.2g" % (b, prereg.LABEL_TEST_SEED, math.sqrt(p * (1 - p) / b))
+
+
 def _interval(low, high):
     if low is None or math.isnan(low):
         return "no interval"
@@ -254,6 +259,7 @@ def _stage_runs(runs, stage):
 def _items(runs):
     """Every burst of the runs with the reasons it stays out and the slots of its order blocks."""
     out = []
+    later = analyze.later_copies(runs)
     for r in runs:
         per = {}
         for sig, p in r.probes.items():
@@ -261,7 +267,7 @@ def _items(runs):
             if inc and inc["status"] == "included" and inc["in_target_window"]:
                 count = per.setdefault(p["burst_seq"], {})
                 count[inc["slot"]] = count.get(inc["slot"], 0) + 1
-        for u in analyze.units_of(r):
+        for u in analyze.units_of(r, later):
             slots = [s for s, n in sorted(per.get(u.burst_seq, {}).items()) if n >= 2]
             if len(slots) != len(u.blocks):
                 raise ValueError("report: blocks of burst %s/%d do not match analyze" % (u.run_id, u.burst_seq))
@@ -317,8 +323,10 @@ def cells_block(result):
         return NO_RUNS
     rows = []
     for c in result["cells"]:
-        taus = "; ".join("%s %.3f (%s; p %s)" % (n, t["tau"], _interval(*t["ci95"]), _p(t["p"]))
-                         for n, t in sorted(c["taus"].items()) if t)
+        taus = "; ".join("%s %.3f (%s; p %s; mean of burst taus %s)" % (
+            n, t["tau"], _interval(*t["ci95"]), _p(t["p"]),
+            "-" if t.get("mean_burst_tau") is None else "%.3f" % t["mean_burst_tau"])
+            for n, t in sorted(c["taus"].items()) if t)
         st = c["strictness"]
         strict = "-" if not st else "%.3f (%s); %d of %d bursts without a violation" % (
             st["share"], _interval(st["low"], st["high"]), round(st["bursts_without_violation"] * st["bursts"]),
@@ -358,13 +366,54 @@ def pairs_block(result):
     for r in result["pairs"]:
         if r.get("without_label"):
             rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"] + ", builder blocks without its tick",
-                         r["strata"], "%.3f" % r["mean_diff"], "-", "-", r["form"]])
+                         r["strata"], "%.3f" % r["mean_diff"], "-", "-", "-", r["form"]])
         elif not r["strata"]:
-            rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"], 0, "-", "-", "-", r["form"]])
+            rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"], 0, "-", "-", "-", "-", r["form"]])
         else:
+            test = ("exact over %d" % r["permutations"] if r["method"] == "exact"
+                    else _drawn(r["p"], r["permutations"]))
+            if r.get("label_failed"):
+                test = "label failed, p set to 1"
             rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"], r["strata"], "%.3f" % r["mean_diff"],
-                         _p(r["p"]), _p(r["tost_p"]), r["form"]])
-    return _table(["Pair", "Timing", "Statistic", "Strata", "Mean difference", "p", "TOST p", "Form"], rows)
+                         _p(r["p"]), _p(r["tost_p"]), test, r["form"]])
+    out = _table(["Pair", "Timing", "Statistic", "Strata", "Mean difference", "p", "TOST p", "Label test", "Form"],
+                 rows)
+    failed = result.get("label_failures") or {}
+    for signer, slots in sorted(failed.items()):
+        out += ("\n\nThe label of signer `%s` failed: its tick stands in %d slots of classes without a builder "
+                "(%s). The pairs of its classes keep their tests in the family of %d with p 1."
+                % (signer, len(slots), ", ".join(str(x) for x in slots), verdict.PAIR_FAMILY_M))
+    return out
+
+
+def hypotheses_block(result):
+    """H3 on Firedancer and H4 on Agave from tau send of the equal-fee arm in pre300, with the
+    other classes beside them as comparison only (campaign addendum, section 3)."""
+    if result is None:
+        return NO_RUNS
+    rows = []
+    for cls in prereg.CLASSES:
+        cell = next((c for c in result["cells"] if (c["class"], c["arm"], c["timing"]) == (cls, "equal_fee", "pre300")),
+                    None)
+        t = cell and cell["taus"].get("send")
+        hyp = {"Firedancer": "H3", "Agave": "H4"}.get(cls, "comparison")
+        if not t:
+            rows.append([cls, hyp, cell["bursts"] if cell else 0, "-", "-", "-", "-",
+                         "undecided" if hyp != "comparison" else "-"])
+            continue
+        sig, eq = cell["significant"].get("send", False), cell["equivalent"].get("send", False)
+        neg, pos = sig and t["tau"] < 0, sig and t["tau"] > 0
+        if hyp == "H3":
+            outcome = "holds" if neg else "fails" if pos or eq else "undecided"
+        elif hyp == "H4":
+            outcome = ("fails" if pos else "agrees with the fresh-key part" if neg
+                       else "agrees with the recycled-key part" if eq else "undecided")
+        else:
+            outcome = "-"
+        rows.append([cls, hyp, cell["bursts"], "%.3f (%s)" % (t["tau"], _interval(*t["ci95"])), _p(t["p"]),
+                     "yes" if sig else "no", "yes" if eq else "no", outcome])
+    return _table(["Class", "Hypothesis", "Bursts", "tau send, equal fee, pre300 (95% CI)", "p",
+                   "Significant after Holm", "TOST passed after Holm", "Outcome"], rows)
 
 
 def _target_ms(item):
@@ -504,13 +553,15 @@ def loads_block(items):
             if not part:
                 continue
             group = [x[3] for x in part]
-            agave = [it for it in group if it.unit.burst["selection_class"] == "Agave"]
+            agave = [it for it in group if it.unit.burst["selection_class"] == "Agave"
+                     and it.unit.burst["timing"] == "pre300"]
             rows.append([label, "Q%d" % (q + 1), "%d to %d" % (part[0][0], part[-1][0]), len(group),
                          _tau_text(_pooled(_arms(group, DIFFERENT_FEE), "fee")),
                          _tau_text(_pooled(_arms(group, ("equal_fee",)), "send")),
                          _tau_text(_pooled(_arms(agave, ("equal_fee",)), "send"))])
     return _table(["Load by", "Quartile", "Mean load of the burst's blocks", "Bursts",
-                   "tau fee, independent and shared", "tau send, equal fee", "tau send, equal fee, Agave"], rows)
+                   "tau fee, independent and shared", "tau send, equal fee", "tau send, equal fee, Agave, pre300"],
+                  rows)
 
 
 def first_slot_block(items):
@@ -690,8 +741,8 @@ def _path_label_p(strata):
         return [tuple(sorted(stats.fisher_yates(list(range(len(v))), rnd)[:k])) for v, k in strata]
 
     hits = sum(1 for _ in range(prereg.LABEL_TEST_B) if abs(total(draw())) >= obs - eps)
-    return ((hits + 1) / (prereg.LABEL_TEST_B + 1), "%d draws" % prereg.LABEL_TEST_B,
-            1 / (prereg.LABEL_TEST_B + 1))
+    p = (hits + 1) / (prereg.LABEL_TEST_B + 1)
+    return p, _drawn(p, prereg.LABEL_TEST_B), 1 / (prereg.LABEL_TEST_B + 1)
 
 
 # Exclusion reasons a burst may carry and still enter each control-path measure (campaign
@@ -793,28 +844,35 @@ def minimum_block(repo_dir):
                      "-" if least is None else least,
                      "-" if least is None else ("yes" if least >= s["min_bursts"] else "no")])
     return (_table(["Arm", "tau", "Pilot bursts", "sigma (residual)", "Raw variance by cell", "Minimum bursts",
-                    "Campaign bursts per class and cell", "Equivalence reachable"], rows)
+                    "Campaign bursts per class and cell", "Equivalence reachable at the pilot's spread"], rows)
             + "\n\nFrom %d pilot bursts, %d kept; alpha_e %.6f, power per tau %.2f, delta %.2f." % (
                 m["pilot_bursts"], m["kept"], m["alpha_e"], m["power_per_tau"], m["delta_class"]))
 
 
 def tick_runs_block(runs):
+    """Share of slots with a tick of each known signer, by run and by the class of the slot's
+    leader (analysis plan line 88)."""
     rows = []
     for r in live(runs):
         cls_of = {i["slot"]: i["actual_leader_class"] for i in _included(r)}
-        builder = [0, 0]  # slots with the expected signer, slots of builder classes
-        rest = [0, 0]  # slots with any known signer, slots of other classes
+        counts = {}  # class: [slots, with a BAM tick, with a Harmonic tick]
         for slot, row in r.slots.items():
             cls = cls_of.get(slot)
+            if cls is None:
+                continue
             signers = {t["signer"] for t in row.get("ticks") or []}
-            if cls in EXPECTED_SIGNER:
-                builder[1] += 1
-                builder[0] += EXPECTED_SIGNER[cls] in signers
-            elif cls is not None:
-                rest[1] += 1
-                rest[0] += bool(signers & {BAM_SIGNER, HARMONIC_SIGNER})
-        rows.append(["`%s`" % r.run["run_id"], "%d of %d" % tuple(builder), "%d of %d" % tuple(rest)])
-    return _table(["Run", "Builder-class slots with their builder's tick", "Other slots with a known tick"], rows)
+            c = counts.setdefault(cls, [0, 0, 0])
+            c[0] += 1
+            c[1] += BAM_SIGNER in signers
+            c[2] += HARMONIC_SIGNER in signers
+        order = list(prereg.CLASSES)
+        for cls in sorted(counts, key=lambda x: (order.index(x) if x in order else len(order), x)):
+            n, bam, harmonic = counts[cls]
+            rows.append(["`%s`" % r.run["run_id"], cls, EXPECTED_SIGNER.get(cls) and (
+                "BAM" if EXPECTED_SIGNER[cls] == BAM_SIGNER else "Harmonic") or "none", n,
+                "%d (%.1f%%)" % (bam, 100.0 * bam / n), "%d (%.1f%%)" % (harmonic, 100.0 * harmonic / n)])
+    return _table(["Run", "Class of the slot's leader", "Its builder", "Slots", "With a BAM tick",
+                   "With a Harmonic tick"], rows)
 
 
 def tick_epoch_block(repo_dir):
@@ -843,6 +901,7 @@ def tick_epoch_block(repo_dir):
 
 def wrong_block(runs, data_dir, logs_dir):
     rows = []
+    later = analyze.later_copies(live(runs))
     for r in live(runs):
         planned = sum(len(row["windows"]) for row in _rounds(os.path.join(data_dir, "runs", r.run["run_id"])))
         skipped, failed = {}, 0
@@ -858,7 +917,7 @@ def wrong_block(runs, data_dir, logs_dir):
                     elif e.get("event") == "burst_failed":
                         failed += 1
         excluded = {}
-        for u in analyze.units_of(r):
+        for u in analyze.units_of(r, later):
             for reason in u.reasons:
                 excluded[reason] = excluded.get(reason, 0) + 1
         rows.append(["`%s`" % r.run["run_id"], planned, len(r.bursts),
@@ -896,6 +955,7 @@ def blocks(data_dir, repo_dir):
         out[stage + "-inclusion"] = inclusion_block(result)
         out[stage + "-rounds"] = rounds_block(result)
         out[stage + "-pairs"] = pairs_block(result)
+        out[stage + "-hypotheses"] = hypotheses_block(result)
         out[stage + "-timing"] = timing_block(items)
         out[stage + "-labels"] = labels_block(items)
         out[stage + "-elsewhere"] = elsewhere_block(chosen)

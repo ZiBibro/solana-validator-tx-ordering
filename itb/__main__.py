@@ -319,14 +319,19 @@ def cmd_campaign(args):
             print("campaign: %s (manifest %s)" % (problem, manifest), file=sys.stderr)
             return EXIT_FAIL
         print("campaign: plan carries prereg manifest %s sha256 %s" % (manifest, manifest_sha))
-    elif args.manifest:
-        print("campaign: manifest %s not found" % manifest, file=sys.stderr)
-        return EXIT_FAIL
     else:
-        print("campaign: note: no %s; a live run refuses this plan" % manifest)
+        # The manifest pins the panel (campaign addendum, section 8), so no campaign plan is drawn without it.
+        print("campaign: manifest %s not found; the campaign manifest pins the panel" % manifest, file=sys.stderr)
+        return EXIT_FAIL
+    nodes = args.nodes
+    if args.nodes_from_first_plan and not nodes:
+        # A plan drawn again scans the gossip of its index's first plan (campaign addendum, section 5).
+        nodes = campaignmod.first_plan_nodes(os.path.join(_data_dir(args), "plans"), _network(args),
+                                             args.epoch_index, args.epoch, manifest_sha)
+        print("campaign: gossip %s" % (nodes or "live, no earlier plan of this index"))
     nodes_doc = None
-    if args.nodes:
-        with open(args.nodes, "rb") as f:
+    if nodes:
+        with open(nodes, "rb") as f:
             nodes_doc = json.load(f)
     client = _client()
     try:
@@ -586,9 +591,12 @@ def main(argv=None):
                    help="chain epoch it runs in: the panel's epoch plus the index, the current or the next")
     p.add_argument("--nodes", help="cluster-nodes.json of the epoch's first plan: a plan drawn again "
                                    "scans the same gossip, so its windows repeat")
+    p.add_argument("--nodes-from-first-plan", action="store_true",
+                   help="take --nodes from the first plan of this index, chain epoch and manifest under "
+                        "data/plans, or live gossip when there is none")
     p.add_argument("--table", help="campaign table (default: prereg/campaign-table.json)")
     p.add_argument("--manifest", help="prereg manifest whose sha256 the plan carries "
-                                      "(default: prereg/manifest-campaign.json when it exists)")
+                                      "(default: prereg/manifest-campaign.json; without it no plan is drawn)")
     p.add_argument("--lead-slots", type=int, default=900, help="no window earlier than this many slots ahead")
     p.add_argument("--data", help="data directory (default: repo data/)")
     p = sub.add_parser("panel", help="pick the leader panel of an epoch")

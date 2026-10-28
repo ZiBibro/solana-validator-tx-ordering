@@ -48,11 +48,11 @@ The bounty asks for at least 6 validators on at least 3 client or fork versions.
 | `dry-run-mainnet-20261027T003443Z` | dry-run | mainnet | dry-run | 2026-10-27 00:35:15 | 4 | 48 | 0 | - | - | `d8699aa` |
 | `dry-run-mainnet-20261027T010659Z` | dry-run | mainnet | dry-run | 2026-10-27 01:07:38 | 17 | 204 | 0 | - | - | `d4f2cca` |
 | `dry-run-mainnet-20261027T130541Z` | dry-run | mainnet | dry-run | 2026-10-27 13:06:16 | 12 | 144 | 0 | - | - | `5ffb53a` |
-| `dry-run-mainnet-20261027T233040Z` | dry-run | mainnet | dry-run | 2026-10-27 23:31:14 | 0 | 0 | 0 | - | - | `e3b21e3` |
+| `dry-run-mainnet-20261028T001806Z` | dry-run | mainnet | dry-run | 2026-10-28 00:18:40 | 0 | 0 | 0 | - | - | `9963813` |
 | `pilot-mainnet-20261027T085253Z` | pilot | mainnet | live | 2026-10-27 08:53:32 | 68 | 816 | 811 | 811 | 799 | `ef77ca3` |
 <!-- itb:end runs -->
 
-Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no measurement mixes the two sides of it. The devnet runs test the pipeline and feed no result. The dry-run `dry-run-mainnet-20261027T233040Z` checks the campaign plan of epoch 1071 and stopped after 150 s, about 27 hours before the plan's first round, so it holds the cost check and the slot clock and no burst. Appendix A dates every burst by the `blockTime` of its first included probe.
+Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no measurement mixes the two sides of it. The devnet runs test the pipeline and feed no result. The dry-run `dry-run-mainnet-20261028T001806Z` checks the campaign plan of epoch 1071 and stopped after 150 s, about 27 hours before the plan's first round, so it holds the cost check and the slot clock and no burst. Appendix A dates every burst by the `blockTime` of its first included probe.
 
 ## 4. Spend
 
@@ -81,63 +81,63 @@ The pilot sent 68 bursts into the windows of the 16 panel leaders between 08:53 
 <!-- itb:begin pilot-cells -->
 | Class | Arm | Timing | Bursts | Form | Detail | tau (95% CI; p) | Violated pair share (95% CI) |
 |---|---|---|---|---|---|---|---|
-| Agave | denominator | pre300 | 1 | undetermined | - | limit 0.082 (no interval; p 0.818); send 0.152 (no interval; p 0.545) | 0.444 (no interval); 0 of 1 bursts without a violation |
-| Agave | denominator | slot2 | 1 | undetermined | - | limit 0.041 (no interval; p 0.937); send -0.030 (no interval; p 0.947) | 0.472 (no interval); 0 of 1 bursts without a violation |
-| Agave | equal_fee | pre300 | 1 | undetermined | - | send -0.182 (no interval; p 0.459) | 0.591 (no interval); 0 of 1 bursts without a violation |
-| Agave | independent | pre300 | 1 | undetermined | - | cross 0.000 (no interval; p 1); fee 0.704 (no interval; p 0.00186); ties 0.000 (no interval; p 1) | 0.111 (no interval); 0 of 1 bursts without a violation |
-| Agave | shared | pre300 | 1 | fee-rule | ties-unordered | cross -0.333 (no interval; p 0.233); fee 0.905 (no interval; p 5.41e-06); ties -0.333 (no interval; p 0.44) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Agave | shared | slot2 | 1 | arrival-rule | forward | cross 0.815 (no interval; p 0.000141); fee 0.369 (no interval; p 0.138); ties 0.833 (no interval; p 0.0139) | 0.296 (no interval); 0 of 1 bursts without a violation |
-| AgaveBam | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216); send -0.091 (no interval; p 0.737) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| AgaveBam | denominator | slot2 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216); send -0.364 (no interval; p 0.116) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| AgaveBam | equal_fee | slot2 | 2 | arrival-rule | forward | send 0.712 (0.520 to 0.905; p 9.02e-07) | 0.144 (0.048 to 0.240); 0 of 2 bursts without a violation |
-| AgaveBam | independent | pre300 | 1 | fee-rule | ties-unordered | cross -0.037 (no interval; p 0.945); fee 0.905 (no interval; p 5.41e-06); ties -0.167 (no interval; p 0.798) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| AgaveBam | independent | slot2 | 1 | fee-rule | ties-unordered | cross 0.333 (no interval; p 0.233); fee 0.905 (no interval; p 5.41e-06); ties -0.333 (no interval; p 0.44) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| AgaveBam | shared | pre300 | 1 | fee-rule | ties-unordered | cross 0.074 (no interval; p 0.835); fee 0.905 (no interval; p 5.41e-06); ties -0.500 (no interval; p 0.193) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| FireBAM | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216); send 0.152 (no interval; p 0.545) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| FireBAM | denominator | slot2 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216); send 0.121 (no interval; p 0.638) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| FireBAM | equal_fee | pre300 | 1 | undetermined | - | send 0.485 (no interval; p 0.0311) | 0.258 (no interval); 0 of 1 bursts without a violation |
-| FireBAM | equal_fee | slot2 | 2 | undetermined | - | send -0.045 (-1.778 to 1.687; p 0.81) | 0.523 (-0.344 to 1.389); 0 of 2 bursts without a violation |
-| FireBAM | independent | pre300 | 1 | fee-rule | ties-unordered | cross -0.037 (no interval; p 0.945); fee 0.905 (no interval; p 5.41e-06); ties 0.500 (no interval; p 0.193) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| FireBAM | shared | pre300 | 1 | fee-rule | ties-reverse-arrival | cross -0.407 (no interval; p 0.138); fee 0.905 (no interval; p 5.41e-06); ties -0.833 (no interval; p 0.0139) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| FireBAM | shared | slot2 | 1 | undetermined | - | cross -0.444 (no interval; p 0.289); fee 0.926 (no interval; p 0.00317); ties 0.333 (no interval; p 1) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Firedancer | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216); send -0.394 (no interval; p 0.0863) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Firedancer | denominator | slot2 | 1 | undetermined | - | limit 0.000 (no interval; p 1); send 0.848 (no interval; p 1.63e-05) | 0.500 (no interval); 0 of 1 bursts without a violation |
-| Firedancer | equal_fee | pre300 | 1 | arrival-rule | reverse | send -1.000 (no interval; p 4.18e-09) | 1.000 (no interval); 0 of 1 bursts without a violation |
-| Firedancer | equal_fee | slot2 | 1 | arrival-rule | forward | send 1.000 (no interval; p 4.18e-09) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Firedancer | independent | pre300 | 1 | fee-rule | ties-reverse-arrival | cross 0.074 (no interval; p 0.835); fee 0.905 (no interval; p 5.41e-06); ties -1.000 (no interval; p 0.00154) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Firedancer | independent | slot2 | 1 | arrival-rule | forward | cross 0.852 (no interval; p 3.99e-05); fee -0.168 (no interval; p 0.532); ties 1.000 (no interval; p 0.00154) | 0.593 (no interval); 0 of 1 bursts without a violation |
-| Firedancer | shared | pre300 | 1 | fee-rule | ties-unordered | cross 0.074 (no interval; p 0.835); fee 0.905 (no interval; p 5.41e-06); ties -0.667 (no interval; p 0.0633) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Firedancer | shared | slot2 | 1 | undetermined | - | cross 0.630 (no interval; p 0.0053); fee -0.268 (no interval; p 0.294); ties 0.667 (no interval; p 0.0633) | 0.648 (no interval); 0 of 1 bursts without a violation |
-| HarmonicAgave | denominator | pre300 | 1 | undetermined | - | limit 0.451 (no interval; p 0.0931); send 0.212 (no interval; p 0.381) | 0.194 (no interval); 0 of 1 bursts without a violation |
-| HarmonicAgave | denominator | slot2 | 1 | undetermined | - | limit 0.164 (no interval; p 0.589); send 0.545 (no interval; p 0.0138) | 0.389 (no interval); 0 of 1 bursts without a violation |
-| HarmonicAgave | equal_fee | pre300 | 1 | undetermined | - | send -0.121 (no interval; p 0.638) | 0.561 (no interval); 0 of 1 bursts without a violation |
-| HarmonicAgave | equal_fee | slot2 | 2 | undetermined | - | send 0.364 (-0.791 to 1.519; p 0.0214) | 0.318 (-0.259 to 0.896); 0 of 2 bursts without a violation |
-| HarmonicAgave | independent | pre300 | 1 | undetermined | - | cross 0.222 (no interval; p 0.404); fee 0.469 (no interval; p 0.0531); ties 0.500 (no interval; p 0.193) | 0.241 (no interval); 0 of 1 bursts without a violation |
-| HarmonicAgave | independent | slot2 | 1 | undetermined | - | cross -0.185 (no interval; p 0.462); fee 0.034 (no interval; p 0.945); ties -0.500 (no interval; p 0.193) | 0.481 (no interval); 0 of 1 bursts without a violation |
-| HarmonicAgave | shared | pre300 | 1 | fee-rule | ties-unordered | cross 0.111 (no interval; p 0.724); fee 0.804 (no interval; p 0.000189); ties 0.333 (no interval; p 0.44) | 0.056 (no interval); 0 of 1 bursts without a violation |
-| HarmonicAgave | shared | slot2 | 1 | undetermined | - | cross -0.074 (no interval; p 0.832); fee 0.670 (no interval; p 0.00342); ties 0.667 (no interval; p 0.0633) | 0.130 (no interval); 0 of 1 bursts without a violation |
-| HarmonicFiredancer | denominator | slot2 | 1 | undetermined | - | limit 0.369 (no interval; p 0.18); send -0.030 (no interval; p 0.947) | 0.250 (no interval); 0 of 1 bursts without a violation |
-| HarmonicFiredancer | equal_fee | pre300 | 1 | undetermined | - | send 0.576 (no interval; p 0.00876) | 0.212 (no interval); 0 of 1 bursts without a violation |
-| HarmonicFiredancer | equal_fee | slot2 | 2 | undetermined | - | send 0.515 (-0.255 to 1.285; p 0.000786) | 0.242 (-0.143 to 0.627); 0 of 2 bursts without a violation |
-| HarmonicFiredancer | independent | pre300 | 1 | fee-rule | ties-unordered | cross -0.185 (no interval; p 0.521); fee 0.804 (no interval; p 0.000189); ties 0.333 (no interval; p 0.44) | 0.056 (no interval); 0 of 1 bursts without a violation |
-| HarmonicFiredancer | shared | pre300 | 1 | undetermined | - | cross 0.148 (no interval; p 0.621); fee 0.670 (no interval; p 0.00342); ties 0.167 (no interval; p 0.798) | 0.130 (no interval); 0 of 1 bursts without a violation |
-| HarmonicFiredancer | shared | slot2 | 1 | fee-rule | ties-unordered | cross -0.481 (no interval; p 0.0686); fee 0.838 (no interval; p 7.03e-05); ties -0.167 (no interval; p 0.798) | 0.037 (no interval); 0 of 1 bursts without a violation |
-| JitoLabs | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216); send -0.061 (no interval; p 0.841) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| JitoLabs | denominator | slot2 | 1 | undetermined | - | limit 0.287 (no interval; p 0.31); send 0.121 (no interval; p 0.638) | 0.306 (no interval); 0 of 1 bursts without a violation |
-| JitoLabs | equal_fee | pre300 | 1 | undetermined | - | send -0.455 (no interval; p 0.0447) | 0.727 (no interval); 0 of 1 bursts without a violation |
-| JitoLabs | equal_fee | slot2 | 1 | arrival-rule | forward | send 1.000 (no interval; p 4.18e-09) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| JitoLabs | independent | pre300 | 1 | undetermined | - | cross 0.037 (no interval; p 0.933); fee 0.302 (no interval; p 0.233); ties -0.167 (no interval; p 0.798) | 0.333 (no interval); 0 of 1 bursts without a violation |
-| JitoLabs | independent | slot2 | 1 | undetermined | - | cross -0.222 (no interval; p 0.389); fee 0.235 (no interval; p 0.365); ties 0.500 (no interval; p 0.193) | 0.370 (no interval); 0 of 1 bursts without a violation |
-| JitoLabs | shared | pre300 | 1 | fee-rule | ties-unordered | cross -0.519 (no interval; p 0.0531); fee 0.905 (no interval; p 5.41e-06); ties -0.333 (no interval; p 0.44) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| JitoLabs | shared | slot2 | 1 | fee-rule | ties-unordered | cross 0.481 (no interval; p 0.0749); fee 0.905 (no interval; p 5.41e-06); ties -0.333 (no interval; p 0.44) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Rakurai | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216); send -0.182 (no interval; p 0.459) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Rakurai | denominator | slot2 | 1 | undetermined | - | limit 0.410 (no interval; p 0.132); send 0.667 (no interval; p 0.0018) | 0.222 (no interval); 0 of 1 bursts without a violation |
-| Rakurai | equal_fee | pre300 | 1 | undetermined | - | send 0.273 (no interval; p 0.25) | 0.364 (no interval); 0 of 1 bursts without a violation |
-| Rakurai | equal_fee | slot2 | 1 | arrival-rule | forward | send 0.949 (no interval; p 1.01e-05) | 0.026 (no interval); 0 of 1 bursts without a violation |
-| Rakurai | independent | pre300 | 1 | fee-rule | ties-unordered | cross -0.037 (no interval; p 0.943); fee 0.771 (no interval; p 0.000444); ties -0.333 (no interval; p 0.44) | 0.074 (no interval); 0 of 1 bursts without a violation |
-| Rakurai | independent | slot2 | 1 | undetermined | - | cross 0.593 (no interval; p 0.00548); fee -0.067 (no interval; p 0.835); ties 0.667 (no interval; p 0.0633) | 0.537 (no interval); 0 of 1 bursts without a violation |
-| Rakurai | shared | pre300 | 1 | fee-rule | ties-unordered | cross 0.111 (no interval; p 0.729); fee 0.905 (no interval; p 5.41e-06); ties 0.167 (no interval; p 0.798) | 0.000 (no interval); 1 of 1 bursts without a violation |
-| Rakurai | shared | slot2 | 1 | undetermined | - | cross 0.704 (no interval; p 0.00177); fee 0.034 (no interval; p 0.945); ties 0.167 (no interval; p 0.798) | 0.481 (no interval); 0 of 1 bursts without a violation |
+| Agave | denominator | pre300 | 1 | undetermined | - | limit 0.082 (no interval; p 0.818; mean of burst taus 0.082); send 0.152 (no interval; p 0.545; mean of burst taus 0.152) | 0.444 (no interval); 0 of 1 bursts without a violation |
+| Agave | denominator | slot2 | 1 | undetermined | - | limit 0.041 (no interval; p 0.937; mean of burst taus 0.041); send -0.030 (no interval; p 0.947; mean of burst taus -0.030) | 0.472 (no interval); 0 of 1 bursts without a violation |
+| Agave | equal_fee | pre300 | 1 | undetermined | - | send -0.182 (no interval; p 0.459; mean of burst taus -0.182) | 0.591 (no interval); 0 of 1 bursts without a violation |
+| Agave | independent | pre300 | 1 | undetermined | - | cross 0.000 (no interval; p 1; mean of burst taus 0.000); fee 0.704 (no interval; p 0.00186; mean of burst taus 0.704); ties 0.000 (no interval; p 1; mean of burst taus 0.000) | 0.111 (no interval); 0 of 1 bursts without a violation |
+| Agave | shared | pre300 | 1 | fee-rule | ties-unordered | cross -0.333 (no interval; p 0.233; mean of burst taus -0.333); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -0.333 (no interval; p 0.44; mean of burst taus -0.333) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Agave | shared | slot2 | 1 | arrival-rule | forward | cross 0.815 (no interval; p 0.000141; mean of burst taus 0.815); fee 0.369 (no interval; p 0.138; mean of burst taus 0.369); ties 0.833 (no interval; p 0.0139; mean of burst taus 0.833) | 0.296 (no interval); 0 of 1 bursts without a violation |
+| AgaveBam | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216; mean of burst taus 0.739); send -0.091 (no interval; p 0.737; mean of burst taus -0.091) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| AgaveBam | denominator | slot2 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216; mean of burst taus 0.739); send -0.364 (no interval; p 0.116; mean of burst taus -0.364) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| AgaveBam | equal_fee | slot2 | 2 | arrival-rule | forward | send 0.712 (0.520 to 0.905; p 9.02e-07; mean of burst taus 0.712) | 0.144 (0.048 to 0.240); 0 of 2 bursts without a violation |
+| AgaveBam | independent | pre300 | 1 | fee-rule | ties-unordered | cross -0.037 (no interval; p 0.945; mean of burst taus -0.037); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -0.167 (no interval; p 0.798; mean of burst taus -0.167) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| AgaveBam | independent | slot2 | 1 | fee-rule | ties-unordered | cross 0.333 (no interval; p 0.233; mean of burst taus 0.333); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -0.333 (no interval; p 0.44; mean of burst taus -0.333) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| AgaveBam | shared | pre300 | 1 | fee-rule | ties-unordered | cross 0.074 (no interval; p 0.835; mean of burst taus 0.074); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -0.500 (no interval; p 0.193; mean of burst taus -0.500) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| FireBAM | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216; mean of burst taus 0.739); send 0.152 (no interval; p 0.545; mean of burst taus 0.152) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| FireBAM | denominator | slot2 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216; mean of burst taus 0.739); send 0.121 (no interval; p 0.638; mean of burst taus 0.121) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| FireBAM | equal_fee | pre300 | 1 | undetermined | - | send 0.485 (no interval; p 0.0311; mean of burst taus 0.485) | 0.258 (no interval); 0 of 1 bursts without a violation |
+| FireBAM | equal_fee | slot2 | 2 | undetermined | - | send -0.045 (-1.778 to 1.687; p 0.81; mean of burst taus -0.045) | 0.523 (-0.344 to 1.389); 0 of 2 bursts without a violation |
+| FireBAM | independent | pre300 | 1 | fee-rule | ties-unordered | cross -0.037 (no interval; p 0.945; mean of burst taus -0.037); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties 0.500 (no interval; p 0.193; mean of burst taus 0.500) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| FireBAM | shared | pre300 | 1 | fee-rule | ties-reverse-arrival | cross -0.407 (no interval; p 0.138; mean of burst taus -0.407); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -0.833 (no interval; p 0.0139; mean of burst taus -0.833) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| FireBAM | shared | slot2 | 1 | undetermined | - | cross -0.444 (no interval; p 0.289; mean of burst taus -0.444); fee 0.926 (no interval; p 0.00317; mean of burst taus 0.926); ties 0.333 (no interval; p 1; mean of burst taus 0.333) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Firedancer | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216; mean of burst taus 0.739); send -0.394 (no interval; p 0.0863; mean of burst taus -0.394) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Firedancer | denominator | slot2 | 1 | undetermined | - | limit 0.000 (no interval; p 1; mean of burst taus 0.000); send 0.848 (no interval; p 1.63e-05; mean of burst taus 0.848) | 0.500 (no interval); 0 of 1 bursts without a violation |
+| Firedancer | equal_fee | pre300 | 1 | arrival-rule | reverse | send -1.000 (no interval; p 4.18e-09; mean of burst taus -1.000) | 1.000 (no interval); 0 of 1 bursts without a violation |
+| Firedancer | equal_fee | slot2 | 1 | arrival-rule | forward | send 1.000 (no interval; p 4.18e-09; mean of burst taus 1.000) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Firedancer | independent | pre300 | 1 | fee-rule | ties-reverse-arrival | cross 0.074 (no interval; p 0.835; mean of burst taus 0.074); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -1.000 (no interval; p 0.00154; mean of burst taus -1.000) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Firedancer | independent | slot2 | 1 | arrival-rule | forward | cross 0.852 (no interval; p 3.99e-05; mean of burst taus 0.852); fee -0.168 (no interval; p 0.532; mean of burst taus -0.168); ties 1.000 (no interval; p 0.00154; mean of burst taus 1.000) | 0.593 (no interval); 0 of 1 bursts without a violation |
+| Firedancer | shared | pre300 | 1 | fee-rule | ties-unordered | cross 0.074 (no interval; p 0.835; mean of burst taus 0.074); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -0.667 (no interval; p 0.0633; mean of burst taus -0.667) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Firedancer | shared | slot2 | 1 | undetermined | - | cross 0.630 (no interval; p 0.0053; mean of burst taus 0.630); fee -0.268 (no interval; p 0.294; mean of burst taus -0.268); ties 0.667 (no interval; p 0.0633; mean of burst taus 0.667) | 0.648 (no interval); 0 of 1 bursts without a violation |
+| HarmonicAgave | denominator | pre300 | 1 | undetermined | - | limit 0.451 (no interval; p 0.0931; mean of burst taus 0.451); send 0.212 (no interval; p 0.381; mean of burst taus 0.212) | 0.194 (no interval); 0 of 1 bursts without a violation |
+| HarmonicAgave | denominator | slot2 | 1 | undetermined | - | limit 0.164 (no interval; p 0.589; mean of burst taus 0.164); send 0.545 (no interval; p 0.0138; mean of burst taus 0.545) | 0.389 (no interval); 0 of 1 bursts without a violation |
+| HarmonicAgave | equal_fee | pre300 | 1 | undetermined | - | send -0.121 (no interval; p 0.638; mean of burst taus -0.121) | 0.561 (no interval); 0 of 1 bursts without a violation |
+| HarmonicAgave | equal_fee | slot2 | 2 | undetermined | - | send 0.364 (-0.791 to 1.519; p 0.0214; mean of burst taus 0.364) | 0.318 (-0.259 to 0.896); 0 of 2 bursts without a violation |
+| HarmonicAgave | independent | pre300 | 1 | undetermined | - | cross 0.222 (no interval; p 0.404; mean of burst taus 0.222); fee 0.469 (no interval; p 0.0531; mean of burst taus 0.469); ties 0.500 (no interval; p 0.193; mean of burst taus 0.500) | 0.241 (no interval); 0 of 1 bursts without a violation |
+| HarmonicAgave | independent | slot2 | 1 | undetermined | - | cross -0.185 (no interval; p 0.462; mean of burst taus -0.185); fee 0.034 (no interval; p 0.945; mean of burst taus 0.034); ties -0.500 (no interval; p 0.193; mean of burst taus -0.500) | 0.481 (no interval); 0 of 1 bursts without a violation |
+| HarmonicAgave | shared | pre300 | 1 | fee-rule | ties-unordered | cross 0.111 (no interval; p 0.724; mean of burst taus 0.111); fee 0.804 (no interval; p 0.000189; mean of burst taus 0.804); ties 0.333 (no interval; p 0.44; mean of burst taus 0.333) | 0.056 (no interval); 0 of 1 bursts without a violation |
+| HarmonicAgave | shared | slot2 | 1 | undetermined | - | cross -0.074 (no interval; p 0.832; mean of burst taus -0.074); fee 0.670 (no interval; p 0.00342; mean of burst taus 0.670); ties 0.667 (no interval; p 0.0633; mean of burst taus 0.667) | 0.130 (no interval); 0 of 1 bursts without a violation |
+| HarmonicFiredancer | denominator | slot2 | 1 | undetermined | - | limit 0.369 (no interval; p 0.18; mean of burst taus 0.369); send -0.030 (no interval; p 0.947; mean of burst taus -0.030) | 0.250 (no interval); 0 of 1 bursts without a violation |
+| HarmonicFiredancer | equal_fee | pre300 | 1 | undetermined | - | send 0.576 (no interval; p 0.00876; mean of burst taus 0.576) | 0.212 (no interval); 0 of 1 bursts without a violation |
+| HarmonicFiredancer | equal_fee | slot2 | 2 | undetermined | - | send 0.515 (-0.255 to 1.285; p 0.000786; mean of burst taus 0.515) | 0.242 (-0.143 to 0.627); 0 of 2 bursts without a violation |
+| HarmonicFiredancer | independent | pre300 | 1 | fee-rule | ties-unordered | cross -0.185 (no interval; p 0.521; mean of burst taus -0.185); fee 0.804 (no interval; p 0.000189; mean of burst taus 0.804); ties 0.333 (no interval; p 0.44; mean of burst taus 0.333) | 0.056 (no interval); 0 of 1 bursts without a violation |
+| HarmonicFiredancer | shared | pre300 | 1 | undetermined | - | cross 0.148 (no interval; p 0.621; mean of burst taus 0.148); fee 0.670 (no interval; p 0.00342; mean of burst taus 0.670); ties 0.167 (no interval; p 0.798; mean of burst taus 0.167) | 0.130 (no interval); 0 of 1 bursts without a violation |
+| HarmonicFiredancer | shared | slot2 | 1 | fee-rule | ties-unordered | cross -0.481 (no interval; p 0.0686; mean of burst taus -0.481); fee 0.838 (no interval; p 7.03e-05; mean of burst taus 0.838); ties -0.167 (no interval; p 0.798; mean of burst taus -0.167) | 0.037 (no interval); 0 of 1 bursts without a violation |
+| JitoLabs | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216; mean of burst taus 0.739); send -0.061 (no interval; p 0.841; mean of burst taus -0.061) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| JitoLabs | denominator | slot2 | 1 | undetermined | - | limit 0.287 (no interval; p 0.31; mean of burst taus 0.287); send 0.121 (no interval; p 0.638; mean of burst taus 0.121) | 0.306 (no interval); 0 of 1 bursts without a violation |
+| JitoLabs | equal_fee | pre300 | 1 | undetermined | - | send -0.455 (no interval; p 0.0447; mean of burst taus -0.455) | 0.727 (no interval); 0 of 1 bursts without a violation |
+| JitoLabs | equal_fee | slot2 | 1 | arrival-rule | forward | send 1.000 (no interval; p 4.18e-09; mean of burst taus 1.000) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| JitoLabs | independent | pre300 | 1 | undetermined | - | cross 0.037 (no interval; p 0.933; mean of burst taus 0.037); fee 0.302 (no interval; p 0.233; mean of burst taus 0.302); ties -0.167 (no interval; p 0.798; mean of burst taus -0.167) | 0.333 (no interval); 0 of 1 bursts without a violation |
+| JitoLabs | independent | slot2 | 1 | undetermined | - | cross -0.222 (no interval; p 0.389; mean of burst taus -0.222); fee 0.235 (no interval; p 0.365; mean of burst taus 0.235); ties 0.500 (no interval; p 0.193; mean of burst taus 0.500) | 0.370 (no interval); 0 of 1 bursts without a violation |
+| JitoLabs | shared | pre300 | 1 | fee-rule | ties-unordered | cross -0.519 (no interval; p 0.0531; mean of burst taus -0.519); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -0.333 (no interval; p 0.44; mean of burst taus -0.333) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| JitoLabs | shared | slot2 | 1 | fee-rule | ties-unordered | cross 0.481 (no interval; p 0.0749; mean of burst taus 0.481); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties -0.333 (no interval; p 0.44; mean of burst taus -0.333) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Rakurai | denominator | pre300 | 1 | undetermined | - | limit 0.739 (no interval; p 0.00216; mean of burst taus 0.739); send -0.182 (no interval; p 0.459; mean of burst taus -0.182) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Rakurai | denominator | slot2 | 1 | undetermined | - | limit 0.410 (no interval; p 0.132; mean of burst taus 0.410); send 0.667 (no interval; p 0.0018; mean of burst taus 0.667) | 0.222 (no interval); 0 of 1 bursts without a violation |
+| Rakurai | equal_fee | pre300 | 1 | undetermined | - | send 0.273 (no interval; p 0.25; mean of burst taus 0.273) | 0.364 (no interval); 0 of 1 bursts without a violation |
+| Rakurai | equal_fee | slot2 | 1 | arrival-rule | forward | send 0.949 (no interval; p 1.01e-05; mean of burst taus 0.949) | 0.026 (no interval); 0 of 1 bursts without a violation |
+| Rakurai | independent | pre300 | 1 | fee-rule | ties-unordered | cross -0.037 (no interval; p 0.943; mean of burst taus -0.037); fee 0.771 (no interval; p 0.000444; mean of burst taus 0.771); ties -0.333 (no interval; p 0.44; mean of burst taus -0.333) | 0.074 (no interval); 0 of 1 bursts without a violation |
+| Rakurai | independent | slot2 | 1 | undetermined | - | cross 0.593 (no interval; p 0.00548; mean of burst taus 0.593); fee -0.067 (no interval; p 0.835; mean of burst taus -0.067); ties 0.667 (no interval; p 0.0633; mean of burst taus 0.667) | 0.537 (no interval); 0 of 1 bursts without a violation |
+| Rakurai | shared | pre300 | 1 | fee-rule | ties-unordered | cross 0.111 (no interval; p 0.729; mean of burst taus 0.111); fee 0.905 (no interval; p 5.41e-06; mean of burst taus 0.905); ties 0.167 (no interval; p 0.798; mean of burst taus 0.167) | 0.000 (no interval); 1 of 1 bursts without a violation |
+| Rakurai | shared | slot2 | 1 | undetermined | - | cross 0.704 (no interval; p 0.00177; mean of burst taus 0.704); fee 0.034 (no interval; p 0.945; mean of burst taus 0.034); ties 0.167 (no interval; p 0.798; mean of burst taus 0.167) | 0.481 (no interval); 0 of 1 bursts without a violation |
 <!-- itb:end pilot-cells -->
 
 Tau is Kendall tau-b against block position, pooled over the bursts of the cell, with a jackknife interval over bursts. A cell with one burst has no interval. With two bursts the interval uses one degree of freedom and may run past the range of tau. The violated pair share counts pairs with a different predicted position that landed in the other order.
@@ -147,27 +147,27 @@ Before the window, 9 of the 16 different-fee cells had no pair of different fee 
 ### 5.3 Builder against its base
 
 <!-- itb:begin pilot-pairs -->
-| Pair | Timing | Statistic | Strata | Mean difference | p | TOST p | Form |
-|---|---|---|---|---|---|---|---|
-| AgaveBam vs JitoLabs | pre300 | fee | 2 | 0.302 | 1 | 0.603 | undetermined |
-| AgaveBam vs JitoLabs | pre300 | cross | 2 | 0.259 | 1 | 0.556 | undetermined |
-| AgaveBam vs JitoLabs | slot2 | fee | 1 | 0.670 | 1 | 1 | undetermined |
-| AgaveBam vs JitoLabs | slot2 | cross | 1 | 0.556 | 1 | 1 | undetermined |
-| FireBAM vs Firedancer | pre300 | fee | 2 | 0.000 | 1 | 0 | builder-does-not-change-order |
-| FireBAM vs Firedancer | pre300 | cross | 2 | -0.296 | 0.5 | 0.653 | undetermined |
-| FireBAM vs Firedancer | slot2 | fee | 1 | 1.194 | 1 | 1 | undetermined |
-| FireBAM vs Firedancer | slot2 | cross | 1 | -1.074 | 1 | 1 | undetermined |
-| HarmonicAgave vs Agave | pre300 | fee | 2 | -0.168 | 0.5 | 0.356 | undetermined |
-| HarmonicAgave vs Agave | pre300 | cross | 2 | 0.333 | 0.5 | 0.779 | undetermined |
-| HarmonicAgave vs Agave | slot2 | fee | 1 | 0.302 | 1 | 1 | undetermined |
-| HarmonicAgave vs Agave | slot2 | cross | 1 | -0.889 | 1 | 1 | undetermined |
-| HarmonicFiredancer vs Firedancer | pre300 | fee | 2 | -0.168 | 0.5 | 0.356 | undetermined |
-| HarmonicFiredancer vs Firedancer | pre300 | cross | 2 | -0.093 | 1 | 0.318 | undetermined |
-| HarmonicFiredancer vs Firedancer | slot2 | fee | 1 | 1.106 | 1 | 1 | undetermined |
-| HarmonicFiredancer vs Firedancer | slot2 | cross | 1 | -1.111 | 1 | 1 | undetermined |
+| Pair | Timing | Statistic | Strata | Mean difference | p | TOST p | Label test | Form |
+|---|---|---|---|---|---|---|---|---|
+| AgaveBam vs JitoLabs | pre300 | fee | 2 | 0.302 | 1 | 0.603 | exact over 4 | undetermined |
+| AgaveBam vs JitoLabs | pre300 | cross | 2 | 0.259 | 1 | 0.556 | exact over 4 | undetermined |
+| AgaveBam vs JitoLabs | slot2 | fee | 1 | 0.670 | 1 | 1 | exact over 2 | undetermined |
+| AgaveBam vs JitoLabs | slot2 | cross | 1 | 0.556 | 1 | 1 | exact over 2 | undetermined |
+| FireBAM vs Firedancer | pre300 | fee | 2 | 0.000 | 1 | 0 | exact over 4 | builder-does-not-change-order |
+| FireBAM vs Firedancer | pre300 | cross | 2 | -0.296 | 0.5 | 0.653 | exact over 4 | undetermined |
+| FireBAM vs Firedancer | slot2 | fee | 1 | 1.194 | 1 | 1 | exact over 2 | undetermined |
+| FireBAM vs Firedancer | slot2 | cross | 1 | -1.074 | 1 | 1 | exact over 2 | undetermined |
+| HarmonicAgave vs Agave | pre300 | fee | 2 | -0.168 | 0.5 | 0.356 | exact over 4 | undetermined |
+| HarmonicAgave vs Agave | pre300 | cross | 2 | 0.333 | 0.5 | 0.779 | exact over 4 | undetermined |
+| HarmonicAgave vs Agave | slot2 | fee | 1 | 0.302 | 1 | 1 | exact over 2 | undetermined |
+| HarmonicAgave vs Agave | slot2 | cross | 1 | -0.889 | 1 | 1 | exact over 2 | undetermined |
+| HarmonicFiredancer vs Firedancer | pre300 | fee | 2 | -0.168 | 0.5 | 0.356 | exact over 4 | undetermined |
+| HarmonicFiredancer vs Firedancer | pre300 | cross | 2 | -0.093 | 1 | 0.318 | exact over 4 | undetermined |
+| HarmonicFiredancer vs Firedancer | slot2 | fee | 1 | 1.106 | 1 | 1 | exact over 2 | undetermined |
+| HarmonicFiredancer vs Firedancer | slot2 | cross | 1 | -1.111 | 1 | 1 | exact over 2 | undetermined |
 <!-- itb:end pilot-pairs -->
 
-A stratum is one round and arm with a burst of both classes. FireBAM against Firedancer before the window reads "builder-does-not-change-order" on tau fee. Both classes gave tau fee 0.905 in both strata, every pair of different fee in fee order, so the difference is zero with zero spread, and the TOST of the analysis plan returns p 0 when the standard error is zero. Two identical strata carry little weight; the campaign verdict for this pair stands on its own strata.
+A stratum is one round and arm with a burst of both classes. FireBAM against Firedancer before the window reads "builder-does-not-change-order" on tau fee. Both classes gave tau fee 0.905 in both strata, every pair of different fee in fee order, so the difference is zero with zero spread. With a standard error of zero the TOST of the code (`stats.tost_p`) returns p 0 when the difference lies inside plus or minus delta; the analysis plan does not state that rule, and the [campaign addendum, sections 2 and 6](prereg/CAMPAIGN-ADDENDUM.md) states it for the campaign with this pair as its example. Two identical strata carry little weight; the campaign verdict for this pair stands on its own strata.
 
 ### 5.4 Segments between ticks
 
@@ -339,7 +339,7 @@ The one-way estimate is half the round-trip time of the QUIC connection, measure
 ### 5.9 Load
 
 <!-- itb:begin pilot-loads -->
-| Load by | Quartile | Mean load of the burst's blocks | Bursts | tau fee, independent and shared | tau send, equal fee | tau send, equal fee, Agave |
+| Load by | Quartile | Mean load of the burst's blocks | Bursts | tau fee, independent and shared | tau send, equal fee | tau send, equal fee, Agave, pre300 |
 |---|---|---|---|---|---|---|
 | costUnits | Q1 | 4672998 to 9845585 | 16 | 0.503 (-0.143 to 1.148), 4 bursts | 0.227 (-0.190 to 0.644), 6 bursts | - |
 | costUnits | Q2 | 10222832 to 13103953 | 15 | 0.610 (-0.011 to 1.230), 5 bursts | 0.561 (-0.327 to 1.449), 4 bursts | - |
@@ -421,7 +421,7 @@ The pilot sent no control-path bursts; the campaign sends 64.
 ### 5.15 Minimum for the campaign
 
 <!-- itb:begin minimum -->
-| Arm | tau | Pilot bursts | sigma (residual) | Raw variance by cell | Minimum bursts | Campaign bursts per class and cell | Equivalence reachable |
+| Arm | tau | Pilot bursts | sigma (residual) | Raw variance by cell | Minimum bursts | Campaign bursts per class and cell | Equivalence reachable at the pilot's spread |
 |---|---|---|---|---|---|---|---|
 | independent | fee | 13 | 0.332 | pre300 0.050 (8 bursts); slot2 0.183 (5 bursts) | 72 | 8 | no |
 | independent | cross | 13 | 0.375 | pre300 0.013 (8 bursts); slot2 0.224 (5 bursts) | 90 | 8 | no |
@@ -433,11 +433,11 @@ The pilot sent no control-path bursts; the campaign sends 64.
 From 68 pilot bursts, 61 kept; alpha_e 0.000521, power per tau 0.90, delta 0.20.
 <!-- itb:end minimum -->
 
-The minimum is the number of bursts per class and cell that an equivalence verdict needs at the spread the pilot showed (analysis plan, section 5). The campaign has 8 per class and cell, and every arm needs at least 28, so no cell can reach a form that rests on a TOST, such as "no rule visible". Forms with a significant tau do not depend on this minimum. The minimum is part of the campaign manifest, which goes on chain before the first campaign probe.
+The minimum is the number of bursts per class and cell that an equivalence verdict needs at the spread the pilot showed (analysis plan, section 5). The campaign has 8 per class and cell, and every arm needs at least 28, so at the pilot's spread no cell is expected to reach a form that rests on a TOST, such as "no rule visible". A spread near zero is the exception, since the TOST of the code passes on a standard error of zero ([campaign addendum, section 2](prereg/CAMPAIGN-ADDENDUM.md)). Forms with a significant tau do not depend on this minimum. The minimum is part of the campaign manifest, which goes on chain before the first campaign probe.
 
 ## 6. Campaign
 
-The campaign measures the panel over four epochs from 1071 with 8 bursts per class and cell, plus 64 control-path bursts. Verdicts run through the Holm families of the analysis plan. The [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md) goes on chain with the campaign manifest and states what the plan leaves to the code: the exclusion reasons, the hypotheses H3 and H4, lost epoch indexes, the builder label and the control path.
+The campaign measures the panel over four epochs from 1071 with 8 bursts per class and cell, plus 64 control-path bursts. Verdicts run through the Holm families of the analysis plan. The [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md) goes on chain with the campaign manifest and states what the plan leaves to the code: the exclusion reasons, the hypotheses H3 and H4, lost epoch indexes and repeated bursts, the builder label and the control path.
 
 ### 6.1 Bursts left out of the order tests
 
@@ -450,6 +450,12 @@ No runs of this stage yet.
 <!-- itb:begin campaign-cells -->
 No runs of this stage yet.
 <!-- itb:end campaign-cells -->
+
+Hypotheses H3 and H4 take tau send of the equal-fee arm before the window under the rules of [campaign addendum, section 3](prereg/CAMPAIGN-ADDENDUM.md). The other classes stand beside them for comparison, without a judgement on either hypothesis.
+
+<!-- itb:begin campaign-hypotheses -->
+No runs of this stage yet.
+<!-- itb:end campaign-hypotheses -->
 
 ### 6.3 Builder against its base
 
@@ -534,9 +540,16 @@ The control path is compared with the direct path only within the same leader an
 ## 7. The builder mark
 
 <!-- itb:begin tick-runs -->
-| Run | Builder-class slots with their builder's tick | Other slots with a known tick |
-|---|---|---|
-| `pilot-mainnet-20261027T085253Z` | 36 of 36 | 0 of 33 |
+| Run | Class of the slot's leader | Its builder | Slots | With a BAM tick | With a Harmonic tick |
+|---|---|---|---|---|---|
+| `pilot-mainnet-20261027T085253Z` | AgaveBam | BAM | 9 | 9 (100.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | JitoLabs | none | 8 | 0 (0.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | HarmonicAgave | Harmonic | 9 | 0 (0.0%) | 9 (100.0%) |
+| `pilot-mainnet-20261027T085253Z` | HarmonicFiredancer | Harmonic | 9 | 0 (0.0%) | 9 (100.0%) |
+| `pilot-mainnet-20261027T085253Z` | Firedancer | none | 8 | 0 (0.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | FireBAM | BAM | 9 | 9 (100.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | Rakurai | none | 9 | 0 (0.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | Agave | none | 8 | 0 (0.0%) | 0 (0.0%) |
 <!-- itb:end tick-runs -->
 
 In every pilot slot of a builder-class leader the block carried a tick from that builder's signer, and no slot of another class carried a tick from either signer.
@@ -600,11 +613,12 @@ The table comes from the gossip snapshot and the leader schedule stored with eac
 
 - **2026-10-26 23:25 UTC, mainnet dry-run `dry-run-mainnet-20261026T232506Z`.** The slot clock ran on WebSocket events of the public node, which queued them 5 to 24 slots behind the cluster. The arrival estimate used the same late events, so the run showed 2 of 4 bursts in the band while all four missed. The clock moved onto the node's own timestamps, with a guard that skips a burst when `getSlot` runs 2 or more slots ahead of it (commit 2bacfa2), and the sender now waits for the first-shred events of the window before it closes a burst (commit d8699aa). No later run skipped a burst for the clock.
 - **2026-10-27 01:06 UTC, dry-run of the pilot plan.** Within 100 ms of the target stood 4 of 8 pre-window bursts, and all four misses were early. Before any live probe the pre-window band became 200 ms early and 100 ms late of the target. That change and a neutral rewording of the analysis plan redrew the manifest twice. The anchor went on chain from the third manifest, `9a9c92c2...`; the two earlier ones, `74149b29...` and `cf3c768e...`, were simulated and never sent. The seven pilot anchor logs in `logs/` hold six simulations and the one live send at 08:52 UTC.
-- **2026-10-27 08:52 UTC, pilot plan.** The validators.app snapshot failed certificate verification (`CERTIFICATE_VERIFY_FAILED`), because the antivirus web shield of the measuring machine re-signs that host. The plan was drawn without it, so no pilot burst carries the second label. The message reached the console only, since the pilot command keeps no draw notes; campaign plans keep theirs in `draw-notes.json`. The fix adds an extra root for that one request (`ITB_EXTRA_CA_FILE`, commit eebdf2f), and [scripts/campaign.sh](scripts/campaign.sh) passes it on. The campaign plan of epoch 1071, drawn at 23:30 UTC the same day, carries the snapshot with 669 records, and each of its 144 bursts has the same class there as in gossip.
+- **2026-10-27 08:52 UTC, pilot plan.** The validators.app snapshot failed certificate verification (`CERTIFICATE_VERIFY_FAILED`), because the antivirus web shield of the measuring machine re-signs that host. The plan was drawn without it, so no pilot burst carries the second label. The message reached the console only, since the pilot command keeps no draw notes; campaign plans keep theirs in `draw-notes.json`. The fix adds an extra root for that one request (`ITB_EXTRA_CA_FILE`, commit eebdf2f), and [scripts/campaign.sh](scripts/campaign.sh) passes it on. The campaign plan of epoch 1071, drawn at 00:18 UTC on 2026-10-28, carries the snapshot with 669 records, and each of its 144 bursts has the same class there as in gossip.
 - **2026-10-27, pilot run.** Six bursts arrived outside their band. Burst 52 landed one slot early in another leader's block, and five probes of burst 99 met a closed connection (section 5.5).
-- **2026-10-27, minimum.** The spread of tau in the pilot puts every equivalence form out of reach of the campaign (section 5.15).
+- **2026-10-27, minimum.** At the spread of tau in the pilot every equivalence form is expected out of reach of the campaign, short of a spread near zero (section 5.15).
 - **2026-10-27, epoch tick sample.** The public RPC node cut a 0.9 MB `getBlock` body short (`IncompleteRead`). The RPC client retried only OS-level errors, so the read stopped after 321 blocks. It now retries a cut body too, with a selftest check for each kind of failure.
 - **2026-10-27 22:35 UTC, first campaign package.** A review of the pre-registration found rules that lived only in code, and the panel rule still kept windows after a leader on the same IP. The [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md) states those rules, and everything drawn from the panel was drawn again at 23:30 UTC under the IP rule. The panel kept its 16 leaders, and the plan of epoch index 0 moved one burst of `Awes4Tr6...`, whose first window followed `shftkxns...` on the same IP (`198.13.140.105`).
+- **2026-10-28 00:18 UTC, second review of the campaign package.** A second review read the addendum against the code. The addendum called a pair TOST out of reach, while the code's TOST passes at zero spread, as the pilot pair FireBAM against Firedancer shows (section 5.3). It also read the step-down Holm of the pair family as a fixed bar of 10 strata, and the code refused data with a repeated table burst, which a resumed run must be able to read. The addendum now states the zero-spread rule and the step-down thresholds. It also adds the reason `repeated-burst` and sets what follows from a failed builder label, and the analysis code follows these rules. The plan of epoch index 0 was drawn again under the new manifest and kept all 144 bursts of the previous plan.
 - **Stability over epochs.** The README says four epochs show whether a rule holds over time, yet the analysis plan fixed no test for it. The epoch tables (sections 5.12 and 6.12) describe it without a verdict.
 
 ## 10. Other measurements of the same question

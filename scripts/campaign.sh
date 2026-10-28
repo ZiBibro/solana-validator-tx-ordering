@@ -14,11 +14,12 @@
 # The plan of index e+1 is drawn once run e has ended; a round whose windows have
 # passed by then is left out and noted in draw-notes.json (the missed-round rule).
 # A failed run is collected and its index drawn again after a pause, from the gossip
-# snapshot of that index's first plan (--nodes): the new plan keeps the windows of the
-# rounds still ahead and leaves out the round in progress, so no burst runs twice.
-# An index with no round ahead hands over to the next one; three failed attempts on
-# one index stop the campaign. Running the script again with FROM_INDEX resumes a
-# stopped campaign the same way. Index e runs only in chain epoch FIRST_EPOCH+e, and
+# snapshot of that index's first plan under data/plans (--nodes-from-first-plan finds it
+# by index, chain epoch and manifest): the new plan keeps the windows of the rounds still
+# ahead and leaves out the round in progress, so no burst runs twice. An index with no
+# round ahead hands over to the next one; three failed attempts on one index stop the
+# campaign. Running the script again with FROM_INDEX resumes a stopped campaign the same
+# way, from the same snapshot. Index e runs only in chain epoch FIRST_EPOCH+e, and
 # FIRST_EPOCH must be the panel's epoch, which the plan command checks: an index whose
 # chain epoch has passed is lost and never moved to a later epoch (prereg/CAMPAIGN-ADDENDUM.md).
 #
@@ -76,10 +77,9 @@ echo "commit $ITB_GIT_COMMIT, $(date -u +%FT%TZ), panel $panel, epoch indexes $f
 for e in $(seq "$from" "$to"); do
     epoch=$((first_epoch + e))
     attempt=1
-    nodes=()
     while :; do
         echo "== epoch index $e in chain epoch $epoch, attempt $attempt, $(date -u +%FT%TZ)"
-        out=$(dc run --rm --no-deps -T plan campaign --panel "$panel" --epoch-index "$e" --epoch "$epoch" ${nodes[@]+"${nodes[@]}"} 2>&1)
+        out=$(dc run --rm --no-deps -T plan campaign --panel "$panel" --epoch-index "$e" --epoch "$epoch" --nodes-from-first-plan 2>&1)
         code=$?
         echo "$out"
         if [ $code -ne 0 ]; then
@@ -90,8 +90,6 @@ for e in $(seq "$from" "$to"); do
             echo "plan exit $code"
         else
             plan=$(printf '%s\n' "$out" | sed -n 's|^campaign: /repo/data/\(plans/.*plan\.json\)$|\1|p' | tr -d '\r')
-            # Every later plan of this index scans the windows with this plan's gossip snapshot.
-            [ ${#nodes[@]} -eq 0 ] && [ -n "$plan" ] && nodes=(--nodes "/repo/data/$(dirname "$plan")/cluster-nodes.json")
             fees=$(printf '%s\n' "$out" | sed -n 's|^campaign: epoch index .*, fees \([0-9][0-9]*\) lamports .*|\1|p' | tr -d '\r')
             spent=$(committed)
             if [ -z "$plan" ] || [ -z "$fees" ] || [ -z "$spent" ]; then

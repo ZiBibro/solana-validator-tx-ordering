@@ -123,9 +123,10 @@ def clock_behind(burst):
     return ctx is not None and ctx >= burst["first_slot"] - prereg.BLOCKHASH_LEAD_SLOTS
 
 
-def units_of(run):
+def units_of(run, later=frozenset()):
     """One Unit per burst with its order blocks and the reasons it stays out of
-    the verdict (section 6, last paragraph, and section 8)."""
+    the verdict (section 6, last paragraph, and section 8); later holds the
+    (run_id, burst_seq) of table bursts sent again after their first copy."""
     by_burst = {}
     for sig, p in run.probes.items():
         by_burst.setdefault(p["burst_seq"], []).append(p)
@@ -165,6 +166,8 @@ def units_of(run):
             reasons.append("foreign-probe-in-block")
         if not blocks:
             reasons.append("fewer-than-two-in-a-block")
+        if (run.run["run_id"], seq) in later:
+            reasons.append("repeated-burst")
         out.append(Unit(run.run["run_id"], seq, b, blocks, reasons, est, signers))
     return out
 
@@ -174,19 +177,55 @@ def burst_key(burst):
     return (burst.get("epoch"), burst.get("round"), burst["leader"], burst["arm"], burst["timing"], burst["path"])
 
 
-def repeated_bursts(runs, stages):
-    """[(key, run_id, run_id)] for every table burst that a second run sent again (campaign
-    addendum, section 5); analyze refuses such data instead of choosing one copy after the fact."""
-    seen, out = {}, []
+def repeated_bursts(runs, stages=None):
+    """[(key, first, again)] for every table burst sent more than once, first and again as
+    "run_id/burst_seq" (campaign addendum, section 5). The earliest send counts, by the burst
+    row's UTC and then run and sequence; every later copy is again and leaves the tests."""
+    sent = []
     for run in runs:
-        if run.run["stage"] not in stages:
+        if stages is not None and run.run["stage"] not in stages:
             continue
-        for seq, b in sorted(run.bursts.items()):
-            key = (run.run["stage"],) + burst_key(b)
-            if key in seen:
-                out.append((key, seen[key], "%s/%d" % (run.run["run_id"], seq)))
-            else:
-                seen[key] = "%s/%d" % (run.run["run_id"], seq)
+        for seq, b in run.bursts.items():
+            sent.append((b.get("utc") or "", run.run["run_id"], seq, (run.run["stage"],) + burst_key(b)))
+    seen, out = {}, []
+    for _, run_id, seq, key in sorted(sent, key=lambda x: x[:3]):
+        if key in seen:
+            out.append((key, seen[key], "%s/%d" % (run_id, seq)))
+        else:
+            seen[key] = "%s/%d" % (run_id, seq)
+    return out
+
+
+def later_copies(runs, stages=None):
+    """{(run_id, burst_seq)} of the copies repeated_bursts leaves out."""
+    out = set()
+    for _, _, again in repeated_bursts(runs, stages):
+        run_id, seq = again.rsplit("/", 1)
+        out.add((run_id, int(seq)))
+    return frozenset(out)
+
+
+def label_failures(runs, stages=None):
+    """{signer: [slot, ...]} of every known tick signer whose tick appears in a slot whose
+    leader belongs to a class without a builder (analysis plan line 89, campaign addendum
+    section 7): that signer's label fails for the data of these runs."""
+    out = {}
+    for run in runs:
+        if stages is not None and run.run["stage"] not in stages:
+            continue
+        cls_of = {}
+        for inc in run.inclusions.values():
+            if inc["status"] == "included" and inc["slot"] is not None:
+                cls_of[inc["slot"]] = inc.get("actual_leader_class")
+        for slot, row in sorted(run.slots.items()):
+            cls = cls_of.get(slot)
+            if cls is None or cls in BUILDER_SIGNER:
+                continue
+            for t in row.get("ticks") or []:
+                if t.get("signer") in set(BUILDER_SIGNER.values()):
+                    out.setdefault(t["signer"], [])
+                    if slot not in out[t["signer"]]:
+                        out[t["signer"]].append(slot)
     return out
 
 
@@ -255,14 +294,11 @@ def _tau_dict(r):
 
 
 def analyze(runs, stages=("campaign",)):
-    repeated = repeated_bursts(runs, stages)
-    if repeated:
-        key, first, again = repeated[0]
-        raise ValueError("analyze: burst %s of %s ran again as %s (%d repeats)" % (key, first, again, len(repeated)))
+    later = later_copies(runs, stages)
     units = []
     for run in runs:
         if run.run["stage"] in stages:
-            units.extend(units_of(run))
+            units.extend(units_of(run, later))
     kept = [u for u in units if not u.reasons]
     excluded = {}
     for u in units:
@@ -297,12 +333,13 @@ def analyze(runs, stages=("campaign",)):
             "strictness": strictness([u.blocks for u in cells[(cls, arm, timing)]], arm),
         })
 
-    pair_rows = pair_tests(kept)
+    failed = label_failures(runs, stages)
+    pair_rows = pair_tests(kept, failed)
     return {
         "stages": list(stages), "units": len(units), "kept": len(kept), "excluded": excluded,
         "families": {"verdict": verdict.VERDICT_FAMILY_M, "equivalence": verdict.EQUIV_FAMILY_M,
                      "pair": verdict.PAIR_FAMILY_M},
-        "cells": cell_rows, "pairs": pair_rows, "rounds_test": rounds_test(kept),
+        "cells": cell_rows, "pairs": pair_rows, "label_failures": failed, "rounds_test": rounds_test(kept),
         "inclusion": inclusion_shares([r for r in runs if r.run["stage"] in stages]),
     }
 
@@ -348,12 +385,15 @@ def builder_blocks(unit, cls, labelled=True):
     return [blk for blk, sg in zip(unit.blocks, signers) if (want in sg) == labelled]
 
 
-def pair_tests(kept):
+def pair_tests(kept, failed=None):
     """Class differences inside the pairs of section 1 by label swaps per stratum
     (epoch, round, arm, timing); both different-fee arms go into one test. The
     builder class counts only blocks with its builder's tick; its blocks without
     one form the group without a label, one descriptive row per pair, condition
-    and tau, outside the Holm family."""
+    and tau, outside the Holm family. A pair whose builder's signer is in failed
+    (label_failures) keeps its tests in the family of 16 with p 1 and TOST p 1,
+    and its row reads as a failed label (campaign addendum, section 7)."""
+    failed = failed or {}
     strata = {}
     for u in kept:
         b = u.burst
@@ -380,11 +420,15 @@ def pair_tests(kept):
                     rows.append({"pair": [a, z], "timing": timing, "tau": name, "strata": 0})
                 else:
                     p, method, b_used, mean, se, df, tost = verdict.pair_test(diffs, seed=prereg.LABEL_TEST_SEED)
+                    row = {"pair": [a, z], "timing": timing, "tau": name, "strata": len(diffs),
+                           "p": float(p), "method": method, "permutations": b_used,
+                           "mean_diff": mean, "se": se, "df": df, "tost_p": tost}
+                    if BUILDER_SIGNER.get(a) in failed:
+                        p = tost = 1
+                        row.update({"p": 1.0, "tost_p": 1.0, "label_failed": failed[BUILDER_SIGNER[a]]})
                     ptests[key] = p
                     etests[key] = tost
-                    rows.append({"pair": [a, z], "timing": timing, "tau": name, "strata": len(diffs),
-                                 "p": float(p), "method": method, "permutations": b_used,
-                                 "mean_diff": mean, "se": se, "df": df, "tost_p": tost})
+                    rows.append(row)
                 if bare:
                     rows.append({"pair": [a, z], "timing": timing, "tau": name, "strata": len(bare),
                                  "without_label": True, "mean_diff": sum(bare) / len(bare),
@@ -395,7 +439,9 @@ def pair_tests(kept):
         key = (row["pair"][0], row["pair"][1], row["timing"], row["tau"])
         if row.get("without_label"):
             continue
-        if key in ptests:
+        if row.get("label_failed"):
+            row["form"] = "builder-label-failed"
+        elif key in ptests:
             row["form"] = verdict.pair_form(sig[key], eq[key])
         else:
             row["form"] = "undetermined"
