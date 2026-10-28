@@ -1,0 +1,20 @@
+commit 732f5020a4905288c135d9fe94b0ea8575b8a708, 2026-10-28T02:12:27Z, panel data/panels/mainnet-e1071-20261027T233028Z/panel.json, epoch indexes 0 to 3 from chain epoch 1071
+== epoch index 0 in chain epoch 1071, attempt 1, 2026-10-28T02:12:27Z
+ Container inside-the-block-plan-run-81d52dc414d9 Creating 
+ Container inside-the-block-plan-run-81d52dc414d9 Created 
+campaign: plan carries prereg manifest /repo/prereg/manifest-campaign.json sha256 8e7d834a090444b4b9f84b5faa6311a74233a468d3c074ab9a779c7ac12e480d
+campaign: gossip /repo/data/plans/campaign-mainnet-e1071-20261028T005742Z/cluster-nodes.json
+campaign: /repo/data/plans/campaign-mainnet-e1071-20261028T021233Z/plan.json
+campaign: epoch index 0 in epoch 1071, 144 bursts, 1728 probes, fees 9107400 lamports (8640000 base, 467400 priority); 213.3 ms per slot over 30 samples
+  round 0 (part 0): 16 bursts, slots 462721436 to 462725996 (4560 slots), about 29.10 03:00 UTC to 29.10 03:17 UTC
+  round 1 (part 1): 24 bursts, slots 462769692 to 462785280 (15588 slots), about 29.10 05:52 UTC to 29.10 06:47 UTC
+  round 2 (part 2): 16 bursts, slots 462830128 to 462834240 (4112 slots), about 29.10 09:27 UTC to 29.10 09:41 UTC
+  round 3 (part 3): 16 bursts, slots 462872092 to 462876816 (4724 slots), about 29.10 11:56 UTC to 29.10 12:13 UTC
+  round 4 (part 4): 16 bursts, slots 462895568 to 462901120 (5552 slots), about 29.10 13:19 UTC to 29.10 13:39 UTC
+  round 5 (part 5): 16 bursts, slots 462989656 to 462995168 (5512 slots), about 29.10 18:54 UTC to 29.10 19:13 UTC
+  round 6 (part 6): 16 bursts, slots 463008832 to 463012868 (4036 slots), about 29.10 20:02 UTC to 29.10 20:16 UTC
+  round 7 (part 7): 24 bursts, slots 463092440 to 463102024 (9584 slots), about 30.10 00:59 UTC to 30.10 01:33 UTC
+campaign: note: windows scanned with the gossip snapshot of 2026-10-28T00:57:37.293394Z
+ Container inside-the-block-probe-run-6d47ab2f216c Creating 
+ Container inside-the-block-probe-run-6d47ab2f216c Created 
+plan path, fee total or committed lamports missing: 'plans/campaign-mainnet-e1071-20261028T021233Z/plan.json' '9107400' ''

@@ -69,8 +69,10 @@ exec > >(tee "$repo/logs/campaign-$stamp.txt") 2>&1
 scratch=$(mktemp)
 trap 'rm -f "$scratch"' EXIT
 
+# `probe status` prints "spend journal <path>: <n> lamports committed, ..." (probe/src/session.rs,
+# status); the "spend journal: <n> of <limit>" line belongs to run and close.
 committed() {
-    dc run --rm --no-deps -T probe status | sed -n 's|^spend journal: \([0-9][0-9]*\) of .*|\1|p' | tr -d '\r' | head -n 1
+    dc run --rm --no-deps -T probe status | sed -n 's|^spend journal [^:]*: \([0-9][0-9]*\) lamports committed,.*|\1|p' | tr -d '\r' | head -n 1
 }
 
 echo "commit $ITB_GIT_COMMIT, $(date -u +%FT%TZ), panel $panel, epoch indexes $from to $to from chain epoch $first_epoch"
