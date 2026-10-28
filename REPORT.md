@@ -50,6 +50,7 @@ The bounty asks for at least 6 validators on at least 3 client or fork versions.
 | `dry-run-mainnet-20261027T130541Z` | dry-run | mainnet | dry-run | 2026-10-27 13:06:16 | 12 | 144 | 0 | - | - | `5ffb53a` |
 | `dry-run-mainnet-20261028T005747Z` | dry-run | mainnet | dry-run | 2026-10-28 00:58:24 | 0 | 0 | 0 | - | - | `2293eb4` |
 | `dry-run-mainnet-20261028T011115Z` | dry-run | mainnet | dry-run | 2026-10-28 01:11:48 | 12 | 144 | 0 | - | - | `321b11d` |
+| `dry-run-mainnet-20261028T014101Z` | dry-run | mainnet | dry-run | 2026-10-28 01:41:35 | 12 | 144 | 0 | - | - | `73f3d20` |
 | `pilot-mainnet-20261027T085253Z` | pilot | mainnet | live | 2026-10-27 08:53:32 | 68 | 816 | 811 | 811 | 799 | `ef77ca3` |
 <!-- itb:end runs -->
 
