@@ -49,6 +49,7 @@ The bounty asks for at least 6 validators on at least 3 client or fork versions.
 | `dry-run-mainnet-20261027T010659Z` | dry-run | mainnet | dry-run | 2026-10-27 01:07:38 | 17 | 204 | 0 | - | - | `d4f2cca` |
 | `dry-run-mainnet-20261027T130541Z` | dry-run | mainnet | dry-run | 2026-10-27 13:06:16 | 12 | 144 | 0 | - | - | `5ffb53a` |
 | `dry-run-mainnet-20261028T005747Z` | dry-run | mainnet | dry-run | 2026-10-28 00:58:24 | 0 | 0 | 0 | - | - | `2293eb4` |
+| `dry-run-mainnet-20261028T011115Z` | dry-run | mainnet | dry-run | 2026-10-28 01:11:48 | 12 | 144 | 0 | - | - | `321b11d` |
 | `pilot-mainnet-20261027T085253Z` | pilot | mainnet | live | 2026-10-27 08:53:32 | 68 | 816 | 811 | 811 | 799 | `ef77ca3` |
 <!-- itb:end runs -->
 
@@ -60,8 +61,9 @@ Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no meas
 | Item | UTC | What | Probe fees (lamports) | Funding and closing fees | Paid | Spend journal growth | Limit of the run (lamports) |
 |---|---|---|---|---|---|---|---|
 | anchor of pilot | 2026-10-27 08:52:11 | `3jmFZBgsQoXTnKVS`... | - | - | 5000 | - | - |
+| anchor of campaign | 2026-10-28 01:21:59 | `3s1dQY9ZyEMQrHZs`... | - | - | 5000 | - | - |
 | `pilot-mainnet-20261027T085253Z` | 2026-10-27 08:53:32 | 811 probes included, 13 funding and closing transactions | 4280230 | 65000 | 4345230 | 4345230 | 4376440 |
-| **total** |  |  |  |  | **4350230** (0.004350 SOL) |  | code cap 0.05 SOL |
+| **total** |  |  |  |  | **4355230** (0.004355 SOL) |  | code cap 0.05 SOL |
 <!-- itb:end spend -->
 
 Probe fees are `meta.fee` of each included probe. Each transaction that funds or closes the payers carries one signature and pays the 5000-lamport base fee; the run's log names each of them under `fund_send` or `close_send`. The sender keeps a spend journal in a Docker volume and reconciles it with the chain at start. Its growth over the run, read from the log, equals what the table adds up. The limit of each run covers the worst case of every fee in its plan, and the compiled cap of 0.05 SOL stands above any limit.

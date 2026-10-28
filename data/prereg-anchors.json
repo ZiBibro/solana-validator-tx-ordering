@@ -7,5 +7,14 @@
     "signature": "3jmFZBgsQoXTnKVSf3CCkABLtQnqGF5uwxmqa6Qht3eRwgbZf49K7VtBjPx5KtK2vFALUNzm4d5o2ay2kT7AJaBi",
     "slot": 462009555,
     "stage": "pilot"
+  },
+  {
+    "block_time": 1793150519,
+    "file": "prereg/manifest-campaign.json",
+    "manifest": true,
+    "sha256": "8e7d834a090444b4b9f84b5faa6311a74233a468d3c074ab9a779c7ac12e480d",
+    "signature": "3s1dQY9ZyEMQrHZseorrJawgLUwyEvXyPDtH8Qz9pHLLtqQSJTYAiCgPHyakARZqztVm1ZYEt83BXcEFsLU6nRjo",
+    "slot": 462288545,
+    "stage": "campaign"
   }
 ]
