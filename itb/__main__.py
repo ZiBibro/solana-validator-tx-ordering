@@ -328,6 +328,11 @@ def cmd_campaign(args):
         # A plan drawn again scans the gossip of its index's first plan (campaign addendum, section 5).
         nodes = campaignmod.first_plan_nodes(os.path.join(_data_dir(args), "plans"), _network(args),
                                              args.epoch_index, args.epoch, manifest_sha)
+        if not nodes and args.epoch_index == 0:
+            # The package always carries the plan of index 0, so its absence means a wrong checkout.
+            print("campaign: no first plan of epoch index 0 under this manifest in %s; the package carries it"
+                  % os.path.join(_data_dir(args), "plans"), file=sys.stderr)
+            return EXIT_FAIL
         print("campaign: gossip %s" % (nodes or "live, no earlier plan of this index"))
     nodes_doc = None
     if nodes:

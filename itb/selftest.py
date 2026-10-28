@@ -16,6 +16,7 @@ import math
 import os
 import random
 import tempfile
+import types
 from fractions import Fraction
 
 from . import (analyze, b58, campaign, chain, channel, collect, fakechain, panel, pilot, plan, prereg, rawformat,
@@ -1520,6 +1521,105 @@ def addendum_checks():
                 and mut[0] and all(form != "builder-label-failed" for form, _, _ in mut[0]),
                 "%s; mutant %s" % (got, mut)))
 
+    # Section 7 over every slot row: a BAM tick in a Firedancer slot that holds no included probe fails the
+    # label too, since a slot takes the class gossip showed for its leader at the burst; the copy of
+    # analyze.py that classes slots by their included probes misses it. REPORT's tick table counts that
+    # slot under Firedancer, and the copy of report.py that classes slots by included probes does not.
+    with tempfile.TemporaryDirectory() as tmp:
+        run_dir = os.path.join(tmp, "runs", "selftest-label-quiet")
+        os.makedirs(run_dir)
+        prows, crows = synth.campaign_rows("selftest-label-quiet", spec, "itb-selftest:label-quiet")
+        fd = next(r for r in prows if r["kind"] == "burst" and r["leader_client_id"] == "Firedancer")
+        taken = {r["slot"] for r in crows if r["kind"] == "slot"}
+        quiet = next(s for s in range(fd["first_slot"], fd["first_slot"] + fd["window_len"]) if s not in taken)
+        crows.append(synth.slot_row("selftest-label-quiet", quiet, fd["leader"], ticks=[{
+            "index": 0, "signer": analyze.BAM_SIGNER, "timestamp_ns": 1793044800 * 10 ** 9,
+            "interval_ns": 50_000_000}]))
+        _write(os.path.join(run_dir, "probes.jsonl"), prows)
+        _write(os.path.join(run_dir, "collect.jsonl"), crows)
+        quiet_runs = analyze.load_runs(tmp)
+    by_probe = _module_copy("analyze", "        cls_of, _ = slot_classes(run)\n",
+                            "        cls_of = {}\n"
+                            "        for inc in run.inclusions.values():\n"
+                            "            if inc[\"status\"] == \"included\" and inc[\"slot\"] is not None:\n"
+                            "                cls_of[inc[\"slot\"]] = inc.get(\"actual_leader_class\")\n")
+    got = analyze.label_failures(quiet_runs)
+    mut = by_probe["label_failures"](quiet_runs)
+    out.append(("addendum: a BAM tick in a Firedancer slot without an included probe fails the BAM label by the "
+                "class of the slot's leader; the copy of analyze.py that classes slots by included probes misses it",
+                got == {analyze.BAM_SIGNER: [quiet]} and mut == {}, "%s; mutant %s" % (got, mut)))
+
+    for r in quiet_runs:
+        r.run.update(mode="live", network="mainnet")
+
+    def tick_cells(text, cls):
+        row = next((line for line in text.split("\n") if line.startswith("| `") and "| %s |" % cls in line), "")
+        return [c.strip() for c in row.split("|")[4:7]]
+
+    ticks = report.tick_runs_block(quiet_runs)
+    ticks_m = _module_copy("report", "cls_of, unknown = analyze.slot_classes(r)",
+                           "cls_of, unknown = {i[\"slot\"]: i[\"actual_leader_class\"] for i in _included(r)}, []"
+                           )["tick_runs_block"](quiet_runs)
+    fd_cells, bam_cells, fd_cells_m = tick_cells(ticks, "Firedancer"), tick_cells(ticks, "FireBAM"), \
+        tick_cells(ticks_m, "Firedancer")
+    out.append(("addendum: REPORT's tick table gives each class of the slot's leader its own share and counts the "
+                "BAM tick of the Firedancer slot without an included probe; the copy that classes slots by included "
+                "probes leaves that slot out",
+                bool(fd_cells) and fd_cells[1].startswith("1 (") and bool(bam_cells) and bam_cells[1] != "0 (0.0%)"
+                and bool(fd_cells_m) and fd_cells_m[1].startswith("0 (") and int(fd_cells_m[0]) == int(fd_cells[0]) - 1
+                and "left out because no burst row names their leader" in ticks,
+                "Firedancer %s, FireBAM %s; mutant Firedancer %s" % (fd_cells, bam_cells, fd_cells_m)))
+
+    # Section 7: a pair whose label failed reads builder-label-failed even with no strata; the copy of
+    # analyze.py without that rule reads such rows undetermined.
+    def empty_forms(analyze_fn):
+        result = analyze_fn(label_runs, stages=("test",))
+        return sorted({(r["pair"][0], r["form"]) for r in result["pairs"]
+                       if not r["strata"] and not r.get("without_label")})
+
+    empty = empty_forms(analyze.analyze)
+    empty_m = empty_forms(_module_copy("analyze", "                    if BUILDER_SIGNER.get(a) in failed:\n"
+                                                  "                        row[\"label_failed\"] = "
+                                                  "failed[BUILDER_SIGNER[a]]\n", "")["analyze"])
+    builder_bam = [(c, f) for c, f in empty if c in ("AgaveBam", "FireBAM")]
+    out.append(("addendum: a pair with a failed label and no strata reads builder-label-failed; the copy without "
+                "the rule reads it undetermined",
+                bool(builder_bam) and all(f == "builder-label-failed" for _, f in builder_bam)
+                and all(f == "undetermined" for c, f in empty_m if c in ("AgaveBam", "FireBAM")),
+                "%s; mutant %s" % (builder_bam, empty_m)))
+
+    # Section 3: the load split of REPORT reads Agave's equal-fee arm in the pre-window condition only
+    # (plan line 79); the copy of report.py without the timing filter also takes Agave's slot2 bursts.
+    fake_run = types.SimpleNamespace(slots={s: {"cost_units": 1000 * s, "tx_count": s} for s in range(1, 9)})
+    fake = [report.Item(fake_run, types.SimpleNamespace(
+        burst={"selection_class": cls, "timing": timing, "arm": "equal_fee"}, reasons=[], blocks=[],
+        run_id="selftest-loads", burst_seq=s), [s])
+        for s, (cls, timing) in enumerate([("Agave", "pre300"), ("Agave", "slot2")] * 3
+                                          + [("Firedancer", "pre300"), ("Agave", "pre300")], start=1)]
+
+    def agave_column(ns):
+        seen, real = [], ns["_arms"]
+
+        def arms(items, which):
+            seen.append({(it.unit.burst["selection_class"], it.unit.burst["timing"]) for it in items})
+            return real(items, which)
+
+        saved = ns["_arms"], ns["_pooled"]
+        ns["_arms"], ns["_pooled"] = arms, lambda bursts, name: None
+        try:
+            ns["loads_block"](fake)
+        finally:
+            ns["_arms"], ns["_pooled"] = saved
+        return set().union(*seen[2::3]) if seen else set()
+
+    cells = agave_column(_module_copy("report"))
+    cells_m = agave_column(_module_copy("report", '\n                     and it.unit.burst["timing"] == "pre300"]',
+                                        "]"))
+    out.append(("addendum: the Agave column of REPORT's load split takes Agave's pre300 bursts only; the copy "
+                "without the timing filter also takes slot2",
+                cells == {("Agave", "pre300")} and ("Agave", "slot2") in cells_m,
+                "%s; mutant %s" % (sorted(cells), sorted(cells_m))))
+
     # Section 6: with a standard error of zero the TOST of the code gives p 0 when the difference lies inside
     # plus or minus delta and 1 otherwise, so a pair with zero spread inside delta reads as
     # builder-does-not-change-order, as the pilot's FireBAM against Firedancer did; df below 1 or a NaN
@@ -1587,6 +1687,8 @@ def addendum_checks():
         other_panel = put("other-panel.json", {"epoch": 1071, "network": "mainnet", "classes": {}, "x": 1})
         manifest = put("manifest.json", {"files": {"data/panels/x/panel.json": verify.sha256_file(panel_path)}})
         absent = os.path.join(tmp, "absent.json")
+        unplanned = put("manifest-unplanned.json", {"files": {"data/panels/x/panel.json":
+                                                              verify.sha256_file(panel_path)}, "plans": 0})
         with open(manifest, "rb") as f:
             sha = pilot.sha256_bytes(f.read())
         for stamp, index, msha, utc in (("20261028T000000Z", 0, "ff" * 32, "another manifest"),
@@ -1598,7 +1700,7 @@ def addendum_checks():
             put(os.path.join(plan_dir, "plan.json"), {"stage": "campaign", "prereg_manifest_sha256": msha})
             put(os.path.join(plan_dir, "cluster-nodes.json"), {"utc": utc, "nodes": []})
 
-        def command(ns, panel_file, manifest_file):
+        def command(ns, panel_file, manifest_file, epoch_index=0, epoch=1071):
             got = {}
 
             def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, lead_slots,
@@ -1607,7 +1709,8 @@ def addendum_checks():
                 raise ValueError("selftest stops before the chain")
 
             ns["_client"] = lambda: None
-            args = argparse.Namespace(panel=panel_file, table=None, epoch_index=0, epoch=1071, nodes=None,
+            args = argparse.Namespace(panel=panel_file, table=None, epoch_index=epoch_index, epoch=epoch,
+                                      nodes=None,
                                       nodes_from_first_plan=True, manifest=manifest_file, lead_slots=900,
                                       data=tmp, network="mainnet")
             err = io.StringIO()
@@ -1623,9 +1726,18 @@ def addendum_checks():
                                                   "args.panel)", "problem = None"), other_panel, manifest)
         no_refusal = command(_module_copy("__main__", 'pins the panel" % manifest, file=sys.stderr)\n'
                                                       "        return EXIT_FAIL\n",
-                                          'pins the panel" % manifest, file=sys.stderr)\n'), panel_path, absent)
+                                          'pins the panel" % manifest, file=sys.stderr)\n'), panel_path, absent,
+                             epoch_index=2, epoch=1073)
         no_lookup = command(_module_copy("__main__", "if args.nodes_from_first_plan and not nodes:", "if False:"),
                             panel_path, manifest)
+        index0 = command(main, panel_path, unplanned)
+        index2 = command(main, panel_path, unplanned, epoch_index=2, epoch=1073)
+        index0_m = command(_module_copy("__main__", 'the package carries it"\n'
+                                                    '                  % os.path.join(_data_dir(args), "plans"), '
+                                                    'file=sys.stderr)\n            return EXIT_FAIL\n',
+                                        'the package carries it"\n'
+                                        '                  % os.path.join(_data_dir(args), "plans"), '
+                                        'file=sys.stderr)\n'), panel_path, unplanned)
     out.append(("addendum: cmd_campaign refuses a panel the manifest does not pin and a missing manifest before "
                 "any draw; the copies of __main__.py without the pin check or without the refusal reach the draw",
                 foreign[:2] == (1, None) and "hashes" in foreign[2] and missing[:2] == (1, None)
@@ -1634,6 +1746,10 @@ def addendum_checks():
     out.append(("addendum: cmd_campaign --nodes-from-first-plan hands the draw the gossip of the first plan of "
                 "the index, chain epoch and manifest; the copy without the lookup draws with live gossip",
                 resumed[1] == "first plan" and no_lookup[1] == "live", "%s; mutant %s" % (resumed[1], no_lookup[1])))
+    out.append(("addendum: the draw of epoch index 0 refuses without a first plan of that index under the manifest, "
+                "while index 2 draws with live gossip; the copy without the refusal draws index 0 live",
+                index0[:2] == (1, None) and "no first plan" in index0[2] and index2[1] == "live"
+                and index0_m[1] == "live", "%s; index 2 %s; mutant %s" % (index0[:2], index2[1], index0_m[1])))
     return out
 
 

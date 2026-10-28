@@ -368,7 +368,8 @@ def pairs_block(result):
             rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"] + ", builder blocks without its tick",
                          r["strata"], "%.3f" % r["mean_diff"], "-", "-", "-", r["form"]])
         elif not r["strata"]:
-            rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"], 0, "-", "-", "-", "-", r["form"]])
+            rows.append(["%s vs %s" % tuple(r["pair"]), r["timing"], r["tau"], 0, "-", "-", "-",
+                         "label failed" if r.get("label_failed") else "-", r["form"]])
         else:
             test = ("exact over %d" % r["permutations"] if r["method"] == "exact"
                     else _drawn(r["p"], r["permutations"]))
@@ -851,10 +852,12 @@ def minimum_block(repo_dir):
 
 def tick_runs_block(runs):
     """Share of slots with a tick of each known signer, by run and by the class of the slot's
-    leader (analysis plan line 88)."""
-    rows = []
+    leader (analysis plan line 88). Every slot row counts, by the class analyze.slot_classes
+    gives it; slots whose leader no burst row names are counted apart."""
+    rows, apart = [], []
     for r in live(runs):
-        cls_of = {i["slot"]: i["actual_leader_class"] for i in _included(r)}
+        cls_of, unknown = analyze.slot_classes(r)
+        apart.append("`%s` %d of %d" % (r.run["run_id"], len(unknown), len(r.slots)))
         counts = {}  # class: [slots, with a BAM tick, with a Harmonic tick]
         for slot, row in r.slots.items():
             cls = cls_of.get(slot)
@@ -871,8 +874,12 @@ def tick_runs_block(runs):
             rows.append(["`%s`" % r.run["run_id"], cls, EXPECTED_SIGNER.get(cls) and (
                 "BAM" if EXPECTED_SIGNER[cls] == BAM_SIGNER else "Harmonic") or "none", n,
                 "%d (%.1f%%)" % (bam, 100.0 * bam / n), "%d (%.1f%%)" % (harmonic, 100.0 * harmonic / n)])
-    return _table(["Run", "Class of the slot's leader", "Its builder", "Slots", "With a BAM tick",
-                   "With a Harmonic tick"], rows)
+    out = _table(["Run", "Class of the slot's leader", "Its builder", "Slots", "With a BAM tick",
+                  "With a Harmonic tick"], rows)
+    if apart:
+        out += ("\n\nSlots left out because no burst row names their leader, so neither this table nor the "
+                "label check classes them: %s." % ", ".join(apart))
+    return out
 
 
 def tick_epoch_block(repo_dir):

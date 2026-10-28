@@ -205,18 +205,36 @@ def later_copies(runs, stages=None):
     return frozenset(out)
 
 
+def slot_classes(run):
+    """({slot: class}, [slot, ...]) over every slot row of a run. The class is the one gossip
+    clientId showed for the slot's leader when its burst was signed, the source of the reason
+    client-differs-from-selection. The slot row names the leader's fee collector, so the burst
+    whose fee collector or identity it is gives the class, the one whose window holds the slot
+    first. A slot whose leader no burst row names is listed apart (campaign addendum, section 7)."""
+    classes, unknown = {}, []
+    for slot, row in sorted(run.slots.items()):
+        leader = row.get("leader")
+        found = [(not b["first_slot"] <= slot < b["first_slot"] + b["window_len"], seq, b)
+                 for seq, b in run.bursts.items()
+                 if leader is not None and leader in (b.get("fee_collector"), b["leader"])]
+        cls = min(found, key=lambda x: x[:2])[2].get("leader_client_id") if found else None
+        if cls is None:
+            unknown.append(slot)
+        else:
+            classes[slot] = cls
+    return classes, unknown
+
+
 def label_failures(runs, stages=None):
     """{signer: [slot, ...]} of every known tick signer whose tick appears in a slot whose
     leader belongs to a class without a builder (analysis plan line 89, campaign addendum
-    section 7): that signer's label fails for the data of these runs."""
+    section 7): that signer's label fails for the data of these runs. Every slot row counts,
+    with or without an included probe, by the class of slot_classes."""
     out = {}
     for run in runs:
         if stages is not None and run.run["stage"] not in stages:
             continue
-        cls_of = {}
-        for inc in run.inclusions.values():
-            if inc["status"] == "included" and inc["slot"] is not None:
-                cls_of[inc["slot"]] = inc.get("actual_leader_class")
+        cls_of, _ = slot_classes(run)
         for slot, row in sorted(run.slots.items()):
             cls = cls_of.get(slot)
             if cls is None or cls in BUILDER_SIGNER:
@@ -417,7 +435,10 @@ def pair_tests(kept, failed=None):
                             into.append(ta - tz)
                 key = (a, z, timing, name)
                 if not diffs:
-                    rows.append({"pair": [a, z], "timing": timing, "tau": name, "strata": 0})
+                    row = {"pair": [a, z], "timing": timing, "tau": name, "strata": 0}
+                    if BUILDER_SIGNER.get(a) in failed:
+                        row["label_failed"] = failed[BUILDER_SIGNER[a]]
+                    rows.append(row)
                 else:
                     p, method, b_used, mean, se, df, tost = verdict.pair_test(diffs, seed=prereg.LABEL_TEST_SEED)
                     row = {"pair": [a, z], "timing": timing, "tau": name, "strata": len(diffs),

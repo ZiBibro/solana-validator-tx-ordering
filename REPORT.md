@@ -48,11 +48,11 @@ The bounty asks for at least 6 validators on at least 3 client or fork versions.
 | `dry-run-mainnet-20261027T003443Z` | dry-run | mainnet | dry-run | 2026-10-27 00:35:15 | 4 | 48 | 0 | - | - | `d8699aa` |
 | `dry-run-mainnet-20261027T010659Z` | dry-run | mainnet | dry-run | 2026-10-27 01:07:38 | 17 | 204 | 0 | - | - | `d4f2cca` |
 | `dry-run-mainnet-20261027T130541Z` | dry-run | mainnet | dry-run | 2026-10-27 13:06:16 | 12 | 144 | 0 | - | - | `5ffb53a` |
-| `dry-run-mainnet-20261028T001806Z` | dry-run | mainnet | dry-run | 2026-10-28 00:18:40 | 0 | 0 | 0 | - | - | `9963813` |
+| `dry-run-mainnet-20261028T005747Z` | dry-run | mainnet | dry-run | 2026-10-28 00:58:24 | 0 | 0 | 0 | - | - | `2293eb4` |
 | `pilot-mainnet-20261027T085253Z` | pilot | mainnet | live | 2026-10-27 08:53:32 | 68 | 816 | 811 | 811 | 799 | `ef77ca3` |
 <!-- itb:end runs -->
 
-Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no measurement mixes the two sides of it. The devnet runs test the pipeline and feed no result. The dry-run `dry-run-mainnet-20261028T001806Z` checks the campaign plan of epoch 1071 and stopped after 150 s, about 27 hours before the plan's first round, so it holds the cost check and the slot clock and no burst. Appendix A dates every burst by the `blockTime` of its first included probe.
+Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no measurement mixes the two sides of it. The devnet runs test the pipeline and feed no result. The dry-run `dry-run-mainnet-20261028T005747Z` checks the campaign plan of epoch 1071 and stopped after 150 s, about 26 hours before the plan's first round, so it holds the cost check and the slot clock and no burst. Appendix A dates every burst by the `blockTime` of its first included probe.
 
 ## 4. Spend
 
@@ -542,14 +542,16 @@ The control path is compared with the direct path only within the same leader an
 <!-- itb:begin tick-runs -->
 | Run | Class of the slot's leader | Its builder | Slots | With a BAM tick | With a Harmonic tick |
 |---|---|---|---|---|---|
-| `pilot-mainnet-20261027T085253Z` | AgaveBam | BAM | 9 | 9 (100.0%) | 0 (0.0%) |
-| `pilot-mainnet-20261027T085253Z` | JitoLabs | none | 8 | 0 (0.0%) | 0 (0.0%) |
-| `pilot-mainnet-20261027T085253Z` | HarmonicAgave | Harmonic | 9 | 0 (0.0%) | 9 (100.0%) |
-| `pilot-mainnet-20261027T085253Z` | HarmonicFiredancer | Harmonic | 9 | 0 (0.0%) | 9 (100.0%) |
-| `pilot-mainnet-20261027T085253Z` | Firedancer | none | 8 | 0 (0.0%) | 0 (0.0%) |
-| `pilot-mainnet-20261027T085253Z` | FireBAM | BAM | 9 | 9 (100.0%) | 0 (0.0%) |
-| `pilot-mainnet-20261027T085253Z` | Rakurai | none | 9 | 0 (0.0%) | 0 (0.0%) |
-| `pilot-mainnet-20261027T085253Z` | Agave | none | 8 | 0 (0.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | AgaveBam | BAM | 12 | 12 (100.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | JitoLabs | none | 11 | 0 (0.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | HarmonicAgave | Harmonic | 13 | 0 (0.0%) | 13 (100.0%) |
+| `pilot-mainnet-20261027T085253Z` | HarmonicFiredancer | Harmonic | 13 | 0 (0.0%) | 13 (100.0%) |
+| `pilot-mainnet-20261027T085253Z` | Firedancer | none | 11 | 0 (0.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | FireBAM | BAM | 14 | 14 (100.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | Rakurai | none | 11 | 0 (0.0%) | 0 (0.0%) |
+| `pilot-mainnet-20261027T085253Z` | Agave | none | 10 | 0 (0.0%) | 0 (0.0%) |
+
+Slots left out because no burst row names their leader, so neither this table nor the label check classes them: `pilot-mainnet-20261027T085253Z` 1 of 96.
 <!-- itb:end tick-runs -->
 
 In every pilot slot of a builder-class leader the block carried a tick from that builder's signer, and no slot of another class carried a tick from either signer.
@@ -613,12 +615,13 @@ The table comes from the gossip snapshot and the leader schedule stored with eac
 
 - **2026-10-26 23:25 UTC, mainnet dry-run `dry-run-mainnet-20261026T232506Z`.** The slot clock ran on WebSocket events of the public node, which queued them 5 to 24 slots behind the cluster. The arrival estimate used the same late events, so the run showed 2 of 4 bursts in the band while all four missed. The clock moved onto the node's own timestamps, with a guard that skips a burst when `getSlot` runs 2 or more slots ahead of it (commit 2bacfa2), and the sender now waits for the first-shred events of the window before it closes a burst (commit d8699aa). No later run skipped a burst for the clock.
 - **2026-10-27 01:06 UTC, dry-run of the pilot plan.** Within 100 ms of the target stood 4 of 8 pre-window bursts, and all four misses were early. Before any live probe the pre-window band became 200 ms early and 100 ms late of the target. That change and a neutral rewording of the analysis plan redrew the manifest twice. The anchor went on chain from the third manifest, `9a9c92c2...`; the two earlier ones, `74149b29...` and `cf3c768e...`, were simulated and never sent. The seven pilot anchor logs in `logs/` hold six simulations and the one live send at 08:52 UTC.
-- **2026-10-27 08:52 UTC, pilot plan.** The validators.app snapshot failed certificate verification (`CERTIFICATE_VERIFY_FAILED`), because the antivirus web shield of the measuring machine re-signs that host. The plan was drawn without it, so no pilot burst carries the second label. The message reached the console only, since the pilot command keeps no draw notes; campaign plans keep theirs in `draw-notes.json`. The fix adds an extra root for that one request (`ITB_EXTRA_CA_FILE`, commit eebdf2f), and [scripts/campaign.sh](scripts/campaign.sh) passes it on. The campaign plan of epoch 1071, drawn at 00:18 UTC on 2026-10-28, carries the snapshot with 669 records, and each of its 144 bursts has the same class there as in gossip.
+- **2026-10-27 08:52 UTC, pilot plan.** The validators.app snapshot failed certificate verification (`CERTIFICATE_VERIFY_FAILED`), because the antivirus web shield of the measuring machine re-signs that host. The plan was drawn without it, so no pilot burst carries the second label. The message reached the console only, since the pilot command keeps no draw notes; campaign plans keep theirs in `draw-notes.json`. The fix adds an extra root for that one request (`ITB_EXTRA_CA_FILE`, commit eebdf2f), and [scripts/campaign.sh](scripts/campaign.sh) passes it on. The campaign plan of epoch 1071, drawn at 00:57 UTC on 2026-10-28, carries the snapshot with 669 records, and each of its 144 bursts has the same class there as in gossip.
 - **2026-10-27, pilot run.** Six bursts arrived outside their band. Burst 52 landed one slot early in another leader's block, and five probes of burst 99 met a closed connection (section 5.5).
 - **2026-10-27, minimum.** At the spread of tau in the pilot every equivalence form is expected out of reach of the campaign, short of a spread near zero (section 5.15).
 - **2026-10-27, epoch tick sample.** The public RPC node cut a 0.9 MB `getBlock` body short (`IncompleteRead`). The RPC client retried only OS-level errors, so the read stopped after 321 blocks. It now retries a cut body too, with a selftest check for each kind of failure.
 - **2026-10-27 22:35 UTC, first campaign package.** A review of the pre-registration found rules that lived only in code, and the panel rule still kept windows after a leader on the same IP. The [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md) states those rules, and everything drawn from the panel was drawn again at 23:30 UTC under the IP rule. The panel kept its 16 leaders, and the plan of epoch index 0 moved one burst of `Awes4Tr6...`, whose first window followed `shftkxns...` on the same IP (`198.13.140.105`).
 - **2026-10-28 00:18 UTC, second review of the campaign package.** A second review read the addendum against the code. The addendum called a pair TOST out of reach, while the code's TOST passes at zero spread, as the pilot pair FireBAM against Firedancer shows (section 5.3). It also read the step-down Holm of the pair family as a fixed bar of 10 strata, and the code refused data with a repeated table burst, which a resumed run must be able to read. The addendum now states the zero-spread rule and the step-down thresholds. It also adds the reason `repeated-burst` and sets what follows from a failed builder label, and the analysis code follows these rules. The plan of epoch index 0 was drawn again under the new manifest and kept all 144 bursts of the previous plan.
+- **2026-10-28 00:57 UTC, third check of the campaign package.** A third check found that the builder label was tested only in slots that held an included probe, while analysis plan line 89 covers every slot of a class without a builder. The label check and the tick table of section 7 now class every slot row by its leader and the class gossip showed for it at the burst, which takes 95 of the pilot's 96 slot rows where 69 counted before; no slot of another class carries a builder tick. The draw of epoch index 0 now refuses when the package's plan of that index is missing. The plan of epoch index 0 was drawn again under the new manifest. It keeps 143 of the 144 bursts of the previous plan; the burst of leader `LA1NEzry` in round 5 moved 7000 slots earlier, because the leader before that window had left the IP address the two shared.
 - **Stability over epochs.** The README says four epochs show whether a rule holds over time, yet the analysis plan fixed no test for it. The epoch tables (sections 5.12 and 6.12) describe it without a verdict.
 
 ## 10. Other measurements of the same question
