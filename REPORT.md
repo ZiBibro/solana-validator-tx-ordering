@@ -52,6 +52,7 @@ The bounty asks for at least 6 validators on at least 3 client or fork versions.
 | `dry-run-mainnet-20261028T011115Z` | dry-run | mainnet | dry-run | 2026-10-28 01:11:48 | 12 | 144 | 0 | - | - | `321b11d` |
 | `dry-run-mainnet-20261028T014101Z` | dry-run | mainnet | dry-run | 2026-10-28 01:41:35 | 12 | 144 | 0 | - | - | `73f3d20` |
 | `dry-run-mainnet-20261028T020206Z` | dry-run | mainnet | dry-run | 2026-10-28 02:02:40 | 12 | 144 | 0 | - | - | `732f502` |
+| `dry-run-mainnet-20261028T021746Z` | dry-run | mainnet | dry-run | 2026-10-28 02:18:18 | 12 | 144 | 0 | - | - | `cf7c56a` |
 | `pilot-mainnet-20261027T085253Z` | pilot | mainnet | live | 2026-10-27 08:53:32 | 68 | 816 | 811 | 811 | 799 | `ef77ca3` |
 <!-- itb:end runs -->
 
@@ -442,6 +443,8 @@ The minimum is the number of bursts per class and cell that an equivalence verdi
 ## 6. Campaign
 
 The campaign measures the panel over four epochs from 1071 with 8 bursts per class and cell, plus 64 control-path bursts. Verdicts run through the Holm families of the analysis plan. The [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md) goes on chain with the campaign manifest and states what the plan leaves to the code: the exclusion reasons, the hypotheses H3 and H4, lost epoch indexes and repeated bursts, the builder label and the control path.
+
+The campaign manifest `8e7d834a...` went on chain at 01:21:59 UTC on 2026-10-28, in slot 462288545 (`data/prereg-anchors.json`). Two code changes came after it. Commit `73f3d20` makes the sender sleep to a window in steps and skip a burst it wakes for too late, and commit `cf7c56a` fixes how the campaign runner reads the spend journal (section 9), which `tests/test_campaign_sh.py` replays on the lines of that start. Neither touches a file the manifest pins, so the pinned text keeps the bytes it was hashed from.
 
 ### 6.1 Bursts left out of the order tests
 
