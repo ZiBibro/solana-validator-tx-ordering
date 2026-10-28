@@ -31,6 +31,11 @@ This mirrors handoff_residuals in probe/src/slots.rs, which steps with the probe
 5 089 handoff windows of 534 leaders; 5 085 of them had the anchor on the slot just before
 the window.
 
+Filter: of the 5 289 windows of 4 slots in the stream, 119 have no event on their first slot,
+47 follow a slot of the same leader, 5 have no event in the 4 slots before, and 29 near the
+start of the stream have fewer than 5 steps at some position in the 3000 slots before (the
+steps are taken once per 100 slots); 5 089 remain.
+
   residual ms over 5 089 windows: median 0, p5 -35, p25 -15, p75 47, p95 133, p99 182,
   min -551, max 530
 
