@@ -1,0 +1,193 @@
+Leader correction of the aim, 2026-10-28
+========================================
+
+Numbers behind the two constants of the leader correction in probe/src/slots.rs (commit
+6fdceca): LEADER_MIN_WINDOWS = 3 and LEADER_MAX_NS = 250 ms. After them come the replay of
+the correction on the 116 bursts of logs/aim-diagnosis-20261028.txt, the mutants of its
+tests and the dry run on the new image. The correction is option B of that diagnosis;
+option D (first shreds in burst_end) came in the same commit.
+
+
+Stream
+------
+
+logs/shreds-mainnet-20261028T040857Z.jsonl keeps the firstShredReceived events of
+slotsUpdatesSubscribe on wss://api.mainnet-beta.solana.com, one line per slot: slot, ts
+(node time, ms) and recv (local receipt time, ms). Node time runs from 04:08:57.912 to
+05:23:55.420 UTC, 75.0 minutes; 20 672 slots of the 21 159 from 462335580 to 462356738
+carry an event (coverage 0.977). The leader schedule of epoch 1070 is the file
+data/plans/test-mainnet-20261028T043344Z/leader-schedule.json; the collector fetched the
+same bytes.
+
+
+Method
+------
+
+A handoff window is a window of 4 slots (first slot divisible by 4) whose leader differs from
+the leader of the slot before it. Its residual is the node time of its first slot minus a
+prediction from the last slot with an event before the window (the anchor), stepped forward
+with the median slot-to-slot step at each position in the window over the 3000 slots before.
+This mirrors handoff_residuals in probe/src/slots.rs, which steps with the probe's model.
+5 089 handoff windows of 534 leaders; 5 085 of them had the anchor on the slot just before
+the window.
+
+  residual ms over 5 089 windows: median 0, p5 -35, p25 -15, p75 47, p95 133, p99 182,
+  min -551, max 530
+
+
+Per leader
+----------
+
+  leaders with >= 3 windows   290   medians -46 to 205 ms, 49 above 100 ms, 3 above 165 ms
+  leaders with >= 5 windows   187   medians -31 to 168 ms, 27 above 100 ms, 1 above 165 ms
+  leaders with >= 8 windows   139   medians -24 to 158 ms, 19 above 100 ms, 0 above 165 ms
+
+  spread inside a leader, median absolute deviation over leaders with >= 5 windows:
+  median 8 ms, p90 14 ms
+
+  5Cchr1    62 windows   median 109 ms
+  DRpbCB   151 windows   median  58 ms
+  JUPiTE   113 windows   median -20 ms
+  7QQGNm    17 windows   median  12 ms
+
+  largest medians (ms, windows): HwN6eo 205 (3), E99w1X 190 (3), WUNoB9 168 (6),
+  FyrwfM 158 (9), bitHUm 153 (13)
+
+A leader's window starts at a steady offset: the spread inside a leader is small next to the
+spread between leaders. That offset is what the correction learns.
+
+
+Minimum number of windows
+-------------------------
+
+Each window is corrected by the median of the same leader's first k windows in the stream,
+over the windows that have at least k earlier ones. Mean absolute residual and share above
+100 ms, before and after the correction:
+
+   k   windows   mean |r| ms      share > 100 ms
+   1     4555    38.7   25.5      0.1249   0.0158
+   2     4157    37.7   21.9      0.1179   0.0089
+   3     3867    36.9   18.6      0.1127   0.0062
+   4     3644    36.7   18.3      0.1106   0.0060
+   5     3457    36.4   17.3      0.1096   0.0064
+   6     3290    36.2   17.2      0.1082   0.0055
+   8     3001    35.5   16.6      0.1046   0.0047
+  10     2761    35.2   15.8      0.1021   0.0036
+  12     2556    35.0   15.8      0.0986   0.0047
+
+Windows within 150 ms without the correction that the correction pushed past 150 ms:
+
+   k 1   8 of 4555 (0.0018)
+   k 2   9 of 4157 (0.0022)
+   k 3   2 of 3867 (0.0005)
+   k 4   1 of 3644 (0.0003)
+   k 5   0 of 3457
+
+The error falls fastest up to k = 3 (25.5 to 18.6 ms) and slowly after it. The harm falls
+from 0.18 and 0.22 % at k 1 and 2 to 0.05 % at k 3. One outlying window decides a median of
+1 or 2 windows and cannot move a median of 3. Hence 3.
+
+Counted over every handoff window, a correction from the first earlier window on (minimum 1)
+gives a lower mean error than minimum 3: 21.7 against 25.0 ms, share above 100 ms 0.033
+against 0.055. The difference is coverage: minimum 3 leaves 688 more windows uncorrected,
+those of leaders seen once or twice so far in the stream. The probe keeps the stream for the
+whole run (KEEP_SLOTS 20 000 slots, about 2.2 hours), and in the dry run below the smallest
+count at signing was 3. Minimum 3 gives up that coverage at the start of a stream for fewer
+harmful corrections.
+
+
+Bound
+-----
+
+250 ms lies above every leader median in the stream (largest 205 ms over 3 windows, largest
+over 8 or more windows 158 ms) and below single windows, which reach -551 and 530 ms. A
+median past 250 ms would come from a leader no window here showed, and the bound caps the
+shift there. It is wider than 165 ms, as the decision asked. On this stream the bound changes
+no number at minimum 3: mean 25.0 ms with a bound of 165, 200 or 250 ms and with none.
+
+
+Replay on the 116 stored bursts
+-------------------------------
+
+As decision B4 asked: for each burst, c is the median of the prediction residuals of the same
+leader's other bursts whose anchor was 1 to 4 slots before their window, those windows being
+handoffs. c is 0 under 3 such bursts and is clamped to 250 ms. It applies only when the
+burst's own anchor was before its window and its window is a handoff, as in the probe.
+dev' = dev + c. The leader of the slot before each window comes from the
+round*-leader-schedule.json snapshots of the runs; 1 of the 116 windows is not a handoff.
+
+  variant                              corrected   in band   in to out   out to in
+  as stored                                    -    98/116           -           -
+  other bursts, earlier and later             71   101/116           1           4
+  earlier bursts only (causal)                40   100/116           1           3
+
+  seq  run      timing  leader  gap   resid     dev   c (n)        dev'    band
+   76  pilot    slot2   9jxgos   11   -53.0   121.2   -24.0 (5)     97.2   out to in
+                                                      causal: n 2, c 0     stays out
+   93  pilot    slot2   5Cchr1    1   111.0  -110.0   110.5 (6)      0.5   out to in
+                                                      causal: 101.0 (3)   -9.0
+  129  011115Z  slot2   5Cchr1   21   275.4  -213.6   111.0 (7)   -102.6   stays out
+                                                      causal: 111.0 (5) -102.6
+  138  014101Z  pre300  DRpbCB   13   211.0  -211.0    53.0 (7)   -158.0   out to in
+  140  014101Z  slot2   HEL1US   15     4.0    86.7    24.0 (7)    110.7   in to out
+                                                      causal: 34.0 (5)   120.7
+  150  020206Z  slot2   5Cchr1    1   110.0  -106.0   111.0 (6)      5.0   out to in
+                                                      causal: 111.0 (5)    5.0
+
+  (ms; bands: slot2 -100..+100 around the observed step, pre300 -200..+100 around -300)
+
+Bursts 93 and 150 of the distant leader 5Cchr1 move to the band centre. Burst 129 of the same
+leader keeps 164 ms of its residual after the correction: its anchor was 21 slots old (finding
+1 of the diagnosis), and it ends 2.6 ms outside the band. Burst 140 leaves the band because
+its own residual was 4 ms while HEL1US had 24 ms at the median in its other bursts. The
+stale anchor, behind 8 of the 18 misses, is left as it was (option C of the diagnosis).
+
+
+Mutants of the tests
+--------------------
+
+Each mutant copies probe/ and schema/, replaces one line and runs cargo test (50 tests).
+
+  sign-applied     the aim subtracts the correction:
+                   let predicted = m.predict(first_slot) - correction;
+                   fails session::tests::aim_takes_the_leader_correction_until_the_anchor_is_the_window
+  sign-residual    the residual is prediction minus node time
+                   fails session::tests::aim_takes_the_leader_correction_until_the_anchor_is_the_window
+                   and slots::tests::leader_correction_from_a_late_leader
+  no-min-windows   if n == 0 { in place of if n == 0 || n < LEADER_MIN_WINDOWS {
+                   fails slots::tests::leader_correction_needs_windows_and_stays_bounded
+  no-bound         (median, n) in place of (median.clamp(-LEADER_MAX_NS, LEADER_MAX_NS), n)
+                   fails slots::tests::leader_correction_needs_windows_and_stays_bounded
+
+The tests stand on a synthetic stream with a leader 80 ms late: the correction comes out at
+80 ms, and both targets aim at the window's own first shreds.
+
+
+Dry run on the new image
+------------------------
+
+dry-run-mainnet-20261028T043400Z, image built from 6fdceca, plan test-mainnet-20261028T043344Z
+(12 bursts, 6 for 5Cchr1 and 6 for DRpbCB), 04:34:00 to 04:50:06 UTC. 12 of 12 in band;
+channel rounds gives in_band 12 of 12; check-raw reads 314 rows with no problem
+(logs/channel-check-20261028T043400Z.txt).
+
+  seq  leader  timing  gap   correction at signing (n)   in burst_end    dev ms
+  169  DRpbCB  slot2     0    49.0 (3)                     0               -3.0
+  170  5Cchr1  pre300    2   102.0 (5)                   102.0             11.0
+  171  DRpbCB  slot2     1    59.0 (9)                    59.0            -94.0
+  172  DRpbCB  pre300    5    59.0 (11)                   59.0             30.0
+  173  DRpbCB  pre300   17    58.5 (14)                   58.5           -186.5
+  174  5Cchr1  pre300    3   108.0 (9)                   108.0             -3.1
+  175  DRpbCB  slot2     0    60.0 (16)                    0                2.4
+  176  5Cchr1  slot2     5   112.0 (11)                  112.0            -20.0
+  177  DRpbCB  slot2     0    61.0 (18)                    0                6.0
+  178  5Cchr1  pre300   23   111.5 (12)                  111.5              0.0
+  179  5Cchr1  slot2     6   111.5 (12)                  111.5             19.5
+  180  5Cchr1  pre300    5   109.5 (14)                  109.5             -0.5
+
+With the anchor on the window's first slot (gap 0) the final aim drops the correction, and
+burst_end records 0. dev of 5Cchr1 runs from -20.0 to 19.5 ms over its 6 bursts; in the
+stored runs its bursts with a fresh anchor showed residuals of 74 to 113 ms. Two bursts sit
+near a band edge. Burst 171 has a residual of 95 ms after the correction (dev -94.0 in the
+slot2 band); DRpbCB showed single windows of 148 and 153 ms in the stream. Burst 173 with a
+17-slot anchor has dev -186.5 ms in the pre300 band.

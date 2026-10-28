@@ -1,0 +1,7 @@
+commit 6fdcecaaf245ab7834a5f405ac38220b02500e22, image inside-the-block-probe:aim-b, read on 2026-10-28T05:33:41Z
+== rounds of dry-run-mainnet-20261028T043400Z
+{"below": [], "clock_lag_ge1": 0, "clock_lag_max": 0, "complete": true, "epoch": 1070, "failed": 0, "handshake_fail": 0, "http_rtt_ms": [40.2, 50.3, 109.7], "in_band": 12, "in_band_share": 1.0, "kind": "round_channel", "planned": 12, "quic_rtt_ms": [112.0, 139.8, 163.3], "reconnects": 0, "round": 0, "run_id": "dry-run-mainnet-20261028T043400Z", "skipped_clock": 0, "skipped_other": 0, "written": 12}
+rounds exit 0
+== check-raw of dry-run-mainnet-20261028T043400Z
+data/runs/dry-run-mainnet-20261028T043400Z/probes.jsonl: 314 rows, 0 problems
+check-raw exit 0
