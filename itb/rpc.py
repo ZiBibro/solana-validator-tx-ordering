@@ -27,6 +27,13 @@ STATUS_BATCH = 256  # getSignatureStatuses takes at most 256 signatures
 
 # Answers that mean "no block here" rather than a failure of the node.
 NO_BLOCK_CODES = (-32004, -32007, -32009)
+BLOCK_NOT_AVAILABLE = -32004  # the node has not rooted the slot yet
+
+# JSON-RPC errors the node asks to retry. In Agave's custom_error.rs only -32019,
+# LongTermStorageUnreachable, says "please try again", and only reads of long-term
+# storage return it. A public node returned it to getSignaturesForAddress on
+# 2026-10-29 and failed a campaign run at its start.
+TRANSIENT_CODES = (-32019,)
 
 
 class RpcError(Exception):
@@ -122,9 +129,13 @@ class Client:
             self.calls[method] = self.calls.get(method, 0) + 1
             self.bytes += len(raw)
             answer = json.loads(raw)
-            if "error" in answer:
-                raise RpcError(method, answer["error"])
-            return answer["result"]
+            if "error" not in answer:
+                return answer["result"]
+            error = RpcError(method, answer["error"])
+            if error.code not in TRANSIENT_CODES or attempt + 1 == self.retries:
+                raise error
+            last = "RPC error %s" % error.code
+            self.sleep(min(30.0, 2.0 ** attempt))
         raise RpcError(method, {"message": "gave up after %d attempts: %s" % (self.retries, last)})
 
 
@@ -133,14 +144,31 @@ def block_params(details="full", rewards=True, commitment="finalized"):
             "commitment": commitment, "maxSupportedTransactionVersion": MAX_TX_VERSION}
 
 
-def get_block(client, slot, details="full", rewards=True, commitment="finalized"):
-    """Block of a slot, or None when the slot was skipped or is not stored."""
-    try:
-        return client.call("getBlock", [slot, block_params(details, rewards, commitment)])
-    except RpcError as e:
-        if e.code in NO_BLOCK_CODES:
-            return None
-        raise
+def get_block(client, slot, details="full", rewards=True, commitment="finalized", attempts=1):
+    """Block of a slot, or None when the slot was skipped or is not stored.
+
+    A caller that knows the slot holds a finalized block passes attempts above 1:
+    a null result and -32004 are then asked again, and the last one raises.
+    Agave's get_block keeps only BlockNotFound of long-term storage as an error
+    and answers null on every other failure there (rpc.rs, master on 2026-10-29),
+    so null proves no skipped slot; a skipped one comes back as -32007 or -32009."""
+    params = [slot, block_params(details, rewards, commitment)]
+    for attempt in range(attempts):
+        try:
+            block = client.call("getBlock", params)
+        except RpcError as e:
+            if e.code not in NO_BLOCK_CODES:
+                raise
+            if attempts == 1 or e.code != BLOCK_NOT_AVAILABLE:
+                return None
+            why = "error %s" % e.code
+        else:
+            if block is not None or attempts == 1:
+                return block
+            why = "a null result"
+        if attempt + 1 < attempts:
+            client.sleep(min(30.0, 2.0 ** attempt))
+    raise RpcError("getBlock", {"message": "slot %d: %s after %d attempts" % (slot, why, attempts)})
 
 
 def get_transaction(client, signature, commitment="finalized"):
@@ -149,21 +177,26 @@ def get_transaction(client, signature, commitment="finalized"):
         "maxSupportedTransactionVersion": MAX_TX_VERSION}])
 
 
-def signature_statuses(client, signatures):
-    """{signature: status or None}, searching the whole history."""
+def signature_statuses(client, signatures, history=True):
+    """{signature: status or None}. With history the node searches long-term
+    storage once per signature missing from its status cache, and Agave answers
+    null when that search fails; without it only the status cache answers."""
     out = {}
     for i in range(0, len(signatures), STATUS_BATCH):
         part = signatures[i:i + STATUS_BATCH]
         result = client.call("getSignatureStatuses",
-                             [part, {"searchTransactionHistory": True}])
+                             [part, {"searchTransactionHistory": history}])
         for signature, status in zip(part, result["value"]):
             out[signature] = status
     return out
 
 
 def signatures_for_address(client, address, commitment="finalized"):
-    """Whole history of an address, newest first: pages through `before` until
-    an empty page, because one call returns at most 1000 entries (section 9)."""
+    """Whole history of an address, newest first: pages through `before`,
+    because one call returns at most 1000 entries (section 9). A page shorter
+    than that is the last one: Agave fills a page from long-term storage when
+    its own ledger runs short and reports a failure there as -32019, never as a
+    short page, so asking once more would only buy a slow empty answer."""
     out = []
     before = None
     while True:
@@ -171,7 +204,7 @@ def signatures_for_address(client, address, commitment="finalized"):
         if before:
             options["before"] = before
         page = client.call("getSignaturesForAddress", [address, options])
-        if not page:
-            return out
         out.extend(page)
+        if len(page) < SIGNATURE_PAGE:
+            return out
         before = page[-1]["signature"]

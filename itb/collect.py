@@ -1,12 +1,12 @@
 """Collector: reads where every probe of a run landed and writes collect.jsonl
 plus one competition file per inclusion slot (plan section 8).
 
-It looks every signature up with getSignatureStatuses, reads each inclusion
-slot and the first slot of each target window once with getBlock (full, with
-rewards, maxSupportedTransactionVersion 1), and derives the position, the
-actual leader from the Fee reward record, the builder's tick label and the
-crank memo from that one answer. A run is re-collected whole: collect.jsonl is
-rewritten from the chain, never appended to twice.
+It finds the slot of every probe in the finalized listing of its payer, reads
+each inclusion slot and the first slot of each target window once with getBlock
+(full, with rewards, maxSupportedTransactionVersion 1), and derives the
+position, the actual leader from the Fee reward record, the builder's tick
+label and the crank memo from that one answer. A run is re-collected whole:
+collect.jsonl is rewritten from the chain, never appended to twice.
 """
 
 import datetime
@@ -17,6 +17,14 @@ import os
 from . import analyze, chain, rawformat, rpc
 
 ROW_ORDER = ("slot", "inclusion")
+# Agave's status cache keeps the statuses of its last MAX_RECENT_BLOCKHASHES (300)
+# rooted blocks (MAX_ROOT_ENTRIES in status_cache.rs), so a probe whose blockhash
+# expired more than 300 blocks below the finalized height is no longer in it.
+STATUS_CACHE_BLOCKS = 300
+# getBlock of an inclusion slot or a window's first slot: a null result or -32004
+# is asked again with pauses of 1 to 16 s, 31 s in all, which outlasts the
+# finalization lag of a node behind the one that listed the slot.
+BLOCK_ATTEMPTS = 6
 
 
 def utc_now():
@@ -94,6 +102,32 @@ def write_competition(run_dir, block):
     return name
 
 
+def landing_slots(client, probes, bursts, height):
+    """{signature: slot} of the probes found on chain.
+
+    The finalized listing of each payer gives the slot of every probe in a
+    finalized block. getSignatureStatuses with the history search asks
+    long-term storage once per signature: on 2026-10-29 it timed out six times
+    on probes 4 to 12 hours old, and Agave answers null when that search fails,
+    which would read as an expired probe. The height is read before the
+    listing, so a probe whose blockhash expired below it landed, if at all, in
+    a block the listing covers. A probe of the last 300 blocks may sit in a
+    block not finalized yet or one the listing node has not rooted; the status
+    cache answers for those without the history search."""
+    wanted = {p["signature"] for p in probes}
+    slots = {}
+    for payer in sorted({p["payer"] for p in probes}):
+        for entry in rpc.signatures_for_address(client, payer):
+            if entry["signature"] in wanted:
+                slots[entry["signature"]] = entry["slot"]
+    recent = [p["signature"] for p in probes if p["signature"] not in slots
+              and bursts[p["burst_seq"]]["last_valid_block_height"] >= height - STATUS_CACHE_BLOCKS]
+    for signature, status in rpc.signature_statuses(client, recent, history=False).items():
+        if status:
+            slots[signature] = status["slot"]
+    return slots
+
+
 def collect_run(run_dir, client, checked_utc=None, out=print):
     """Collect one run; returns the number of collect rows written."""
     run = analyze.load_run(run_dir)
@@ -103,15 +137,15 @@ def collect_run(run_dir, client, checked_utc=None, out=print):
         return 0
     checked_utc = checked_utc or utc_now()
     probes = sorted(run.probes.values(), key=lambda p: (p["burst_seq"], p["send_rank"]))
-    statuses = rpc.signature_statuses(client, [p["signature"] for p in probes])
     height = client.call("getBlockHeight", [{"commitment": "finalized"}])
-    with_probe = sorted({s["slot"] for s in statuses.values() if s})
+    slots = landing_slots(client, probes, run.bursts, height)
+    with_probe = sorted(set(slots.values()))
     first_slots = sorted({b["first_slot"] for b in run.bursts.values()})
     out("collect: %s, %d probes, %d inclusion slots, %d window first slots"
         % (run_id, len(probes), len(with_probe), len(first_slots)))
     blocks = {}
     for slot in sorted(set(with_probe) | set(first_slots)):
-        raw = rpc.get_block(client, slot)
+        raw = rpc.get_block(client, slot, attempts=BLOCK_ATTEMPTS)
         blocks[slot] = None if raw is None else chain.Block(slot, raw)
     rows = []
     for slot in sorted(blocks):
@@ -123,13 +157,13 @@ def collect_run(run_dir, client, checked_utc=None, out=print):
     cache = {}
     for p in probes:
         burst = run.bursts[p["burst_seq"]]
-        status = statuses.get(p["signature"])
-        if not status:
+        slot = slots.get(p["signature"])
+        if slot is None:
             expired = height > burst["last_valid_block_height"]
             rows.append(inclusion_row(run_id, p, burst, "expired" if expired else "not_found",
                                       checked_utc))
             continue
-        block = blocks.get(status["slot"])
+        block = blocks.get(slot)
         tx = block.by_signature.get(p["signature"]) if block else None
         if tx is None:
             rows.append(inclusion_row(run_id, p, burst, "error", checked_utc))

@@ -483,6 +483,69 @@ def chain_checks():
     return out
 
 
+def _collect_with(tmp, change):
+    """Collect the fakechain world after change(world, landed), where landed is
+    the (signature, slot) of one included probe. Returns (inclusions or the
+    RpcError collect raised, world, landed, probes)."""
+    run_dir = os.path.join(tmp, "runs", "fake-live")
+    world, truth = fakechain.build_world(run_dir, "itb-selftest:chain")
+    sig = sorted(s for s, w in truth.items() if w[0] == "included")[0]
+    landed = (sig, truth[sig][1])
+    change(world, landed)
+    try:
+        collect.collect_run(run_dir, world, checked_utc="2026-10-26T22:00:00Z", out=_quiet)
+    except rpc.RpcError as e:
+        return e, world, landed, None
+    run = analyze.load_run(run_dir)
+    return run.inclusions, world, landed, run.probes
+
+
+def collect_checks():
+    """collect takes slots from the payer listing, asks the status cache, never
+    the history search, for recent probes the listing lacks, and asks getBlock
+    again when a slot it knows to hold a probe answers null or -32004."""
+    out = []
+    with tempfile.TemporaryDirectory() as tmp:
+        got, world, _, probes = _collect_with(tmp, lambda world, landed: None)
+        listed = [params[0] for method, params in world.calls if method == "getSignaturesForAddress"]
+        payers = {p["payer"] for p in probes.values()}
+        asked = [params for method, params in world.calls if method == "getSignatureStatuses"]
+        missing = sorted(s for s, inc in got.items() if inc["status"] != "included")
+        out.append(("collect: one listing per payer; the status cache, no history search, for the rest",
+                    sorted(listed) == sorted(payers) and len(asked) == 1
+                    and asked[0][1] == {"searchTransactionHistory": False} and sorted(asked[0][0]) == missing,
+                    "%d listings of %d payers, %d status calls %s" % (
+                        len(listed), len(payers), len(asked), [a[1] for a in asked])))
+    with tempfile.TemporaryDirectory() as tmp:
+        old = synth.burst_rows(synth.run_row("x"), 0, [])[0]["last_valid_block_height"] \
+            + collect.STATUS_CACHE_BLOCKS + 1
+        got, world, _, _ = _collect_with(tmp, lambda world, landed: setattr(world, "block_height", old))
+        asked = [params for method, params in world.calls if method == "getSignatureStatuses"]
+        expired = sum(1 for inc in got.values() if inc["status"] == "expired")
+        out.append(("collect: probes expired over 300 blocks below the height skip the status cache",
+                    not asked and expired == 3, "%d status calls, %d expired" % (len(asked), expired)))
+    with tempfile.TemporaryDirectory() as tmp:
+        got, _, (sig, slot), _ = _collect_with(tmp, lambda world, landed: world.unlisted.add(landed[0]))
+        inc = got[sig]
+        out.append(("collect: a recent probe missing from the listing is found in the status cache",
+                    (inc["status"], inc["slot"]) == ("included", slot),
+                    "%s at slot %s" % (inc["status"], inc["slot"])))
+    with tempfile.TemporaryDirectory() as tmp:
+        got, world, (sig, slot), _ = _collect_with(
+            tmp, lambda world, landed: world.flaky.update({landed[1]: [None, -32004]}))
+        inc = got[sig] if isinstance(got, dict) else {"status": str(got)[:60], "slot": None}
+        out.append(("collect: getBlock of an inclusion slot is asked again after null and -32004",
+                    (inc["status"], inc["slot"]) == ("included", slot) and world.slept == [1.0, 2.0],
+                    "%s at slot %s, pauses %s" % (inc["status"], inc["slot"], world.slept)))
+    with tempfile.TemporaryDirectory() as tmp:
+        got, _, _, _ = _collect_with(
+            tmp, lambda world, landed: world.flaky.update({landed[1]: [None] * collect.BLOCK_ATTEMPTS}))
+        out.append(("collect: an inclusion slot that stays null fails the collect",
+                    isinstance(got, rpc.RpcError) and "null" in str(got),
+                    str(got)[:90] if isinstance(got, rpc.RpcError) else "no error raised"))
+    return out
+
+
 class _StageRun:
     """The fields of a loaded run that prereg_check reads: one probe at block time 2000."""
 
@@ -1222,9 +1285,37 @@ def rpc_checks():
             code = e.code
         out.append(("rpc: an RPC error answer is not retried", code == -32004 and len(replies) == 1,
                     "code %s, %d replies left" % (code, len(replies))))
+        storage = json.dumps({"jsonrpc": "2.0", "id": 1, "error": {
+            "code": -32019, "message": "Failed to query long-term storage; please try again"}}).encode()
+        replies = [_Reply(storage), _Reply(good)]
+        rpc.urllib.request.urlopen = lambda request, timeout=None: replies.pop(0)
+        try:
+            got = rpc.Client("https://rpc.example", sleep=lambda s: None).call("getSignaturesForAddress", [])
+        except rpc.RpcError as e:
+            got = e.code
+        out.append(("rpc: a long-term storage error (-32019) is retried", got == 7 and not replies,
+                    "got %r, %d replies left" % (got, len(replies))))
     finally:
         rpc.urllib.request.urlopen = saved
+    pages = _Pages([[{"signature": "sig%d" % i} for i in range(1000)],
+                    [{"signature": "sig%d" % i} for i in range(1000, 1003)],
+                    [{"signature": "sig1003"}]])
+    got = rpc.signatures_for_address(pages, "payer")
+    out.append(("rpc: the signature listing stops at a page shorter than 1000",
+                len(got) == 1003 and pages.before == [None, "sig999"],
+                "%d entries, before %s" % (len(got), pages.before)))
     return out
+
+
+class _Pages:
+    """getSignaturesForAddress over fixed pages; records the before of each call."""
+
+    def __init__(self, pages):
+        self.pages, self.before = list(pages), []
+
+    def call(self, method, params):
+        self.before.append(params[1].get("before"))
+        return self.pages.pop(0) if self.pages else []
 
 
 def report_checks():
@@ -1788,7 +1879,8 @@ def addendum_checks():
 def run_all():
     """Run every selftest group; return (passed, failed, lines)."""
     checks = (raw_format_checks() + stats_checks() + min_p_checks() + synthetic_checks()
-              + end_to_end_checks() + chain_checks() + prereg_checks() + plan_checks() + panel_checks()
+              + end_to_end_checks() + chain_checks() + collect_checks() + prereg_checks() + plan_checks()
+              + panel_checks()
               + pilot_checks()
               + campaign_checks()
               + rounds_checks()

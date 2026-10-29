@@ -125,6 +125,12 @@ class FakeChain:
         self.leaders = {}
         self.block_height = block_height
         self.calls = []
+        self.unlisted = set()  # landed in a block the listing has not finalized yet
+        self.flaky = {}  # slot: answers getBlock gives first, None or an error code
+        self.slept = []
+
+    def sleep(self, seconds):
+        self.slept.append(seconds)
 
     def add_block(self, slot, entries, leader, block_time):
         self.blocks[slot] = {
@@ -157,6 +163,11 @@ class FakeChain:
         return handler(*params)
 
     def _getBlock(self, slot, options=None):
+        if self.flaky.get(slot):
+            code = self.flaky[slot].pop(0)
+            if code is None:
+                return None
+            raise rpc.RpcError("getBlock", {"code": code, "message": "Block not available for slot %d" % slot})
         block = self.blocks.get(slot)
         if block is None:
             raise rpc.RpcError("getBlock", {"code": -32007, "message": "Slot %d was skipped" % slot})
@@ -190,7 +201,8 @@ class FakeChain:
         hits = []
         for slot, block in self.blocks.items():
             for i, entry in enumerate(block["transactions"]):
-                if address in entry["transaction"]["message"]["accountKeys"]:
+                if address in entry["transaction"]["message"]["accountKeys"] \
+                        and entry["transaction"]["signatures"][0] not in self.unlisted:
                     hits.append((slot, i, entry))
         hits.sort(key=lambda h: (h[0], h[1]), reverse=True)
         out = [{"signature": e["transaction"]["signatures"][0], "slot": s, "transactionIndex": i,
