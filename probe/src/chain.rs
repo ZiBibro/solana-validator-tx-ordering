@@ -6,7 +6,7 @@ use crate::journal::{Entry, Journal, Resolution};
 use crate::rows::Log;
 use crate::rpc::Rpc;
 use serde_json::{json, Value};
-use std::collections::{BTreeMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashSet};
 use std::path::Path;
 use std::time::{Duration, Instant};
 
@@ -206,22 +206,9 @@ pub fn scan_chain(
     known: &HashSet<String>,
 ) -> Result<ChainScan, String> {
     let ours: HashSet<&str> = payers.iter().map(String::as_str).chain([wallet]).collect();
-    let mut sigs: BTreeMap<String, ()> = BTreeMap::new();
-    for p in payers {
-        for e in rpc.signatures_for_address(p)? {
-            if let Some(s) = e["signature"].as_str() {
-                sigs.insert(s.to_string(), ());
-            }
-        }
-    }
-    for e in rpc.signatures_for_address(wallet)? {
-        let memo = e["memo"].as_str().unwrap_or("");
-        if let (Some(s), true) = (e["signature"].as_str(), memo.contains("itb-")) {
-            sigs.insert(s.to_string(), ());
-        }
-    }
+    let sigs = chain_signatures(rpc, wallet, payers)?;
     let mut out = ChainScan { fee_total: 0, max_burst_seq: None, signatures: sigs.len(), fetched: 0 };
-    for sig in sigs.keys() {
+    for sig in &sigs {
         if let Some(Entry::Settled { lamports }) = journal.entry(sig) {
             out.fee_total += lamports;
             continue;
@@ -243,6 +230,73 @@ pub fn scan_chain(
         }
     }
     Ok(out)
+}
+
+/// Every signature of the twelve payers and the wallet's signatures with an itb- memo,
+/// at finalized commitment.
+fn chain_signatures(rpc: &mut Rpc, wallet: &str, payers: &[String]) -> Result<BTreeSet<String>, String> {
+    let mut sigs = BTreeSet::new();
+    for p in payers {
+        for e in rpc.signatures_for_address(p)? {
+            if let Some(s) = e["signature"].as_str() {
+                sigs.insert(s.to_string());
+            }
+        }
+    }
+    for e in rpc.signatures_for_address(wallet)? {
+        let memo = e["memo"].as_str().unwrap_or("");
+        if let (Some(s), true) = (e["signature"].as_str(), memo.contains("itb-")) {
+            sigs.insert(s.to_string());
+        }
+    }
+    Ok(sigs)
+}
+
+/// Bookings whose last valid block height lies below the finalized height, closed by the
+/// chain listing (29.10.2026). Such a transaction sits in a finalized block, and so in a
+/// listing read after that height, or can never land. getSignatureStatuses with
+/// transaction history took 10 s for one hours-old signature and 62 s for ten on the
+/// public RPC, past the 60 s timeout of a call; a run restarted after a crash, or ending
+/// a day after its first round, holds hundreds of them. Returns the bookings left.
+pub fn close_stale(rpc: &mut Rpc, journal: &mut Journal, log: &mut Log, wallet: &str, payers: &[String]) -> Result<usize, String> {
+    if journal.pending().is_empty() {
+        return Ok(0);
+    }
+    let height = rpc.block_height("finalized")?;
+    if journal.pending().iter().all(|p| p.2 >= height) {
+        return Ok(journal.pending().len());
+    }
+    let listed = chain_signatures(rpc, wallet, payers)?;
+    let (settled, released) = close_listed(journal, &listed, height)?;
+    let left = journal.pending().len();
+    log.info(
+        "journal_resolved",
+        None,
+        json!({"settled": settled, "released": released, "pending": left, "finalized_block_height": height,
+               "committed": journal.committed(), "by": "listing", "listed": listed.len()}),
+    );
+    Ok(left)
+}
+
+/// The bookings below `finalized_height`: settled at the booked fee when `listed` holds
+/// them, released otherwise; later ones wait for resolve_pending. The booked fee is the
+/// chain fee (tx::worst_fee: 5000 lamports a signature plus the priority fee), and
+/// scan_chain with adjust_to stays the anchor of the total.
+pub fn close_listed(journal: &mut Journal, listed: &BTreeSet<String>, finalized_height: u64) -> Result<(usize, usize), String> {
+    let (mut settled, mut released) = (0, 0);
+    for (sig, lamports, lvbh) in journal.pending() {
+        if lvbh >= finalized_height {
+            continue;
+        }
+        if listed.contains(&sig) {
+            journal.settle(&sig, lamports)?;
+            settled += 1;
+        } else {
+            journal.release(&sig)?;
+            released += 1;
+        }
+    }
+    Ok((settled, released))
 }
 
 /// Settle what landed and release what expired. With `wait_for` set, polls until every
@@ -292,6 +346,26 @@ pub fn resolve_pending(rpc: &mut Rpc, journal: &mut Journal, log: &mut Log, wait
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn stale_bookings_close_by_the_chain_listing() {
+        let p = std::env::temp_dir().join(format!("itb-chain-{}-stale.jsonl", std::process::id()));
+        let _ = std::fs::remove_file(&p);
+        let mut j = Journal::open(&p, 50_000_000).unwrap();
+        let book = |sig: &str, lamports, lvbh| (sig.to_string(), lamports, lvbh);
+        j.book(&[book("landed", 5_100, 999), book("lost", 5_200, 999), book("fresh", 5_300, 1_000)], "probe").unwrap();
+        let listed: BTreeSet<String> = ["landed", "foreign"].iter().map(|s| s.to_string()).collect();
+
+        // Finalized height 1000: the two bookings valid up to 999 can no longer land.
+        assert_eq!(close_listed(&mut j, &listed, 1_000).unwrap(), (1, 1));
+        assert!(matches!(j.entry("landed"), Some(Entry::Settled { lamports: 5_100 })));
+        assert!(matches!(j.entry("lost"), Some(Entry::Released)));
+        // Still valid at that height: it waits for resolve_pending although the listing lacks it.
+        assert!(matches!(j.entry("fresh"), Some(Entry::Booked { .. })));
+        assert_eq!(j.committed(), 5_100 + 5_300);
+        assert_eq!(Journal::open(&p, 50_000_000).unwrap().committed(), 5_100 + 5_300);
+        let _ = std::fs::remove_file(&p);
+    }
 
     #[test]
     fn epoch_arithmetic_matches_agave() {

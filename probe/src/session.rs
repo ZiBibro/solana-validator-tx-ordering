@@ -323,6 +323,7 @@ fn run_session(s: &Settings, mode: &Mode, plan_path: &Path, close_after: bool, s
         if j.torn_line {
             log.warn("journal_torn_line_dropped", None, json!({"path": j.path().display().to_string()}));
         }
+        chain::close_stale(&mut rpc, &mut j, &mut log, &wallet_addr, &payer_addrs)?;
         chain::resolve_pending(&mut rpc, &mut j, &mut log, Duration::ZERO)?;
         let cs = chain::scan_chain(&mut rpc, &mut j, &wallet_addr, &payer_addrs, &data.signatures)?;
         let adjust = j.adjust_to(cs.fee_total)?;
@@ -1163,6 +1164,7 @@ impl Session {
             return Ok(());
         }
         let j = self.journal.as_mut().unwrap();
+        chain::close_stale(&mut self.rpc, j, &mut self.log, wallet, payer_addrs)?;
         let pending = chain::resolve_pending(&mut self.rpc, j, &mut self.log, RESOLVE_WAIT)?;
         let mut all = vec![wallet.to_string()];
         all.extend(payer_addrs.iter().cloned());
@@ -1219,6 +1221,7 @@ pub fn close(s: &Settings, mode: &Mode) -> Result<(), String> {
         return Ok(());
     };
     let mut j = Journal::open(&s.journal_path(), *max_spend_lamports)?;
+    chain::close_stale(&mut rpc, &mut j, &mut log, &wallet.address(), &addrs)?;
     chain::resolve_pending(&mut rpc, &mut j, &mut log, Duration::ZERO)?;
     let data = chain::scan_data(&s.data_dir)?;
     let cs = chain::scan_chain(&mut rpc, &mut j, &wallet.address(), &addrs, &data.signatures)?;
