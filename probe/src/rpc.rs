@@ -208,7 +208,7 @@ impl Rpc {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
     use std::io::{BufRead, BufReader, Read, Write};
     use std::net::TcpListener;
@@ -216,7 +216,7 @@ mod tests {
 
     /// A local HTTP server that answers request n with replies[n] and closes the
     /// connection; it records each JSON-RPC request body it reads.
-    fn serve(replies: Vec<Value>) -> (Rpc, Arc<Mutex<Vec<Value>>>) {
+    pub(crate) fn serve(replies: Vec<Value>) -> (Rpc, Arc<Mutex<Vec<Value>>>) {
         let listener = TcpListener::bind("127.0.0.1:0").unwrap();
         let url = format!("http://{}", listener.local_addr().unwrap());
         let seen = Arc::new(Mutex::new(vec![]));

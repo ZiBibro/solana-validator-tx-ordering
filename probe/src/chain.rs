@@ -198,17 +198,12 @@ pub struct ChainScan {
 /// Known fees come from settled journal entries, so a normal start fetches almost
 /// nothing; a lost volume makes it fetch every transaction once. Probes missing from
 /// the raw data give the chain side of burst_seq recovery.
-pub fn scan_chain(
-    rpc: &mut Rpc,
-    journal: &mut Journal,
-    wallet: &str,
-    payers: &[String],
-    known: &HashSet<String>,
-) -> Result<ChainScan, String> {
+pub fn scan_chain(rpc: &mut Rpc, journal: &mut Journal, listing: &mut Listing, known: &HashSet<String>) -> Result<ChainScan, String> {
+    let (wallet, payers) = (listing.wallet, listing.payers);
     let ours: HashSet<&str> = payers.iter().map(String::as_str).chain([wallet]).collect();
-    let sigs = chain_signatures(rpc, wallet, payers)?;
+    let sigs = listing.get(rpc)?;
     let mut out = ChainScan { fee_total: 0, max_burst_seq: None, signatures: sigs.len(), fetched: 0 };
-    for sig in &sigs {
+    for sig in sigs {
         if let Some(Entry::Settled { lamports }) = journal.entry(sig) {
             out.fee_total += lamports;
             continue;
@@ -230,6 +225,46 @@ pub fn scan_chain(
         }
     }
     Ok(out)
+}
+
+/// The journal at the start of a run, an anchor or close: stale bookings closed by the
+/// chain listing, fresh ones asked once, then the chain scan over the same listing.
+pub fn reconcile(
+    rpc: &mut Rpc,
+    journal: &mut Journal,
+    log: &mut Log,
+    wallet: &str,
+    payers: &[String],
+    known: &HashSet<String>,
+) -> Result<ChainScan, String> {
+    let mut listing = Listing::new(wallet, payers);
+    close_stale(rpc, journal, log, &mut listing)?;
+    resolve_pending(rpc, journal, log, Duration::ZERO)?;
+    scan_chain(rpc, journal, &mut listing, known)
+}
+
+/// The chain listing of a start, read at most once and shared by close_stale and
+/// scan_chain. On 2026-10-29 a page of a payer took about 28 s on the public RPC, whose
+/// history from 27.10 had moved to long-term storage, and each call risked -32019; two
+/// listings per start doubled both.
+pub struct Listing<'a> {
+    wallet: &'a str,
+    payers: &'a [String],
+    sigs: Option<BTreeSet<String>>,
+}
+
+impl<'a> Listing<'a> {
+    pub fn new(wallet: &'a str, payers: &'a [String]) -> Listing<'a> {
+        Listing { wallet, payers, sigs: None }
+    }
+
+    fn get(&mut self, rpc: &mut Rpc) -> Result<&BTreeSet<String>, String> {
+        let sigs = match self.sigs.take() {
+            Some(s) => s,
+            None => chain_signatures(rpc, self.wallet, self.payers)?,
+        };
+        Ok(self.sigs.insert(sigs))
+    }
 }
 
 /// Every signature of the twelve payers and the wallet's signatures with an itb- memo,
@@ -258,7 +293,7 @@ fn chain_signatures(rpc: &mut Rpc, wallet: &str, payers: &[String]) -> Result<BT
 /// transaction history took 10 s for one hours-old signature and 62 s for ten on the
 /// public RPC, past the 60 s timeout of a call; a run restarted after a crash, or ending
 /// a day after its first round, holds hundreds of them. Returns the bookings left.
-pub fn close_stale(rpc: &mut Rpc, journal: &mut Journal, log: &mut Log, wallet: &str, payers: &[String]) -> Result<usize, String> {
+pub fn close_stale(rpc: &mut Rpc, journal: &mut Journal, log: &mut Log, listing: &mut Listing) -> Result<usize, String> {
     if journal.pending().is_empty() {
         return Ok(0);
     }
@@ -266,8 +301,8 @@ pub fn close_stale(rpc: &mut Rpc, journal: &mut Journal, log: &mut Log, wallet: 
     if journal.pending().iter().all(|p| p.2 >= height) {
         return Ok(journal.pending().len());
     }
-    let listed = chain_signatures(rpc, wallet, payers)?;
-    let (settled, released) = close_listed(journal, &listed, height)?;
+    let listed = listing.get(rpc)?;
+    let (settled, released) = close_listed(journal, listed, height)?;
     let left = journal.pending().len();
     log.info(
         "journal_resolved",
@@ -364,6 +399,36 @@ mod tests {
         assert!(matches!(j.entry("fresh"), Some(Entry::Booked { .. })));
         assert_eq!(j.committed(), 5_100 + 5_300);
         assert_eq!(Journal::open(&p, 50_000_000).unwrap().committed(), 5_100 + 5_300);
+        let _ = std::fs::remove_file(&p);
+    }
+
+    #[test]
+    fn a_start_lists_the_chain_once() {
+        let p = std::env::temp_dir().join(format!("itb-chain-{}-once.jsonl", std::process::id()));
+        let _ = std::fs::remove_file(&p);
+        let mut j = Journal::open(&p, 50_000_000).unwrap();
+        j.book(&[("landed".to_string(), 5_100, 999)], "probe").unwrap();
+        let reply = |result: Value| json!({"jsonrpc": "2.0", "result": result, "id": 1});
+        let payer_page = reply(json!([{"signature": "landed", "slot": 10}]));
+        let wallet_page = reply(json!([{"signature": "funding", "slot": 5, "memo": "[5] itb-fund"}]));
+        let funding = reply(json!({"transaction": {"message": {"accountKeys": ["wallet"]}}, "meta": {"fee": 5_000}}));
+        // A second listing would get these pages again; the start must not ask for them.
+        let (mut rpc, seen) = crate::rpc::tests::serve(vec![
+            reply(json!(1_000)),
+            payer_page.clone(),
+            wallet_page.clone(),
+            funding,
+            payer_page,
+            wallet_page,
+        ]);
+        let mut log = Log::stderr_only(crate::rows::Level::Error);
+        let payers = vec!["payer".to_string()];
+
+        let cs = reconcile(&mut rpc, &mut j, &mut log, "wallet", &payers, &HashSet::new()).unwrap();
+        assert!(matches!(j.entry("landed"), Some(Entry::Settled { lamports: 5_100 })));
+        assert_eq!((cs.signatures, cs.fetched, cs.fee_total), (2, 1, 5_100 + 5_000));
+        let methods: Vec<String> = seen.lock().unwrap().iter().map(|r| r["method"].as_str().unwrap_or("").to_string()).collect();
+        assert_eq!(methods, ["getBlockHeight", "getSignaturesForAddress", "getSignaturesForAddress", "getTransaction"]);
         let _ = std::fs::remove_file(&p);
     }
 

@@ -18,7 +18,6 @@ use crate::Mode;
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use std::path::Path;
-use std::time::Duration;
 
 pub const STAGES: [&str; 2] = ["pilot", "campaign"];
 pub const MEMO_PREFIX: &str = "itb-prereg ";
@@ -118,10 +117,8 @@ pub fn anchor(s: &Settings, mode: &Mode, stage: &str) -> Result<(), String> {
         .ok_or_else(|| format!("live anchor needs the wallet key at {}; found none", s.key_path.display()))?;
     let payers: Vec<String> = keys::derive_payers(&wallet).iter().map(Signer::address).collect();
     let mut j = Journal::open(&s.journal_path(), *max_spend_lamports)?;
-    chain::close_stale(&mut rpc, &mut j, &mut log, &wallet.address(), &payers)?;
-    chain::resolve_pending(&mut rpc, &mut j, &mut log, Duration::ZERO)?;
     let data = chain::scan_data(&s.data_dir)?;
-    let cs = chain::scan_chain(&mut rpc, &mut j, &wallet.address(), &payers, &data.signatures)?;
+    let cs = chain::reconcile(&mut rpc, &mut j, &mut log, &wallet.address(), &payers, &data.signatures)?;
     j.adjust_to(cs.fee_total)?;
 
     let (hash, lvbh, _) = rpc.latest_blockhash("confirmed")?;
