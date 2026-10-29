@@ -8,6 +8,11 @@ use std::time::Duration;
 pub const MAX_TX_VERSION: u64 = 1;
 const STATUS_BATCH: usize = 256;
 const SIGNATURE_PAGE: u64 = 1000;
+/// JSON-RPC errors the node asks to retry. In Agave's custom_error.rs only -32019,
+/// LongTermStorageUnreachable, says "please try again", and only reads of long-term
+/// storage return it, so a retry never repeats a send. A public node returned it to
+/// getSignaturesForAddress on 2026-10-29 and failed a campaign run at its start.
+const TRANSIENT_CODES: &[i64] = &[-32019];
 
 pub struct Rpc {
     agent: ureq::Agent,
@@ -57,10 +62,14 @@ impl Rpc {
             match self.agent.post(&self.url).send_json(&body) {
                 Ok(resp) => {
                     let v: Value = resp.into_json().map_err(|e| err(None, format!("bad JSON: {e}")))?;
-                    if let Some(e) = v.get("error") {
-                        return Err(err(e["code"].as_i64(), e["message"].as_str().unwrap_or("").to_string()));
+                    let Some(e) = v.get("error") else {
+                        return Ok(v["result"].clone());
+                    };
+                    let code = e["code"].as_i64();
+                    if attempt == 5 || !code.is_some_and(|c| TRANSIENT_CODES.contains(&c)) {
+                        return Err(err(code, e["message"].as_str().unwrap_or("").to_string()));
                     }
-                    return Ok(v["result"].clone());
+                    std::thread::sleep(wait);
                 }
                 Err(ureq::Error::Status(code, resp)) if code == 429 || code >= 500 => {
                     let after = resp
@@ -151,7 +160,10 @@ impl Rpc {
         Ok(if v.is_null() { None } else { Some(v) })
     }
 
-    /// Every signature of an address, newest first, paging with `before`.
+    /// Every signature of an address, newest first, paging with `before`. A page shorter
+    /// than the limit is the last: the node fills a page from its own ledger and then from
+    /// long-term storage, and a failure of that storage comes back as -32019, not as a
+    /// short page (Agave rpc.rs, get_signatures_for_address).
     pub fn signatures_for_address(&mut self, address: &str) -> R<Vec<Value>> {
         let mut out = vec![];
         let mut before: Option<String> = None;
@@ -165,8 +177,12 @@ impl Rpc {
             if page.is_empty() {
                 return Ok(out);
             }
+            let last = (page.len() as u64) < SIGNATURE_PAGE;
             before = page.last().and_then(|e| e["signature"].as_str()).map(String::from);
             out.extend(page);
+            if last {
+                return Ok(out);
+            }
         }
     }
 
@@ -188,5 +204,94 @@ impl Rpc {
             json!([b64, {"encoding": "base64", "sigVerify": sig_verify, "replaceRecentBlockhash": !sig_verify, "commitment": "confirmed"}]),
         )?;
         Ok(v["value"].clone())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::io::{BufRead, BufReader, Read, Write};
+    use std::net::TcpListener;
+    use std::sync::{Arc, Mutex};
+
+    /// A local HTTP server that answers request n with replies[n] and closes the
+    /// connection; it records each JSON-RPC request body it reads.
+    fn serve(replies: Vec<Value>) -> (Rpc, Arc<Mutex<Vec<Value>>>) {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let url = format!("http://{}", listener.local_addr().unwrap());
+        let seen = Arc::new(Mutex::new(vec![]));
+        let log = seen.clone();
+        std::thread::spawn(move || {
+            for reply in replies {
+                let Ok((stream, _)) = listener.accept() else { return };
+                let mut reader = BufReader::new(stream);
+                let mut len = 0;
+                loop {
+                    let mut line = String::new();
+                    if reader.read_line(&mut line).unwrap_or(0) == 0 {
+                        return;
+                    }
+                    let line = line.trim_end();
+                    if line.is_empty() {
+                        break;
+                    }
+                    if let Some((k, v)) = line.split_once(':') {
+                        if k.eq_ignore_ascii_case("content-length") {
+                            len = v.trim().parse().unwrap_or(0);
+                        }
+                    }
+                }
+                let mut body = vec![0; len];
+                reader.read_exact(&mut body).unwrap();
+                log.lock().unwrap().push(serde_json::from_slice(&body).unwrap_or(Value::Null));
+                let text = reply.to_string();
+                let mut stream = reader.into_inner();
+                let _ = write!(
+                    stream,
+                    "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{text}",
+                    text.len()
+                );
+            }
+        });
+        (Rpc::new(&url), seen)
+    }
+
+    fn rpc_error(code: i64, message: &str) -> Value {
+        json!({"jsonrpc": "2.0", "error": {"code": code, "message": message}, "id": 1})
+    }
+
+    fn page(from: usize, n: usize) -> Value {
+        let entries: Vec<Value> = (from..from + n).map(|i| json!({"signature": format!("sig{i}"), "slot": i})).collect();
+        json!({"jsonrpc": "2.0", "result": entries, "id": 1})
+    }
+
+    #[test]
+    fn long_term_storage_error_is_retried() {
+        let (mut rpc, seen) = serve(vec![
+            rpc_error(-32019, "Failed to query long-term storage; please try again"),
+            json!({"jsonrpc": "2.0", "result": 7, "id": 1}),
+        ]);
+        assert_eq!(rpc.block_height("finalized").unwrap(), 7);
+        assert_eq!(seen.lock().unwrap().len(), 2);
+    }
+
+    #[test]
+    fn other_rpc_errors_are_not_retried() {
+        let preflight = rpc_error(-32002, "Transaction simulation failed");
+        let (mut rpc, seen) = serve(vec![preflight; 6]);
+        let e = rpc.call("sendTransaction", json!([])).unwrap_err();
+        assert_eq!(e.code, Some(-32002));
+        assert_eq!(seen.lock().unwrap().len(), 1);
+    }
+
+    #[test]
+    fn signature_listing_stops_at_a_short_page() {
+        let full = SIGNATURE_PAGE as usize;
+        let (mut rpc, seen) = serve(vec![page(0, full), page(full, 3), page(full + 3, 1)]);
+        let sigs = rpc.signatures_for_address("addr").unwrap();
+        assert_eq!(sigs.len(), full + 3);
+        let seen = seen.lock().unwrap();
+        assert_eq!(seen.len(), 2);
+        assert_eq!(seen[1]["params"][1]["before"], json!(format!("sig{}", full - 1)));
     }
 }
