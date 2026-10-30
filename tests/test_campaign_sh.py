@@ -2,7 +2,10 @@
 
 An epoch index whose chain epoch has passed is lost at once and never drawn again
 (campaign addendum, section 5); a copy of the script without that branch must retry and
-stop. On the happy path the stand-in answers with the lines the plan command and
+stop. A run that fails after its last round, as campaign-mainnet-20261029T120927Z did at
+the balance check, leaves no round ahead: the second draw of the index must hand over to
+the next index without counting a failure, and a copy without that branch must stop the
+campaign after three attempts. On the happy path the stand-in answers with the lines the plan command and
 `probe status` printed at the first campaign start (2026-10-28 02:12 UTC), and the script
 must call the live run under the limit of committed plus fees plus overhead; a copy that
 reads the journal with the pattern of the run line finds no number and never sends.
@@ -18,6 +21,7 @@ import unittest
 REPO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SCRIPT = os.path.join(REPO, "scripts", "campaign.sh")
 PASSED_BRANCH = '                *"has passed"*) echo "epoch index $e is lost: its chain epoch has passed"; break ;;\n'
+NONE_AHEAD_BRANCH = '                *"found a window from slot"*) echo "no round of epoch index $e lies ahead"; break ;;\n'
 STATUS_PATTERN = r"'s|^spend journal [^:]*: \([0-9][0-9]*\) lamports committed,.*|\1|p'"
 RUN_LINE_PATTERN = r"'s|^spend journal: \([0-9][0-9]*\) of .*|\1|p'"
 
@@ -35,6 +39,22 @@ case "$*" in
     *"plan campaign"*) cat "$ITB_TEST_REPLIES/plan.txt" ;;
     *"probe status"*) cat "$ITB_TEST_REPLIES/status.txt" ;;
     *"probe run"*) cat "$ITB_TEST_REPLIES/run.txt" ;;
+esac
+exit 0
+"""
+
+# The run exits 1 after its last round; the second draw of the index then finds no round
+# ahead and words it as itb/campaign.py does, behind the "campaign: " of the plan command.
+DOCKER_NONE_AHEAD = """#!/usr/bin/env bash
+echo "$*" >> "$ITB_TEST_CALLS"
+case "$*" in
+    *"plan campaign"*)
+        if [ -e "$ITB_TEST_REPLIES/drawn" ]; then
+            echo "campaign: campaign: no burst of epoch index 0 found a window from slot 463102300" >&2; exit 1
+        fi
+        touch "$ITB_TEST_REPLIES/drawn"; cat "$ITB_TEST_REPLIES/plan.txt" ;;
+    *"probe status"*) cat "$ITB_TEST_REPLIES/status.txt" ;;
+    *"probe run"*) cat "$ITB_TEST_REPLIES/run.txt"; echo "itb-probe: balance mismatch"; exit 1 ;;
 esac
 exit 0
 """
@@ -152,6 +172,23 @@ class CampaignScript(unittest.TestCase):
         self.assertEqual(code, 1, out)
         self.assertIn("campaign stopped at epoch index 0 after 3 attempts", out)
         self.assertEqual(len(calls), 3, calls)
+
+    def test_failed_run_with_no_round_ahead_hands_over(self):
+        with open(os.path.join(REPO, "itb", "campaign.py"), encoding="utf-8") as f:
+            self.assertIn('"campaign: no burst of epoch index %d found a window from slot %d"', f.read())
+        code, out, calls = self.run_script(DOCKER_NONE_AHEAD)
+        self.assertEqual(code, 0, out)
+        self.assertIn("probe run exit 1", out)
+        self.assertIn("no round of epoch index 0 lies ahead", out)
+        self.assertIn("campaign done", out)
+        self.assertEqual(len([c for c in calls if "plan campaign" in c]), 2, calls)
+        self.assertEqual(len([c for c in calls if "probe run" in c]), 1, calls)
+
+    def test_script_without_the_none_ahead_branch_stops(self):
+        code, out, calls = self.run_script(DOCKER_NONE_AHEAD, drop=NONE_AHEAD_BRANCH)
+        self.assertEqual(code, 1, out)
+        self.assertIn("campaign stopped at epoch index 0 after 3 attempts", out)
+        self.assertEqual(len([c for c in calls if "plan campaign" in c]), 3, calls)
 
     def test_live_run_gets_the_limit_from_the_status_line(self):
         code, out, calls = self.run_script(DOCKER_LIVE)
