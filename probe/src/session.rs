@@ -1174,11 +1174,22 @@ impl Session {
             "balance_check",
             None,
             json!({"before": before_total, "after": after_total, "settled_this_session": settled, "pending": pending,
-                   "pending_lamports": pending_sum, "ok": check.is_ok(), "committed": j.committed(), "limit": j.limit()}),
+                   "pending_lamports": pending_sum, "ok": check.is_ok(), "received": check.as_ref().ok(),
+                   "committed": j.committed(), "limit": j.limit()}),
         );
-        if let Err(e) = check {
-            self.log.error("balance_mismatch", None, json!({"message": e}));
-            return Err(e);
+        match check {
+            Err(e) => {
+                self.log.error("balance_mismatch", None, json!({"message": e}));
+                return Err(e);
+            }
+            Ok(received) if received > 0 => self.log.warn(
+                "balance_received",
+                None,
+                json!({"lamports": received, "message": format!(
+                    "wallet and payers lost {received} lamports less than the journal settled: lamports came from outside the set"
+                )}),
+            ),
+            Ok(_) => {}
         }
         if close_after {
             close_payers(&mut self.rpc, j, &mut self.log, wallet, &self.payers)?;

@@ -256,23 +256,20 @@ pub fn resolve(status: Option<&Value>, finalized_block_height: u64, last_valid_b
 }
 
 /// Balance check of the closed set wallet plus payers (section 11): transfers inside the
-/// set cancel out, so the set loses exactly the fees. With bookings still pending the
-/// loss must lie between the settled fees and settled plus pending.
-pub fn check_balances(before: u64, after: u64, settled: u64, pending: u64) -> Result<(), String> {
-    if after > before {
+/// set cancel out, so the set loses exactly the fees, or between the settled fees and
+/// settled plus pending while bookings are pending. A set that lost more paid fees the
+/// journal does not hold, and the run stops. A set that lost less got lamports from
+/// outside, which anyone can send to a public address: payer 2 got 6 373 and 9 078
+/// lamports in two transfers during campaign-mainnet-20261029T120927Z. The journal still
+/// bounds the spend then, so the check passes and returns the lamports received.
+pub fn check_balances(before: u64, after: u64, settled: u64, pending: u64) -> Result<u64, String> {
+    let spent = i128::from(before) - i128::from(after);
+    if spent > i128::from(settled) + i128::from(pending) {
         return Err(format!(
-            "balance mismatch: wallet and payers hold {after} lamports, more than {before} at the start"
+            "balance mismatch: wallet and payers lost {spent} lamports, the journal accounts for {settled} settled and {pending} pending"
         ));
     }
-    let spent = before - after;
-    let ok = if pending == 0 { spent == settled } else { spent >= settled && spent <= settled + pending };
-    if ok {
-        Ok(())
-    } else {
-        Err(format!(
-            "balance mismatch: wallet and payers lost {spent} lamports, the journal accounts for {settled} settled and {pending} pending"
-        ))
-    }
+    Ok((i128::from(settled) - spent).max(0) as u64)
 }
 
 #[cfg(test)]
@@ -347,11 +344,20 @@ mod tests {
 
     #[test]
     fn balance_mismatch_stops() {
-        assert!(check_balances(1_000_000, 994_000, 6_000, 0).is_ok());
+        assert_eq!(check_balances(1_000_000, 994_000, 6_000, 0), Ok(0));
         assert!(check_balances(1_000_000, 993_999, 6_000, 0).is_err());
-        assert!(check_balances(1_000_000, 994_000, 0, 6_000).is_ok());
+        assert_eq!(check_balances(1_000_000, 994_000, 0, 6_000), Ok(0));
+        assert_eq!(check_balances(1_000_000, 988_000, 6_000, 6_000), Ok(0));
         assert!(check_balances(1_000_000, 987_999, 6_000, 6_000).is_err());
-        assert!(check_balances(1_000_000, 1_000_001, 0, 0).is_err());
+    }
+
+    #[test]
+    fn balance_inflow_passes() {
+        // campaign-mainnet-20261029T120927Z: 6 373 and 9 078 lamports reached payer 2 from outside.
+        assert_eq!(check_balances(52_435_471, 47_933_012, 4_517_910, 0), Ok(15_451));
+        assert_eq!(check_balances(1_000_000, 1_000_001, 0, 0), Ok(1));
+        assert_eq!(check_balances(1_000_000, 1_000_001, 6_000, 0), Ok(6_001));
+        assert_eq!(check_balances(1_000_000, 995_000, 6_000, 6_000), Ok(1_000));
     }
 
     #[test]
