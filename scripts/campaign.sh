@@ -21,7 +21,8 @@
 # campaign. Running the script again with FROM_INDEX resumes a stopped campaign the same
 # way, from the same snapshot. Index e runs only in chain epoch FIRST_EPOCH+e, and
 # FIRST_EPOCH must be the panel's epoch, which the plan command checks: an index whose
-# chain epoch has passed is lost and never moved to a later epoch (prereg/CAMPAIGN-ADDENDUM.md).
+# chain epoch has passed draws no more rounds: its rounds that have not run are lost and never
+# move to a later epoch, and the rounds that ran stay (prereg/CAMPAIGN-ADDENDUM.md, section 5).
 #
 # It needs the campaign anchor on chain (probe anchor --stage campaign --live) and the
 # wallet key file in ITB_WALLET_KEY_FILE, which only the probe container reads.
@@ -87,7 +88,7 @@ for e in $(seq "$from" "$to"); do
         if [ $code -ne 0 ]; then
             case $out in
                 *"found a window from slot"*) echo "no round of epoch index $e lies ahead"; break ;;
-                *"has passed"*) echo "epoch index $e is lost: its chain epoch has passed"; break ;;
+                *"has passed"*) echo "epoch index $e draws no more rounds: its chain epoch has passed"; break ;;
             esac
             echo "plan exit $code"
         else

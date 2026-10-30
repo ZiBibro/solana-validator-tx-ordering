@@ -380,7 +380,8 @@ def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, 
     epoch_index of the table, run in chain epoch epoch (the current or the next).
 
     Index e runs only in chain epoch panel epoch + e (campaign addendum, section 5):
-    another epoch is refused, and an index whose chain epoch has passed is lost.
+    another epoch is refused, and an index whose chain epoch has passed draws no more
+    rounds: its rounds that have not run are lost, and the ones that ran stay.
     nodes_doc, the cluster-nodes.json of the epoch's first plan, makes a plan drawn
     again after a failed run scan the same gossip, so its windows repeat exactly."""
     if epoch != panel_doc["epoch"] + epoch_index:
@@ -390,7 +391,8 @@ def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, 
     now_slot = info["absoluteSlot"]
     slots = info["slotsInEpoch"]
     if epoch < info["epoch"]:
-        raise ValueError("campaign: chain epoch %d has passed (now %d); epoch index %d is lost"
+        raise ValueError("campaign: chain epoch %d has passed (now %d); epoch index %d draws no more rounds, "
+                         "and its rounds that have not run are lost"
                          % (epoch, info["epoch"], epoch_index))
     if epoch > info["epoch"] + 1:
         raise ValueError("campaign: epoch %d is neither the current epoch %d nor the next" % (epoch, info["epoch"]))

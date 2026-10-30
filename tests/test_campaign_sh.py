@@ -1,8 +1,8 @@
 """scripts/campaign.sh with stand-ins for docker and git on PATH.
 
-An epoch index whose chain epoch has passed is lost at once and never drawn again
-(campaign addendum, section 5); a copy of the script without that branch must retry and
-stop. A run that fails after its last round, as campaign-mainnet-20261029T120927Z did at
+An epoch index whose chain epoch has passed draws no more rounds and is never drawn
+again (campaign addendum, section 5); a copy of the script without that branch must retry
+and stop. A run that fails after its last round, as campaign-mainnet-20261029T120927Z did at
 the balance check, leaves no round ahead: the second draw of the index must hand over to
 the next index without counting a failure, and a copy without that branch must stop the
 campaign after three attempts. On the happy path the stand-in answers with the lines the plan command and
@@ -20,7 +20,7 @@ import unittest
 
 REPO = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 SCRIPT = os.path.join(REPO, "scripts", "campaign.sh")
-PASSED_BRANCH = '                *"has passed"*) echo "epoch index $e is lost: its chain epoch has passed"; break ;;\n'
+PASSED_BRANCH = '                *"has passed"*) echo "epoch index $e draws no more rounds: its chain epoch has passed"; break ;;\n'
 NONE_AHEAD_BRANCH = '                *"found a window from slot"*) echo "no round of epoch index $e lies ahead"; break ;;\n'
 STATUS_PATTERN = r"'s|^spend journal [^:]*: \([0-9][0-9]*\) lamports committed,.*|\1|p'"
 RUN_LINE_PATTERN = r"'s|^spend journal: \([0-9][0-9]*\) of .*|\1|p'"
@@ -28,7 +28,7 @@ RUN_LINE_PATTERN = r"'s|^spend journal: \([0-9][0-9]*\) of .*|\1|p'"
 DOCKER_PASSED = """#!/usr/bin/env bash
 echo "$*" >> "$ITB_TEST_CALLS"
 case "$*" in
-    *"plan campaign"*) echo "campaign: chain epoch 1071 has passed (now 1072); epoch index 0 is lost" >&2; exit 1 ;;
+    *"plan campaign"*) echo "campaign: campaign: chain epoch 1071 has passed (now 1072); epoch index 0 draws no more rounds, and its rounds that have not run are lost" >&2; exit 1 ;;
 esac
 exit 0
 """
@@ -162,7 +162,7 @@ class CampaignScript(unittest.TestCase):
     def test_passed_epoch_is_lost_without_a_retry(self):
         code, out, calls = self.run_script(DOCKER_PASSED)
         self.assertEqual(code, 0, out)
-        self.assertIn("epoch index 0 is lost: its chain epoch has passed", out)
+        self.assertIn("epoch index 0 draws no more rounds: its chain epoch has passed", out)
         self.assertIn("campaign done", out)
         self.assertEqual(len(calls), 1, calls)
         self.assertIn("--nodes-from-first-plan", calls[0])

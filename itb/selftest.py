@@ -1534,7 +1534,8 @@ def addendum_checks():
                 same is None and other is not None and "hashes" in other and none is not None and mutant is None,
                 "%s; %s; mutant %s" % (same, other, mutant)))
 
-    # Section 5: index e runs only in chain epoch panel epoch + e; a passed epoch loses the index.
+    # Section 5: index e runs only in chain epoch panel epoch + e; once that epoch has passed the
+    # index draws no more rounds, and its rounds that have not run are lost.
     doc = {"epoch": 1071, "network": "mainnet", "classes": {}}
 
     def draw(index, epoch, now):
@@ -1547,7 +1548,7 @@ def addendum_checks():
     out.append(("addendum: the draw refuses index 1 in chain epoch 1071 and index 0 once epoch 1071 has passed; "
                 "index 1 in epoch 1072 gets past both gates",
                 moved is not None and "runs only in chain epoch 1072" in moved
-                and passed is not None and "has passed" in passed and "is lost" in passed
+                and passed is not None and "has passed" in passed and "rounds that have not run are lost" in passed
                 and own is not None and "not known yet" in own,
                 "%s; %s; %s" % (moved, passed, own)))
 
