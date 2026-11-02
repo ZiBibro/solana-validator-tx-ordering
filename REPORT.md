@@ -55,7 +55,7 @@ The pilot ran 68 bursts on 2026-10-27 in epoch 1069. From 2026-10-29 to 2026-11-
 | **total** |  |  |  |  | **39528090** (0.039528 SOL) |  | code cap 0.05 SOL |
 <!-- itb:end spend -->
 
-Probe fees are `meta.fee` of each included probe, and each funding or closing transaction pays the 5000-lamport base fee. With both anchors the pilot and the campaign paid 39 528 090 lamports under the compiled cap of 0.05 SOL. The spend journal settles against the chain at each start, so its growth equals what the run paid; the start of `120927Z` settled the 652 included probes of `055501Z`, the 3 400 800 lamports of that run. After the closing transactions of 2026-11-02 the journal holds the table's total.
+Probe fees are `meta.fee` of each included probe, and each funding or closing transaction pays the 5000-lamport base fee. The spend journal settles against the chain at each start, so its growth equals what the run paid; the start of `120927Z` settled the 652 included probes of `055501Z`, the 3 400 800 lamports of that run. After the closing transactions of 2026-11-02 the journal holds the table's total.
 
 ## 4. Campaign results
 
@@ -155,21 +155,22 @@ The plan drawn at 11:55 UTC left round 3 out, since its first window 462872092 l
 
 ## 7. Other measurements of the same question
 
-Seven public repositories measured the ordering rule on mainnet after Alpenglow; the first four are read as of 2026-10-27, the last three as of 2026-11-02.
+Eight public repositories measured the ordering rule on mainnet after Alpenglow; the first four read on 2026-10-27, the rest on 2026-11-02.
 
 - [fomoles/superteam-inside-the-block](https://github.com/fomoles/superteam-inside-the-block), epoch 1066. Probe pairs go straight to the leader's TPU. It reads the key as fee per estimated cost unit (check C6, -0.61) and Firedancer 26.10.4 giving fee ties to the later arrival, as our denominator arm and H3 do.
-- [eternally-black/alpenglow-validator-ordering](https://github.com/eternally-black/alpenglow-validator-ordering), 2026-10-24 to 2026-10-26, pre-registered by plan hashes in a mainnet Memo. Six core targets, five in our panel, order by Agave's `reward / (cost + 1)`, and Firedancer lands the later of two identical probes first in 50 of 54 pairs.
+- [eternally-black/alpenglow-validator-ordering](https://github.com/eternally-black/alpenglow-validator-ordering), 2026-10-24 to 2026-10-26, pre-registered in a mainnet Memo. Six core targets, five in our panel, order by Agave's `reward / (cost + 1)`, and Firedancer lands the later of two identical probes first in 50 of 54 pairs.
 - [ukraineopt/inside-the-block](https://github.com/ukraineopt/inside-the-block), 5296 probes at 27 validators without pre-registration. It reads arrival order in short batches for both Harmonic classes; our slot-2 equal-fee cells agree, while before the window HarmonicFiredancer follows a fee rule.
 - [zdfgu113/inside-the-block](https://github.com/zdfgu113/inside-the-block), from 2026-10-23. Of 135 same-block pairs, AgaveBam puts the higher fee first in 25 of 32, and both Harmonic classes stay near chance at its price range.
-- [factoruuu/inside-the-block-solana](https://github.com/factoruuu/inside-the-block-solana), epoch 1071. Its 51 bursts sent 612 transactions through one public RPC endpoint with preflight on. It detects no rule in any class, Firedancer at fee concordance 0.589 (0.442 to 0.736), and names RPC forwarding against the leader's own scheduler among what it does not separate. Our control path measures that split (section 4.4), and our direct path gives Firedancer tau fee 0.905 in each epoch; what preflight adds, our data do not show.
-- [tempometer/inside-the-block](https://github.com/tempometer/inside-the-block), runs of 2026-10-26 and 2026-10-27 through public RPC relays, whose forwarding latency its operator log puts at 8 to 30 s. Each of its 398 rows is attributed afterwards to the leader of its landing slot; direct TPU/QUIC submission stays a stretch goal. Over that route 5869 of our 5892 delivered direct probes landed in their target window.
-- [9xj89gzrtw-hue/solana-validator-block-ordering](https://github.com/9xj89gzrtw-hue/solana-validator-block-ordering), epoch 1074, passive: 24 blocks of 6 validators in three client families. Over 5430 transactions of other senders it finds Kendall tau-b -0.0424 between `tx_index` and priority fee per compute unit and concludes that the fee does not set the order. That correlation mixes arrival time, bundles and senders, while our probes leave in a send order drawn apart from the fee, so the zero does not contradict the fee rule of 7 of 8 classes.
+- [factoruuu/inside-the-block-solana](https://github.com/factoruuu/inside-the-block-solana), epoch 1071, sent 612 transactions in 51 bursts through one public RPC endpoint with preflight on. It detects no rule in any class, Firedancer at fee concordance 0.589 (0.442 to 0.736), and concedes that it does not separate RPC forwarding from the scheduler, the split our control path measures (section 4.4).
+- [tempometer/inside-the-block](https://github.com/tempometer/inside-the-block), runs of 2026-10-26 and 2026-10-27 through public RPC relays whose forwarding its operator log puts at 8 to 30 s; each of its 398 rows is attributed afterwards to the leader of its landing slot.
+- [9xj89gzrtw-hue/solana-validator-block-ordering](https://github.com/9xj89gzrtw-hue/solana-validator-block-ordering), epoch 1074, passive: over 5430 transactions of other senders in 24 blocks of 6 validators, Kendall tau-b -0.0424 between `tx_index` and priority fee per compute unit, read as no fee rule. That tau mixes arrival time with bundles of many senders; our probes leave in a send order drawn apart from the fee, so the zero does not contradict our fee rule.
+- [AndrewInUA/solana-block-order](https://github.com/AndrewInUA/solana-block-order), epoch 1075, 83 included probes through Helius RPC at six validators of six classes: no fee rule (price tau -0.196 to 0.400, no p under 0.05), send order in 3 classes. Its rank sorts by slot first, while each of the 11 batches with included probes spread over two slots or more and 32 of the 83 landed outside the target's four slots, so the rank records arrival. Our control path loses fee order through RPC too (section 4.4); the fee rule stands on direct probes waiting together before the window.
 
 ## 8. Measurement plan
 
 Each step lifts one condition of section 5.
 
-- **Bursts per cell at the pilot's minimum**. With 28 to 177 bursts per cell the equivalence forms come within reach, so an undetermined cell can read "no rule visible" and a builder pair can show at each moment whether the builder keeps its base order.
+- **Bursts per cell at the pilot's minimum**. With 28 to 177 bursts per cell an undetermined cell can read "no rule visible", and a builder pair can show at each moment whether the builder keeps its base order.
 - **Senders in several regions**. Bursts from several places into the same windows separate distance from rule and test the half-round-trip correction beyond 82 ms one way.
 - **An own RPC node**. A slot clock and block reads from the kit's own node take the public node's event queue out of the arrival estimate.
 - **More epochs and more leaders per class**. A stability test fixed before data turns the epoch table into a verdict. Three or more leaders per class separate a client's rule from one operator's setup.
