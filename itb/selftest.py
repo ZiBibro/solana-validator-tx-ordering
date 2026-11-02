@@ -457,6 +457,32 @@ def chain_checks():
                     not report.problems and len(report.notes) == 3,
                     "%d problems, %d notes %s" % (len(report.problems), len(report.notes),
                                                   report.problems[:1])))
+        included = [i["slot"] for i in run.inclusions.values() if i["status"] == "included"]
+        asked = [p for m, p in world.calls if m == "getSlotLeaders"]
+        out.append(("chain: verify reads the leader schedule once per range of slots, not once per probe",
+                    0 < len(asked) == len(verify.slot_leader_ranges(included)) < len(set(included))
+                    and verify.slot_leader_ranges([5, 3, 9000, 5003]) == [(3, 3), (5003, 3998)],
+                    "%d getSlotLeaders calls for %d included probes in %d slots" % (
+                        len(asked), len(included), len(set(included)))))
+        read = sorted({p[0] for m, p in world.calls if m == "getBlock"})
+        world.flaky.update({slot: [None] for slot in read})
+        world.slept = []
+        report = verify.verify([run], world, tmp, tmp, out=_quiet)
+        out.append(("chain: verify asks a slot again when the node answers null first",
+                    not report.problems and len(world.slept) == len(read),
+                    "%d problems over %d slots, %d pauses %s" % (
+                        len(report.problems), len(read), len(world.slept), report.problems[:1])))
+        elsewhere = sorted({i["slot"] for i in run.inclusions.values() if i["status"] == "included"
+                            and i["actual_leader"] != run.bursts[i["burst_seq"]]["leader"]})
+        for slot in elsewhere:
+            world.leaders[slot] = synth.key(7, 77)
+        report = verify.verify([run], world, tmp, tmp, out=_quiet)
+        named = [n for n in report.notes if n.startswith("getSlotLeaders")]
+        out.append(("chain: a block outside the target window whose Fee record is not the scheduled "
+                    "identity is noted as a fee collector",
+                    bool(elsewhere) and not report.problems and len(named) == len(elsewhere)
+                    and all("fee collector" in n for n in named),
+                    "%d such slots, %d notes %s" % (len(elsewhere), len(named), named[:1])))
     for value in (None, True):
         saved = rpc.MAX_TX_VERSION
         rpc.MAX_TX_VERSION = value

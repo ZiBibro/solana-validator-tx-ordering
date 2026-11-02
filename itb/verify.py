@@ -16,9 +16,10 @@ import hashlib
 import json
 import os
 
-from . import chain, rpc
+from . import chain, collect, rpc
 
 PUBLIC_GETBLOCK_LIMIT = 6  # x-ratelimit-method-limit of the public node, 2026-10-26
+SLOT_LEADERS_LIMIT = 5000  # MAX_GET_SLOT_LEADERS of Agave's RPC: most slots one call returns
 FULL_BLOCK_MB = (1.87, 2.69)  # one getBlock full answer on three slots, 2026-10-26
 PREREG_MEMO_PREFIX = "itb-prereg "
 PREREG_STAGES = ("pilot", "campaign")
@@ -123,11 +124,14 @@ def plan_lines(runs):
     payers = {p for r in runs for p in r.run["payers"]}
     low, high = (len(slots) * mb for mb in FULL_BLOCK_MB)
     seconds = len(slots) * rpc.RATE_WINDOW_S / PUBLIC_GETBLOCK_LIMIT
+    included = [i["slot"] for r in runs for i in r.inclusions.values() if i["status"] == "included"]
     return [
         "verify: %d runs, %d probes, %d payers, %d slots" % (len(runs), probes, len(payers), len(slots)),
         "verify: getBlock full downloads about %.0f-%.0f MB; on the public node "
         "(%d getBlock per %.0f s) that takes at least %.0f s" % (
             low, high, PUBLIC_GETBLOCK_LIMIT, rpc.RATE_WINDOW_S, seconds),
+        "verify: getSlotLeaders reads the schedule of %d included slots in %d calls" % (
+            len(set(included)), len(slot_leader_ranges(included))),
     ]
 
 
@@ -181,13 +185,20 @@ def channel_two(runs, client, report, panel):
             by_slot.setdefault(inc["slot"], []).append((r, r.probes[sig], inc))
     slot_rows = _slot_rows(runs)
     costs = {}
-    blocks = {}
     for slot in sorted(set(by_slot) | set(slot_rows)):
-        raw = rpc.get_block(client, slot)
+        # Every slot here held a block when collect read it, so a null answer is a
+        # node that has not stored it yet and is asked again, as collect does.
+        try:
+            raw = rpc.get_block(client, slot, attempts=collect.BLOCK_ATTEMPTS)
+        except rpc.RpcError as e:
+            report.problem("ch2 slot %d: no block on chain (%s)" % (slot, e))
+            continue
         if raw is None:
             report.problem("ch2 slot %d: no block on chain" % slot)
             continue
-        block = blocks[slot] = chain.Block(slot, raw)
+        # One block at a time: keeping every parsed block grew the container to
+        # 6.82 GiB on 2026-11-02, so none outlives its own slot.
+        block = chain.Block(slot, raw)
         for row in slot_rows.get(slot, []):
             if row["leader"] != block.fee_recipient():
                 report.problem("ch2 slot %d: Fee record %s, raw leader %s" % (
@@ -214,7 +225,6 @@ def channel_two(runs, client, report, panel):
         if len(values) > 1:
             report.problem("ch2 burst %d: costs %s differ at CU limit %d" % (
                 seq, sorted(values), cu_limit))
-    return blocks
 
 
 def _check_probe(r, p, inc, block, report, costs):
@@ -342,20 +352,53 @@ def prereg_check(runs, client, report, data_dir, repo_dir):
                 stage, got.get("blockTime"), min(times)))
 
 
+def slot_leader_ranges(slots, limit=SLOT_LEADERS_LIMIT):
+    """(start, count) ranges that cover the given slots, each at most limit long."""
+    out = []
+    for slot in sorted(set(slots)):
+        if out and slot - out[-1][0] < limit:
+            out[-1][1] = slot - out[-1][0] + 1
+        else:
+            out.append([slot, 1])
+    return [tuple(r) for r in out]
+
+
 def slot_leader_check(runs, client, report):
-    """Optional third source of the leader; a refused epoch is a closed channel."""
+    """Optional third source of the leader: the leader schedule, read with one
+    getSlotLeaders call per range of slots; a refused range is a closed channel.
+
+    The schedule names the identity. Raw rows name the identity for a target
+    window and the Fee record for any other leader's block, and the Fee record
+    goes to the fee collector when a validator set one apart from its identity."""
+    seen = {}
     for r in runs:
         for inc in r.inclusions.values():
-            if inc["status"] != "included":
-                continue
-            try:
-                leaders = client.call("getSlotLeaders", [inc["slot"], 1])
-            except rpc.RpcError as e:
-                report.note("getSlotLeaders slot %d: channel unavailable (%s)" % (inc["slot"], e))
-                return
-            if leaders and leaders[0] != inc["actual_leader"]:
-                report.note("getSlotLeaders slot %d: %s, Fee record gives %s" % (
-                    inc["slot"], leaders[0], inc["actual_leader"]))
+            if inc["status"] == "included":
+                target = r.bursts[inc["burst_seq"]]["leader"]
+                seen.setdefault(inc["slot"], set()).add((inc["actual_leader"], target))
+    ranges = slot_leader_ranges(seen)
+    agree = collector = 0
+    for start, count in ranges:
+        try:
+            leaders = client.call("getSlotLeaders", [start, count])
+        except rpc.RpcError as e:
+            report.note("getSlotLeaders slots %d-%d: channel unavailable (%s)" % (
+                start, start + count - 1, e))
+            continue
+        for slot in sorted(s for s in seen if start <= s < start + count):
+            scheduled = leaders[slot - start] if slot - start < len(leaders) else None
+            for actual, target in sorted(seen[slot]):
+                if scheduled == actual:
+                    agree += 1
+                elif actual != target and scheduled != target:
+                    collector += 1
+                    report.note("getSlotLeaders slot %d: identity %s; the Fee record of this "
+                                "block outside the target window pays %s, its fee collector" % (
+                                    slot, scheduled, actual))
+                else:
+                    report.note("getSlotLeaders slot %d: %s, raw leader %s" % (slot, scheduled, actual))
+    report.out("getSlotLeaders: %d slots in %d calls; the schedule names the raw leader in %d, "
+               "a fee collector stands in the raw row in %d" % (len(seen), len(ranges), agree, collector))
 
 
 def verify(runs, client, data_dir, repo_dir, out=print, slot_leaders=True):
