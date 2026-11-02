@@ -1,0 +1,27 @@
+commit c3ae1f6aa0dea6739a002f508c710e7dd9f630b6-dirty, 2026-10-29T12:04:56Z, panel data/panels/mainnet-e1071-20261027T233028Z/panel.json, epoch indexes 0 to 3 from chain epoch 1071
+== epoch index 0 in chain epoch 1071, attempt 1, 2026-10-29T12:04:56Z
+ Container inside-the-block-plan-run-44e7e07178df Creating 
+ Container inside-the-block-plan-run-44e7e07178df Created 
+campaign: plan carries prereg manifest /repo/prereg/manifest-campaign.json sha256 8e7d834a090444b4b9f84b5faa6311a74233a468d3c074ab9a779c7ac12e480d
+campaign: gossip /repo/data/plans/campaign-mainnet-e1071-20261028T005742Z/cluster-nodes.json
+campaign: /repo/data/plans/campaign-mainnet-e1071-20261029T120504Z/plan.json
+campaign: epoch index 0 in epoch 1071, 72 bursts, 864 probes, fees 4581240 lamports (4320000 base, 261240 priority); 214.3 ms per slot over 30 samples
+  round 4 (part 4): 16 bursts, slots 462895568 to 462901120 (5552 slots), about 29.10 13:20 UTC to 29.10 13:40 UTC
+  round 5 (part 5): 16 bursts, slots 462989656 to 462995168 (5512 slots), about 29.10 18:56 UTC to 29.10 19:16 UTC
+  round 6 (part 6): 16 bursts, slots 463008832 to 463012868 (4036 slots), about 29.10 20:04 UTC to 29.10 20:19 UTC
+  round 7 (part 7): 24 bursts, slots 463092440 to 463102024 (9584 slots), about 30.10 01:03 UTC to 30.10 01:37 UTC
+campaign: note: round 0: its first window 462721436 lies before slot 462875368; round left out
+campaign: note: round 1: its first window 462769692 lies before slot 462875368; round left out
+campaign: note: round 2: its first window 462830128 lies before slot 462875368; round left out
+campaign: note: round 3: its first window 462872092 lies before slot 462875368; round left out
+campaign: note: windows scanned with the gossip snapshot of 2026-10-28T00:57:37.293394Z
+ Container inside-the-block-probe-run-44911b1d78b4 Creating 
+ Container inside-the-block-probe-run-44911b1d78b4 Created 
+== live run: limit 12519350 lamports = committed 7873110 + plan fees 4581240 + overhead 65000
+ Container inside-the-block-probe-run-27d069eb4ca0 Creating 
+ Container inside-the-block-probe-run-27d069eb4ca0 Created 
+itb-probe info start {"bursts":72,"code_limit_lamports":50000000,"mode":"live","network":"mainnet","plan":"/data/plans/campaign-mainnet-e1071-20261029T120504Z/plan.json","rpc":"https://api.mainnet-beta.solana.com","spend_limit_lamports":12519350,"ws":"wss://api.mainnet-beta.solana.com"}
+itb-probe LIVE run campaign-mainnet-20261029T120506Z: 72 bursts, spend limit 12519350 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.mainnet-beta.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.mainnet-beta.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+

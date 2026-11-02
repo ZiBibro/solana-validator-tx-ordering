@@ -133,9 +133,28 @@ def _payer_moves(logs_dir, run_id):
     return moves, (end - start if start is not None and end is not None else None)
 
 
+def _closings(logs_dir):
+    """[(log name, UTC of its start, close transactions)] of the mainnet logs of
+    `probe close` that sent any: a close outside a run, as after the campaign."""
+    out = []
+    if not os.path.isdir(logs_dir):
+        return out
+    for name in sorted(os.listdir(logs_dir)):
+        m = re.match(r"^close-mainnet-(\d{8}T\d{6}Z)\.jsonl$", name)
+        if not m:
+            continue
+        with open(os.path.join(logs_dir, name), encoding="utf-8") as f:
+            moves = sum(1 for line in f if json.loads(line).get("event") == "close_send")
+        if moves:
+            when = datetime.datetime.strptime(m.group(1), "%Y%m%dT%H%M%SZ")
+            out.append((name[:-len(".jsonl")], when.strftime("%Y-%m-%d %H:%M:%S"), moves))
+    return out
+
+
 def spend_block(runs, anchors, logs_dir):
     """Every fee paid: anchors, probes by meta.fee, and one signature fee for each
-    transaction that funds or closes the payers, which the log names by signature."""
+    transaction that funds or closes the payers, which the log of the run or of a
+    later close names by signature."""
     rows, total = [], 0
     for a in anchors:
         total += ANCHOR_FEE_LAMPORTS
@@ -151,6 +170,10 @@ def spend_block(runs, anchors, logs_dir):
                          len(_included(r)), "-" if moves is None else moves),
                      fees, "-" if overhead is None else overhead, fees + (overhead or 0),
                      "-" if journal is None else journal, r.run["spend_limit_lamports"]])
+    for name, when, moves in _closings(logs_dir):
+        overhead = moves * chain.LAMPORTS_PER_SIGNATURE
+        total += overhead
+        rows.append(["`%s`" % name, when, "%d closing transactions" % moves, "-", overhead, overhead, "-", "-"])
     rows.append(["**total**", "", "", "", "", "**%d** (%.6f SOL)" % (total, total / LAMPORTS_PER_SOL), "",
                  "code cap %.2f SOL" % (max([r.run["code_limit_lamports"] for r in live(runs)] or [0])
                                         / LAMPORTS_PER_SOL)])

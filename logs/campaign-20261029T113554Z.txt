@@ -1,0 +1,137 @@
+commit c062eb895de280e125412d1250de7afdba2d94a8, 2026-10-29T11:35:54Z, panel data/panels/mainnet-e1071-20261027T233028Z/panel.json, epoch indexes 0 to 3 from chain epoch 1071
+== epoch index 0 in chain epoch 1071, attempt 1, 2026-10-29T11:35:54Z
+ Container inside-the-block-plan-run-9f8319a38946 Creating 
+ Container inside-the-block-plan-run-9f8319a38946 Created 
+campaign: plan carries prereg manifest /repo/prereg/manifest-campaign.json sha256 8e7d834a090444b4b9f84b5faa6311a74233a468d3c074ab9a779c7ac12e480d
+campaign: gossip /repo/data/plans/campaign-mainnet-e1071-20261028T005742Z/cluster-nodes.json
+campaign: /repo/data/plans/campaign-mainnet-e1071-20261029T113601Z/plan.json
+campaign: epoch index 0 in epoch 1071, 88 bursts, 1056 probes, fees 5594520 lamports (5280000 base, 314520 priority); 213.9 ms per slot over 30 samples
+  round 3 (part 3): 16 bursts, slots 462872092 to 462876816 (4724 slots), about 29.10 11:56 UTC to 29.10 12:13 UTC
+  round 4 (part 4): 16 bursts, slots 462895568 to 462901120 (5552 slots), about 29.10 13:20 UTC to 29.10 13:39 UTC
+  round 5 (part 5): 16 bursts, slots 462989656 to 462995168 (5512 slots), about 29.10 18:55 UTC to 29.10 19:15 UTC
+  round 6 (part 6): 16 bursts, slots 463008832 to 463012868 (4036 slots), about 29.10 20:03 UTC to 29.10 20:18 UTC
+  round 7 (part 7): 24 bursts, slots 463092440 to 463102024 (9584 slots), about 30.10 01:02 UTC to 30.10 01:36 UTC
+campaign: note: round 0: its first window 462721436 lies before slot 462867242; round left out
+campaign: note: round 1: its first window 462769692 lies before slot 462867242; round left out
+campaign: note: round 2: its first window 462830128 lies before slot 462867242; round left out
+campaign: note: windows scanned with the gossip snapshot of 2026-10-28T00:57:37.293394Z
+ Container inside-the-block-probe-run-2788b3006e7e Creating 
+ Container inside-the-block-probe-run-2788b3006e7e Created 
+== live run: limit 13532630 lamports = committed 7873110 + plan fees 5594520 + overhead 65000
+ Container inside-the-block-probe-run-6b3133e0e2dd Creating 
+ Container inside-the-block-probe-run-6b3133e0e2dd Created 
+itb-probe info start {"bursts":88,"code_limit_lamports":50000000,"mode":"live","network":"mainnet","plan":"/data/plans/campaign-mainnet-e1071-20261029T113601Z/plan.json","rpc":"https://api.mainnet-beta.solana.com","spend_limit_lamports":13532630,"ws":"wss://api.mainnet-beta.solana.com"}
+itb-probe LIVE run campaign-mainnet-20261029T113603Z: 88 bursts, spend limit 13532630 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.mainnet-beta.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.mainnet-beta.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+itb-probe: getSignaturesForAddress: error -32019: Failed to query long-term storage; please try again
+payer  1 A83cEf5eLDeD4ZPrfQk4GPVVEPHAV5BSnYDbqS5UejWs: 1130701 lamports
+payer  2 5gPURLAGg1yZac1PP9CCh8HbjLVLUQLC2pnLH7YRxNAL: 1128510 lamports
+payer  3 DqRUEGrwnFfTkgZBXTFVtrzkDY7u2P3aTsfYVjYeN3rP: 1135540 lamports
+payer  4 36EgyHhnrtvn3PaowvB2jZuQ1LhDnHGn3iHjGisdYniS: 1130140 lamports
+payer  5 EXTTGDyJtm1sWVcCtM7aixCMs1rLkxuq5rJuVn8EdnL2: 1128560 lamports
+payer  6 6QkTEYWTfc2UUZCY9d1KpfpzvsoDnBzDAp476X1Zo2WR: 1131770 lamports
+payer  7 3wTkfA9KzsikH2fZCeRnHeogpW2WwXDCXCW3JhcYRDzD: 1121380 lamports
+payer  8 ADiNCG2yGWCq5NMfmhAR4pRGYgEBxP9DFyiaTjLmAEFw: 1134440 lamports
+payer  9 7EdoSvbRDnWLZPtsQRW1aCf7u3CZAzRYm6KQw1msQRAT: 1131750 lamports
+payer 10 CNhSXK5ECMWvEeLtvNBqUqs5EXAvCQ1EDh7ddbLtk9G6: 1131180 lamports
+payer 11 2wpMh4KpLZUVmDF64xk5cp6MWzP7JztGehJKugPVxmtF: 1136280 lamports
+payer 12 DcyqQNjwKTX2v3soDs1hLt1zzrEkpPorsq3wEAZvg8UH: 1133570 lamports
+payers total: 13573821 lamports
+
+probe run exit 1
+ Container inside-the-block-collect-run-066538703460 Creating 
+ Container inside-the-block-collect-run-066538703460 Created 
+collect: /repo/data/runs/campaign-mainnet-20261029T113603Z has no probes.jsonl
+
+collect campaign-mainnet-20261029T113603Z exit 1
+ Container inside-the-block-plan-run-a4bcd584d9cd Creating 
+ Container inside-the-block-plan-run-a4bcd584d9cd Created 
+channel: no probes.jsonl rows for run campaign-mainnet-20261029T113603Z
+
+ Container inside-the-block-probe-run-5e5a88c58609 Creating 
+ Container inside-the-block-probe-run-5e5a88c58609 Created 
+spend journal /state/spend-journal-mainnet.jsonl: 7873110 lamports committed, 4360230 settled, 672 bookings pending (3512880 lamports)
+raw data /data: 2844 probes, next burst_seq from data 237
+wallet 6N54RpCN4q3ZNCNgHPExMTa2YkAiSkDWqEaSqWwNznhJ
+payer  1 A83cEf5eLDeD4ZPrfQk4GPVVEPHAV5BSnYDbqS5UejWs: 1130701 lamports
+payer  2 5gPURLAGg1yZac1PP9CCh8HbjLVLUQLC2pnLH7YRxNAL: 1128510 lamports
+payer  3 DqRUEGrwnFfTkgZBXTFVtrzkDY7u2P3aTsfYVjYeN3rP: 1135540 lamports
+payer  4 36EgyHhnrtvn3PaowvB2jZuQ1LhDnHGn3iHjGisdYniS: 1130140 lamports
+payer  5 EXTTGDyJtm1sWVcCtM7aixCMs1rLkxuq5rJuVn8EdnL2: 1128560 lamports
+payer  6 6QkTEYWTfc2UUZCY9d1KpfpzvsoDnBzDAp476X1Zo2WR: 1131770 lamports
+payer  7 3wTkfA9KzsikH2fZCeRnHeogpW2WwXDCXCW3JhcYRDzD: 1121380 lamports
+payer  8 ADiNCG2yGWCq5NMfmhAR4pRGYgEBxP9DFyiaTjLmAEFw: 1134440 lamports
+payer  9 7EdoSvbRDnWLZPtsQRW1aCf7u3CZAzRYm6KQw1msQRAT: 1131750 lamports
+payer 10 CNhSXK5ECMWvEeLtvNBqUqs5EXAvCQ1EDh7ddbLtk9G6: 1131180 lamports
+payer 11 2wpMh4KpLZUVmDF64xk5cp6MWzP7JztGehJKugPVxmtF: 1136280 lamports
+payer 12 DcyqQNjwKTX2v3soDs1hLt1zzrEkpPorsq3wEAZvg8UH: 1133570 lamports
+payers total: 13573821 lamports
+== epoch index 0 in chain epoch 1071, attempt 2, 2026-10-29T11:55:40Z
+ Container inside-the-block-plan-run-660add48bc4c Creating 
+ Container inside-the-block-plan-run-660add48bc4c Created 
+campaign: plan carries prereg manifest /repo/prereg/manifest-campaign.json sha256 8e7d834a090444b4b9f84b5faa6311a74233a468d3c074ab9a779c7ac12e480d
+campaign: gossip /repo/data/plans/campaign-mainnet-e1071-20261028T005742Z/cluster-nodes.json
+campaign: /repo/data/plans/campaign-mainnet-e1071-20261029T115552Z/plan.json
+campaign: epoch index 0 in epoch 1071, 72 bursts, 864 probes, fees 4581240 lamports (4320000 base, 261240 priority); 214.5 ms per slot over 30 samples
+  round 4 (part 4): 16 bursts, slots 462895568 to 462901120 (5552 slots), about 29.10 13:20 UTC to 29.10 13:40 UTC
+  round 5 (part 5): 16 bursts, slots 462989656 to 462995168 (5512 slots), about 29.10 18:56 UTC to 29.10 19:16 UTC
+  round 6 (part 6): 16 bursts, slots 463008832 to 463012868 (4036 slots), about 29.10 20:05 UTC to 29.10 20:19 UTC
+  round 7 (part 7): 24 bursts, slots 463092440 to 463102024 (9584 slots), about 30.10 01:04 UTC to 30.10 01:38 UTC
+campaign: note: round 0: its first window 462721436 lies before slot 462872795; round left out
+campaign: note: round 1: its first window 462769692 lies before slot 462872795; round left out
+campaign: note: round 2: its first window 462830128 lies before slot 462872795; round left out
+campaign: note: round 3: its first window 462872092 lies before slot 462872795; round left out
+campaign: note: windows scanned with the gossip snapshot of 2026-10-28T00:57:37.293394Z
+ Container inside-the-block-probe-run-b26ff748f4f1 Creating 
+ Container inside-the-block-probe-run-b26ff748f4f1 Created 
+== live run: limit 12519350 lamports = committed 7873110 + plan fees 4581240 + overhead 65000
+ Container inside-the-block-probe-run-9c11164b0be2 Creating 
+ Container inside-the-block-probe-run-9c11164b0be2 Created 
+itb-probe info start {"bursts":72,"code_limit_lamports":50000000,"mode":"live","network":"mainnet","plan":"/data/plans/campaign-mainnet-e1071-20261029T115552Z/plan.json","rpc":"https://api.mainnet-beta.solana.com","spend_limit_lamports":12519350,"ws":"wss://api.mainnet-beta.solana.com"}
+itb-probe LIVE run campaign-mainnet-20261029T115554Z: 72 bursts, spend limit 12519350 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.mainnet-beta.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.mainnet-beta.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+payer  1 A83cEf5eLDeD4ZPrfQk4GPVVEPHAV5BSnYDbqS5UejWs: 1130701 lamports
+payer  2 5gPURLAGg1yZac1PP9CCh8HbjLVLUQLC2pnLH7YRxNAL: 1128510 lamports
+payer  3 DqRUEGrwnFfTkgZBXTFVtrzkDY7u2P3aTsfYVjYeN3rP: 1135540 lamports
+payer  4 36EgyHhnrtvn3PaowvB2jZuQ1LhDnHGn3iHjGisdYniS: 1130140 lamports
+payer  5 EXTTGDyJtm1sWVcCtM7aixCMs1rLkxuq5rJuVn8EdnL2: 1128560 lamports
+payer  6 6QkTEYWTfc2UUZCY9d1KpfpzvsoDnBzDAp476X1Zo2WR: 1131770 lamports
+payer  7 3wTkfA9KzsikH2fZCeRnHeogpW2WwXDCXCW3JhcYRDzD: 1121380 lamports
+payer  8 ADiNCG2yGWCq5NMfmhAR4pRGYgEBxP9DFyiaTjLmAEFw: 1134440 lamports
+payer  9 7EdoSvbRDnWLZPtsQRW1aCf7u3CZAzRYm6KQw1msQRAT: 1131750 lamports
+payer 10 CNhSXK5ECMWvEeLtvNBqUqs5EXAvCQ1EDh7ddbLtk9G6: 1131180 lamports
+payer 11 2wpMh4KpLZUVmDF64xk5cp6MWzP7JztGehJKugPVxmtF: 1136280 lamports
+payer 12 DcyqQNjwKTX2v3soDs1hLt1zzrEkpPorsq3wEAZvg8UH: 1133570 lamports
+payers total: 13573821 lamports
+itb-probe: getSignaturesForAddress: error -32019: Failed to query long-term storage; please try again
+
+probe run exit 1
+ Container inside-the-block-collect-run-487fd46052bb Creating 
+ Container inside-the-block-collect-run-487fd46052bb Created 
+collect: /repo/data/runs/campaign-mainnet-20261029T115554Z has no probes.jsonl
+
+collect campaign-mainnet-20261029T115554Z exit 1
+ Container inside-the-block-plan-run-4fed94e39e0e Creating 
+ Container inside-the-block-plan-run-4fed94e39e0e Created 
+channel: no probes.jsonl rows for run campaign-mainnet-20261029T115554Z
+
+ Container inside-the-block-probe-run-1815f4a30e98 Creating 
+ Container inside-the-block-probe-run-1815f4a30e98 Created 
+spend journal /state/spend-journal-mainnet.jsonl: 7873110 lamports committed, 4360230 settled, 672 bookings pending (3512880 lamports)
+raw data /data: 2844 probes, next burst_seq from data 237
+wallet 6N54RpCN4q3ZNCNgHPExMTa2YkAiSkDWqEaSqWwNznhJ
+payer  1 A83cEf5eLDeD4ZPrfQk4GPVVEPHAV5BSnYDbqS5UejWs: 1130701 lamports
+payer  2 5gPURLAGg1yZac1PP9CCh8HbjLVLUQLC2pnLH7YRxNAL: 1128510 lamports
+payer  3 DqRUEGrwnFfTkgZBXTFVtrzkDY7u2P3aTsfYVjYeN3rP: 1135540 lamports
+payer  4 36EgyHhnrtvn3PaowvB2jZuQ1LhDnHGn3iHjGisdYniS: 1130140 lamports
+payer  5 EXTTGDyJtm1sWVcCtM7aixCMs1rLkxuq5rJuVn8EdnL2: 1128560 lamports
+payer  6 6QkTEYWTfc2UUZCY9d1KpfpzvsoDnBzDAp476X1Zo2WR: 1131770 lamports
+payer  7 3wTkfA9KzsikH2fZCeRnHeogpW2WwXDCXCW3JhcYRDzD: 1121380 lamports
+payer  8 ADiNCG2yGWCq5NMfmhAR4pRGYgEBxP9DFyiaTjLmAEFw: 1134440 lamports
+payer  9 7EdoSvbRDnWLZPtsQRW1aCf7u3CZAzRYm6KQw1msQRAT: 1131750 lamports
+payer 10 CNhSXK5ECMWvEeLtvNBqUqs5EXAvCQ1EDh7ddbLtk9G6: 1131180 lamports
+payer 11 2wpMh4KpLZUVmDF64xk5cp6MWzP7JztGehJKugPVxmtF: 1136280 lamports
+payer 12 DcyqQNjwKTX2v3soDs1hLt1zzrEkpPorsq3wEAZvg8UH: 1133570 lamports
+payers total: 13573821 lamports

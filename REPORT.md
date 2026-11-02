@@ -13,24 +13,26 @@ The verdict for each class and moment condition comes from the campaign (section
 <!-- itb:begin panel -->
 | Leader identity | Class at selection | gossip clientId and version at the bursts | validators.app label | Stages | Bursts | Probes in window |
 |---|---|---|---|---|---|---|
-| `5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux` | AgaveBam | AgaveBam 4.3.2 | not taken | pilot | 4 | 48 |
-| `DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy` | AgaveBam | AgaveBam 4.3.2 | not taken | pilot | 5 | 60 |
-| `E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL` | JitoLabs | JitoLabs 4.3.2 | not taken | pilot | 4 | 48 |
-| `HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU` | JitoLabs | JitoLabs 4.3.2 | not taken | pilot | 4 | 48 |
-| `CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4` | HarmonicAgave | HarmonicAgave 4.3.2 | not taken | pilot | 5 | 60 |
-| `Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk` | HarmonicAgave | HarmonicAgave 4.3.2 | not taken | pilot | 4 | 48 |
-| `Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM` | HarmonicFiredancer | HarmonicFiredancer 26.10.4 | not taken | pilot | 5 | 60 |
-| `JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b` | HarmonicFiredancer | HarmonicFiredancer 26.10.4 | not taken | pilot | 4 | 36 |
-| `BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy` | Firedancer | Firedancer 26.10.4 | not taken | pilot | 4 | 48 |
+| `5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux` | AgaveBam | AgaveBam 4.3.2 | AgaveBam 4.3.2, not taken | pilot, campaign | 39 | 432 |
+| `DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy` | AgaveBam | AgaveBam 4.3.2, AgaveBam 4.4.0, AgaveBam 4.4.0-rc.1 | AgaveBam 4.3.2, AgaveBam 4.4.0, not taken | pilot, campaign | 40 | 445 |
+| `E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL` | JitoLabs | JitoLabs 4.3.2, JitoLabs 4.4.0 | JitoLabs 4.3.2, JitoLabs 4.4.0, not taken | pilot, campaign | 39 | 452 |
+| `HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU` | JitoLabs | JitoLabs 4.3.2, JitoLabs 4.4.0 | JitoLabs 4.3.2, JitoLabs 4.4.0, not taken | pilot, campaign | 39 | 445 |
+| `CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4` | HarmonicAgave | HarmonicAgave 4.3.2 | HarmonicAgave 4.3.2, not taken | pilot, campaign | 40 | 472 |
+| `Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk` | HarmonicAgave | HarmonicAgave 4.3.2, HarmonicAgave 4.4.0, HarmonicAgave 4.4.0-rc.1 | HarmonicAgave 4.3.2, HarmonicAgave 4.4.0, not taken | pilot, campaign | 39 | 445 |
+| `Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM` | HarmonicFiredancer | HarmonicFiredancer 26.10.4, HarmonicFiredancer 26.10.5 | HarmonicFiredancer 26.10.4, HarmonicFiredancer 26.10.5, not taken | pilot, campaign | 40 | 470 |
+| `JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b` | HarmonicFiredancer | HarmonicFiredancer 26.10.4, HarmonicFiredancer 26.10.5 | HarmonicFiredancer 26.10.4, HarmonicFiredancer 26.10.5, not taken | pilot, campaign | 39 | 448 |
+| `4VRs6A9zBRXz6MLcmQGsBiSoWE2JjHrmw7LintC3T4Nv` | Firedancer | Firedancer 26.10.4, Firedancer 26.10.5 | Firedancer 26.10.4, Firedancer 26.10.5 | campaign | 35 | 412 |
+| `BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy` | Firedancer | Firedancer 26.10.4, Firedancer 26.10.5 | Firedancer 26.10.4, Firedancer 26.10.5, JitoLabs 4.3.2, not taken | pilot, campaign | 39 | 461 |
 | `DNVZMSqeRH18Xa4MCTrb1MndNf3Npg4MEwqswo23eWkf` | Firedancer | Firedancer 26.10.4 | not taken | pilot | 4 | 48 |
-| `9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP` | FireBAM | FireBAM 26.10.4 | not taken | pilot | 5 | 60 |
+| `9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP` | FireBAM | FireBAM 26.10.4, FireBAM 26.10.5 | FireBAM 26.10.5, not taken | pilot, campaign | 40 | 474 |
+| `LA1NEzryoih6CQW3gwQqJQffK2mKgnXcjSQZSRpM3wc` | FireBAM | FireBAM 26.10.5 | FireBAM 26.10.5 | campaign | 35 | 410 |
 | `SSmBEooM7RkmyuXxuKgAhTvhQZ36Z3G2WsmLGJKoQLY` | FireBAM | FireBAM 26.10.4 | not taken | pilot | 4 | 43 |
-| `E3mDbFMr8yZcCAZx5wPUFCRmLX31u8Nnj4jPoPc54h3F` | Rakurai | Rakurai 4.3.2 | not taken | pilot | 4 | 48 |
-| `ana2y2YvQ3ZPMwm6qhnN3nJoUSiT3qx5Pvetkq9xcfY` | Rakurai | Rakurai 4.3.2 | not taken | pilot | 4 | 48 |
-| `5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS` | Agave | Agave 4.3.2 | not taken | pilot | 4 | 48 |
-| `7QQGNm3ptwinipDCyaCF7jY5katgmFUu1ieP2f7nwLpE` | Agave | Agave 4.3.2 | not taken | pilot | 4 | 48 |
+| `E3mDbFMr8yZcCAZx5wPUFCRmLX31u8Nnj4jPoPc54h3F` | Rakurai | Rakurai 4.3.2, Rakurai 4.4.0 | Rakurai 4.3.2, not taken | pilot, campaign | 39 | 456 |
+| `ana2y2YvQ3ZPMwm6qhnN3nJoUSiT3qx5Pvetkq9xcfY` | Rakurai | Rakurai 4.3.2, Rakurai 4.4.0 | Rakurai 4.3.2, Rakurai 4.4.0, not taken | pilot, campaign | 39 | 449 |
+| `5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS` | Agave | Agave 4.3.2 | Agave 4.3.2, not taken | pilot, campaign | 39 | 456 |
+| `7QQGNm3ptwinipDCyaCF7jY5katgmFUu1ieP2f7nwLpE` | Agave | Agave 4.3.2 | Agave 4.3.2, not taken | pilot, campaign | 39 | 450 |
 
-16 validators, 8 classes by gossip clientId.
+18 validators, 8 classes by gossip clientId.
 <!-- itb:end panel -->
 
 The bounty asks for at least 6 validators on at least 3 client or fork versions. The panel holds 16 validators in 8 classes by gossip `clientId`, two leaders per class, on two code bases. Agave 4.3.2 runs under the classes Agave, JitoLabs, AgaveBam, HarmonicAgave and Rakurai. Firedancer 26.10.4 runs under Firedancer and its two builder forks, FireBAM and HarmonicFiredancer. The label and the version come from `getClusterNodes` at the moment of each burst, and every pilot leader showed its selection class at every burst (section 5.6). The second label from validators.app is missing for the pilot, because the request failed on the measuring machine (section 9).
@@ -40,6 +42,12 @@ The bounty asks for at least 6 validators on at least 3 client or fork versions.
 <!-- itb:begin runs -->
 | Run | Stage | Network | Mode | Started (UTC) | Bursts | Probes | Delivered | Included | In target window | Commit |
 |---|---|---|---|---|---|---|---|---|---|---|
+| `campaign-mainnet-20261028T034521Z` | campaign | mainnet | live | 2026-10-28 03:46:01 | 0 | 0 | 0 | - | - | `6df1ef9` |
+| `campaign-mainnet-20261028T055501Z` | campaign | mainnet | live | 2026-10-28 05:55:36 | 56 | 672 | 660 | 652 | 629 | `5501e6e` |
+| `campaign-mainnet-20261029T120927Z` | campaign | mainnet | live | 2026-10-29 12:15:03 | 72 | 864 | 852 | 852 | 835 | `18a543c` |
+| `campaign-mainnet-20261030T015219Z` | campaign | mainnet | live | 2026-10-30 01:52:56 | 144 | 1728 | 1728 | 1728 | 1683 | `18a543c` |
+| `campaign-mainnet-20261031T014357Z` | campaign | mainnet | live | 2026-10-31 01:46:50 | 144 | 1728 | 1704 | 1704 | 1660 | `18a543c` |
+| `campaign-mainnet-20261101T041655Z` | campaign | mainnet | live | 2026-11-01 04:17:34 | 144 | 1728 | 1716 | 1716 | 1662 | `18a543c` |
 | `devnet-devnet-20261027T083150Z` | devnet | devnet | live | 2026-10-27 08:32:32 | 4 | 48 | 48 | 48 | 48 | `8ff9207` |
 | `dry-run-devnet-20261026T231756Z` | dry-run | devnet | dry-run | 2026-10-26 23:18:33 | 4 | 48 | 0 | - | - | `0e87340` |
 | `dry-run-devnet-20261027T082858Z` | dry-run | devnet | dry-run | 2026-10-27 08:29:35 | 4 | 48 | 0 | - | - | `8ff9207` |
@@ -66,8 +74,15 @@ Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no meas
 |---|---|---|---|---|---|---|---|
 | anchor of pilot | 2026-10-27 08:52:11 | `3jmFZBgsQoXTnKVS`... | - | - | 5000 | - | - |
 | anchor of campaign | 2026-10-28 01:21:59 | `3s1dQY9ZyEMQrHZs`... | - | - | 5000 | - | - |
+| `campaign-mainnet-20261028T034521Z` | 2026-10-28 03:46:01 | 0 probes included, 1 funding and closing transactions | 0 | 5000 | 5000 | 5000 | 13527630 |
+| `campaign-mainnet-20261028T055501Z` | 2026-10-28 05:55:36 | 652 probes included, 0 funding and closing transactions | 3400800 | 0 | 3400800 | - | 13532630 |
+| `campaign-mainnet-20261029T120927Z` | 2026-10-29 12:15:03 | 852 probes included, 0 funding and closing transactions | 4517910 | 0 | 4517910 | 4517910 | 12519350 |
+| `campaign-mainnet-20261030T015219Z` | 2026-10-30 01:52:56 | 1728 probes included, 1 funding and closing transactions | 9108840 | 5000 | 9113840 | 9113840 | 21452780 |
+| `campaign-mainnet-20261031T014357Z` | 2026-10-31 01:46:50 | 1704 probes included, 1 funding and closing transactions | 8946510 | 5000 | 8951510 | 8951510 | 30539620 |
+| `campaign-mainnet-20261101T041655Z` | 2026-11-01 04:17:34 | 1716 probes included, 1 funding and closing transactions | 9118800 | 5000 | 9123800 | 9123800 | 39589290 |
 | `pilot-mainnet-20261027T085253Z` | 2026-10-27 08:53:32 | 811 probes included, 13 funding and closing transactions | 4280230 | 65000 | 4345230 | 4345230 | 4376440 |
-| **total** |  |  |  |  | **4355230** (0.004355 SOL) |  | code cap 0.05 SOL |
+| `close-mainnet-20261102T055032Z` | 2026-11-02 05:50:32 | 12 closing transactions | - | 60000 | 60000 | - | - |
+| **total** |  |  |  |  | **39528090** (0.039528 SOL) |  | code cap 0.05 SOL |
 <!-- itb:end spend -->
 
 Probe fees are `meta.fee` of each included probe. Each transaction that funds or closes the payers carries one signature and pays the 5000-lamport base fee; the run's log names each of them under `fund_send` or `close_send`. The sender keeps a spend journal in a Docker volume and reconciles it with the chain at start. Its growth over the run, read from the log, equals what the table adds up. The limit of each run covers the worst case of every fee in its plan, and the compiled cap of 0.05 SOL stands above any limit.
@@ -454,83 +469,391 @@ Replayed on the 116 bursts with the correction taken from the same leader's othe
 ### 6.1 Bursts left out of the order tests
 
 <!-- itb:begin campaign-exclusions -->
-No runs of this stage yet.
+560 bursts, 411 kept for the order tests. Reasons a burst stays out: control-path 64, fewer-than-two-in-a-block 6, outside-timing-band 90.
 <!-- itb:end campaign-exclusions -->
 
 ### 6.2 Verdicts by class and cell
 
 <!-- itb:begin campaign-cells -->
-No runs of this stage yet.
+| Class | Arm | Timing | Bursts | Form | Detail | tau (95% CI; p) | Violated pair share (95% CI) |
+|---|---|---|---|---|---|---|---|
+| Agave | denominator | pre300 | 6 | divides | - | limit 0.636 (0.429 to 0.843; p 1.85e-11; mean of burst taus 0.636); send 0.056 (-0.154 to 0.265; p 0.558; mean of burst taus 0.056) | 0.069 (-0.071 to 0.210); 4 of 6 bursts without a violation |
+| Agave | denominator | slot2 | 8 | undetermined | - | limit 0.185 (0.052 to 0.317; p 0.0441; mean of burst taus 0.185); send 0.477 (0.287 to 0.667; p 2.9e-10; mean of burst taus 0.477) | 0.375 (0.285 to 0.465); 0 of 8 bursts without a violation |
+| Agave | equal_fee | pre300 | 7 | undetermined | - | send 0.095 (-0.085 to 0.275; p 0.266; mean of burst taus 0.095) | 0.452 (0.362 to 0.542); 0 of 7 bursts without a violation |
+| Agave | equal_fee | slot2 | 6 | arrival-rule | forward | send 1.000 (1.000 to 1.000; p 1.66e-52; mean of burst taus 1.000) | 0.000 (0.000 to 0.000); 6 of 6 bursts without a violation |
+| Agave | independent | pre300 | 8 | fee-rule | ties-unordered | cross -0.051 (-0.320 to 0.218; p 0.549; mean of burst taus -0.051); fee 0.440 (0.334 to 0.545; p 6.44e-08; mean of burst taus 0.440); ties -0.062 (-0.341 to 0.216; p 0.645; mean of burst taus -0.062) | 0.257 (0.199 to 0.315); 0 of 8 bursts without a violation |
+| Agave | independent | slot2 | 7 | arrival-rule | forward | cross 0.317 (0.151 to 0.484; p 0.000302; mean of burst taus 0.317); fee 0.029 (-0.309 to 0.366; p 0.768; mean of burst taus 0.029); ties 0.286 (-0.044 to 0.615; p 0.0226; mean of burst taus 0.286) | 0.484 (0.298 to 0.671); 0 of 7 bursts without a violation |
+| Agave | shared | pre300 | 6 | fee-rule | ties-unordered | cross 0.031 (-0.307 to 0.369; p 0.795; mean of burst taus 0.031); fee 0.905 (0.905 to 0.905; p 7.85e-34; mean of burst taus 0.905); ties -0.056 (-0.319 to 0.208; p 0.75; mean of burst taus -0.056) | 0.000 (0.000 to 0.000); 6 of 6 bursts without a violation |
+| Agave | shared | slot2 | 5 | mixed-rule | - | cross 0.600 (0.166 to 1.034; p 1.85e-09; mean of burst taus 0.600); fee 0.422 (-0.041 to 0.885; p 4.7e-05; mean of burst taus 0.422); ties 0.700 (0.430 to 0.970; p 4.82e-07; mean of burst taus 0.700) | 0.267 (0.011 to 0.523); 1 of 5 bursts without a violation |
+| AgaveBam | denominator | pre300 | 6 | divides | - | limit 0.739 (0.739 to 0.739; p 3.21e-18; mean of burst taus 0.739); send -0.131 (-0.506 to 0.243; p 0.154; mean of burst taus -0.131) | 0.000 (0.000 to 0.000); 6 of 6 bursts without a violation |
+| AgaveBam | denominator | slot2 | 5 | divides | - | limit 0.739 (0.739 to 0.739; p 2.97e-15; mean of burst taus 0.739); send -0.158 (-0.363 to 0.047; p 0.118; mean of burst taus -0.158) | 0.000 (0.000 to 0.000); 5 of 5 bursts without a violation |
+| AgaveBam | equal_fee | pre300 | 8 | undetermined | - | send -0.011 (-0.289 to 0.266; p 0.904; mean of burst taus -0.011) | 0.506 (0.367 to 0.644); 0 of 8 bursts without a violation |
+| AgaveBam | equal_fee | slot2 | 6 | arrival-rule | forward | send 0.773 (0.688 to 0.857; p 6.95e-22; mean of burst taus 0.773) | 0.114 (0.071 to 0.156); 0 of 6 bursts without a violation |
+| AgaveBam | independent | pre300 | 7 | fee-rule | ties-unordered | cross 0.058 (-0.188 to 0.304; p 0.572; mean of burst taus 0.058); fee 0.895 (0.880 to 0.910; p 5.82e-37; mean of burst taus 0.895); ties 0.119 (-0.128 to 0.366; p 0.375; mean of burst taus 0.119) | 0.005 (-0.003 to 0.014); 5 of 7 bursts without a violation |
+| AgaveBam | independent | slot2 | 4 | fee-rule | ties-unordered | cross 0.222 (0.049 to 0.396; p 0.086; mean of burst taus 0.222); fee 0.796 (0.620 to 0.972; p 1.37e-14; mean of burst taus 0.796); ties 0.125 (-0.209 to 0.459; p 0.515; mean of burst taus 0.125) | 0.060 (-0.037 to 0.158); 0 of 4 bursts without a violation |
+| AgaveBam | shared | pre300 | 5 | fee-rule | ties-unordered | cross -0.089 (-0.334 to 0.156; p 0.467; mean of burst taus -0.089); fee 0.905 (0.905 to 0.905; p 2.9e-28; mean of burst taus 0.905); ties -0.167 (-0.313 to -0.020; p 0.294; mean of burst taus -0.167) | 0.000 (0.000 to 0.000); 5 of 5 bursts without a violation |
+| AgaveBam | shared | slot2 | 2 | fee-rule | ties-reverse-arrival | cross -0.426 (-5.367 to 4.515; p 0.0223; mean of burst taus -0.426); fee 0.905 (0.905 to 0.905; p 1.46e-11; mean of burst taus 0.905); ties -0.583 (-3.760 to 2.593; p 0.0142; mean of burst taus -0.583) | 0.000 (0.000 to 0.000); 2 of 2 bursts without a violation |
+| FireBAM | denominator | pre300 | 5 | divides | - | limit 0.739 (0.739 to 0.739; p 2.97e-15; mean of burst taus 0.739); send 0.024 (-0.234 to 0.283; p 0.831; mean of burst taus 0.024) | 0.000 (0.000 to 0.000); 5 of 5 bursts without a violation |
+| FireBAM | denominator | slot2 | 6 | divides | - | limit 0.656 (0.446 to 0.867; p 2.18e-12; mean of burst taus 0.656); send 0.030 (-0.271 to 0.331; p 0.759; mean of burst taus 0.030) | 0.056 (-0.087 to 0.198); 5 of 6 bursts without a violation |
+| FireBAM | equal_fee | pre300 | 6 | undetermined | - | send -0.061 (-0.482 to 0.361; p 0.521; mean of burst taus -0.061) | 0.530 (0.319 to 0.741); 0 of 6 bursts without a violation |
+| FireBAM | equal_fee | slot2 | 6 | undetermined | - | send 0.035 (-0.425 to 0.495; p 0.717; mean of burst taus 0.035) | 0.482 (0.252 to 0.712); 0 of 6 bursts without a violation |
+| FireBAM | independent | pre300 | 6 | fee-rule | ties-unordered | cross 0.056 (-0.209 to 0.320; p 0.619; mean of burst taus 0.056); fee 0.860 (0.817 to 0.902; p 5.11e-27; mean of burst taus 0.860); ties -0.028 (-0.367 to 0.312; p 0.915; mean of burst taus -0.028) | 0.025 (0.001 to 0.048); 2 of 6 bursts without a violation |
+| FireBAM | independent | slot2 | 8 | fee-rule | ties-unordered | cross -0.093 (-0.263 to 0.078; p 0.316; mean of burst taus -0.093); fee 0.800 (0.671 to 0.929; p 2e-28; mean of burst taus 0.800); ties -0.167 (-0.516 to 0.183; p 0.166; mean of burst taus -0.167) | 0.058 (-0.014 to 0.129); 2 of 8 bursts without a violation |
+| FireBAM | shared | pre300 | 4 | fee-rule | ties-unordered | cross 0.083 (-0.005 to 0.172; p 0.548; mean of burst taus 0.083); fee 0.905 (0.905 to 0.905; p 1.07e-22; mean of burst taus 0.905); ties -0.208 (-1.341 to 0.925; p 0.241; mean of burst taus -0.208) | 0.000 (0.000 to 0.000); 4 of 4 bursts without a violation |
+| FireBAM | shared | slot2 | 6 | fee-rule | ties-unordered | cross 0.025 (-0.348 to 0.397; p 0.84; mean of burst taus 0.025); fee 0.905 (0.905 to 0.905; p 7.85e-34; mean of burst taus 0.905); ties 0.139 (-0.440 to 0.718; p 0.338; mean of burst taus 0.139) | 0.000 (0.000 to 0.000); 6 of 6 bursts without a violation |
+| Firedancer | denominator | pre300 | 8 | divides | - | limit 0.739 (0.739 to 0.739; p 3.76e-24; mean of burst taus 0.739); send -0.352 (-0.486 to -0.219; p 5.07e-06; mean of burst taus -0.352) | 0.000 (0.000 to 0.000); 8 of 8 bursts without a violation |
+| Firedancer | denominator | slot2 | 6 | divides | - | limit 0.636 (0.372 to 0.900; p 1.85e-11; mean of burst taus 0.636); send -0.202 (-0.743 to 0.339; p 0.0266; mean of burst taus -0.202) | 0.069 (-0.109 to 0.248); 5 of 6 bursts without a violation |
+| Firedancer | equal_fee | pre300 | 8 | arrival-rule | reverse | send -1.000 (-1.000 to -1.000; p 7.22e-70; mean of burst taus -1.000) | 1.000 (1.000 to 1.000); 0 of 8 bursts without a violation |
+| Firedancer | equal_fee | slot2 | 5 | undetermined | - | send 0.193 (-0.646 to 1.033; p 0.0808; mean of burst taus 0.096) | 0.403 (-0.016 to 0.823); 1 of 5 bursts without a violation |
+| Firedancer | independent | pre300 | 8 | fee-rule | ties-reverse-arrival | cross -0.032 (-0.358 to 0.293; p 0.745; mean of burst taus -0.032); fee 0.905 (0.905 to 0.905; p 5.74e-45; mean of burst taus 0.905); ties -0.729 (-0.911 to -0.548; p 1.43e-11; mean of burst taus -0.729) | 0.000 (0.000 to 0.000); 8 of 8 bursts without a violation |
+| Firedancer | independent | slot2 | 8 | fee-rule | ties-reverse-arrival | cross 0.065 (-0.216 to 0.346; p 0.499; mean of burst taus 0.065); fee 0.905 (0.905 to 0.905; p 5.74e-45; mean of burst taus 0.905); ties -0.729 (-0.952 to -0.507; p 1.43e-11; mean of burst taus -0.729) | 0.000 (0.000 to 0.000); 8 of 8 bursts without a violation |
+| Firedancer | shared | pre300 | 7 | fee-rule | ties-reverse-arrival | cross -0.085 (-0.333 to 0.164; p 0.406; mean of burst taus -0.085); fee 0.905 (0.905 to 0.905; p 2.12e-39; mean of burst taus 0.905); ties -0.905 (-1.026 to -0.783; p 1.43e-16; mean of burst taus -0.905) | 0.000 (0.000 to 0.000); 7 of 7 bursts without a violation |
+| Firedancer | shared | slot2 | 6 | fee-rule | ties-reverse-arrival | cross 0.080 (-0.190 to 0.350; p 0.47; mean of burst taus 0.080); fee 0.905 (0.905 to 0.905; p 7.85e-34; mean of burst taus 0.905); ties -0.917 (-1.063 to -0.770; p 8.28e-15; mean of burst taus -0.917) | 0.000 (0.000 to 0.000); 6 of 6 bursts without a violation |
+| HarmonicAgave | denominator | pre300 | 6 | undetermined | - | limit 0.150 (-0.021 to 0.322; p 0.161; mean of burst taus 0.150); send 0.081 (-0.178 to 0.340; p 0.387; mean of burst taus 0.081) | 0.398 (0.282 to 0.514); 0 of 6 bursts without a violation |
+| HarmonicAgave | denominator | slot2 | 7 | divides | - | limit 0.463 (0.217 to 0.709; p 7.17e-07; mean of burst taus 0.463); send 0.108 (-0.148 to 0.365; p 0.205; mean of burst taus 0.108) | 0.187 (0.020 to 0.353); 2 of 7 bursts without a violation |
+| HarmonicAgave | equal_fee | pre300 | 7 | undetermined | - | send -0.047 (-0.164 to 0.071; p 0.606; mean of burst taus -0.023) | 0.523 (0.464 to 0.582); 0 of 7 bursts without a violation |
+| HarmonicAgave | equal_fee | slot2 | 6 | arrival-rule | forward | send 0.682 (0.555 to 0.809; p 2.6e-16; mean of burst taus 0.682) | 0.159 (0.096 to 0.222); 0 of 6 bursts without a violation |
+| HarmonicAgave | independent | pre300 | 8 | undetermined | - | cross -0.060 (-0.222 to 0.102; p 0.471; mean of burst taus -0.060); fee 0.214 (0.105 to 0.322; p 0.0108; mean of burst taus 0.214); ties 0.167 (-0.057 to 0.390; p 0.166; mean of burst taus 0.167) | 0.382 (0.322 to 0.442); 0 of 8 bursts without a violation |
+| HarmonicAgave | independent | slot2 | 6 | undetermined | - | cross 0.080 (-0.233 to 0.394; p 0.421; mean of burst taus 0.080); fee 0.173 (-0.195 to 0.541; p 0.0767; mean of burst taus 0.173); ties 0.028 (-0.273 to 0.329; p 0.915; mean of burst taus 0.028) | 0.404 (0.201 to 0.608); 0 of 6 bursts without a violation |
+| HarmonicAgave | shared | pre300 | 4 | fee-rule | ties-unordered | cross -0.046 (-0.384 to 0.292; p 0.747; mean of burst taus -0.046); fee 0.779 (0.626 to 0.932; p 8.37e-14; mean of burst taus 0.779); ties -0.042 (-0.705 to 0.621; p 0.897; mean of burst taus -0.042) | 0.069 (-0.015 to 0.154); 1 of 4 bursts without a violation |
+| HarmonicAgave | shared | slot2 | 7 | fee-rule | ties-unordered | cross 0.180 (-0.033 to 0.393; p 0.0668; mean of burst taus 0.180); fee 0.766 (0.674 to 0.858; p 2.99e-22; mean of burst taus 0.766); ties -0.048 (-0.325 to 0.230; p 0.768; mean of burst taus -0.048) | 0.077 (0.026 to 0.128); 1 of 7 bursts without a violation |
+| HarmonicFiredancer | denominator | pre300 | 8 | divides | - | limit 0.667 (0.497 to 0.837; p 8.06e-17; mean of burst taus 0.667); send 0.045 (-0.114 to 0.205; p 0.578; mean of burst taus 0.045) | 0.049 (-0.066 to 0.164); 7 of 8 bursts without a violation |
+| HarmonicFiredancer | denominator | slot2 | 7 | undetermined | - | limit 0.123 (-0.163 to 0.409; p 0.216; mean of burst taus 0.123); send -0.121 (-0.290 to 0.048; p 0.154; mean of burst taus -0.121) | 0.417 (0.223 to 0.610); 0 of 7 bursts without a violation |
+| HarmonicFiredancer | equal_fee | pre300 | 6 | undetermined | - | send 0.187 (-0.225 to 0.599; p 0.0407; mean of burst taus 0.187) | 0.407 (0.201 to 0.613); 0 of 6 bursts without a violation |
+| HarmonicFiredancer | equal_fee | slot2 | 7 | arrival-rule | forward | send 0.647 (0.538 to 0.756; p 4.19e-16; mean of burst taus 0.644) | 0.176 (0.122 to 0.231); 0 of 7 bursts without a violation |
+| HarmonicFiredancer | independent | pre300 | 8 | fee-rule | ties-unordered | cross -0.032 (-0.365 to 0.300; p 0.742; mean of burst taus -0.032); fee 0.737 (0.637 to 0.837; p 6.67e-23; mean of burst taus 0.737); ties 0.167 (0.000 to 0.333; p 0.166; mean of burst taus 0.167) | 0.093 (0.037 to 0.148); 1 of 8 bursts without a violation |
+| HarmonicFiredancer | independent | slot2 | 7 | undetermined | - | cross -0.217 (-0.363 to -0.071; p 0.013; mean of burst taus -0.217); fee 0.168 (-0.062 to 0.397; p 0.0636; mean of burst taus 0.168); ties -0.119 (-0.424 to 0.186; p 0.375; mean of burst taus -0.119) | 0.407 (0.280 to 0.534); 0 of 7 bursts without a violation |
+| HarmonicFiredancer | shared | pre300 | 7 | fee-rule | ties-unordered | cross 0.217 (-0.072 to 0.506; p 0.0261; mean of burst taus 0.217); fee 0.727 (0.646 to 0.809; p 1.45e-19; mean of burst taus 0.727); ties 0.024 (-0.388 to 0.436; p 0.922; mean of burst taus 0.024) | 0.098 (0.053 to 0.143); 0 of 7 bursts without a violation |
+| HarmonicFiredancer | shared | slot2 | 4 | fee-rule | ties-unordered | cross 0.000 (-0.357 to 0.357; p 1; mean of burst taus 0.000); fee 0.771 (0.673 to 0.868; p 1.97e-13; mean of burst taus 0.771); ties -0.167 (-0.473 to 0.140; p 0.362; mean of burst taus -0.167) | 0.074 (0.020 to 0.128); 0 of 4 bursts without a violation |
+| JitoLabs | denominator | pre300 | 8 | divides | - | limit 0.385 (0.112 to 0.657; p 1.48e-05; mean of burst taus 0.385); send 0.042 (-0.172 to 0.255; p 0.612; mean of burst taus 0.042) | 0.240 (0.055 to 0.424); 3 of 8 bursts without a violation |
+| JitoLabs | denominator | slot2 | 6 | undetermined | - | limit 0.157 (0.023 to 0.292; p 0.142; mean of burst taus 0.157); send 0.207 (-0.074 to 0.488; p 0.023; mean of burst taus 0.207) | 0.394 (0.302 to 0.485); 0 of 6 bursts without a violation |
+| JitoLabs | equal_fee | pre300 | 7 | undetermined | - | send 0.160 (-0.119 to 0.439; p 0.0583; mean of burst taus 0.160) | 0.420 (0.280 to 0.560); 0 of 7 bursts without a violation |
+| JitoLabs | equal_fee | slot2 | 8 | arrival-rule | forward | send 1.000 (1.000 to 1.000; p 7.22e-70; mean of burst taus 1.000) | 0.000 (0.000 to 0.000); 8 of 8 bursts without a violation |
+| JitoLabs | independent | pre300 | 8 | fee-rule | ties-unordered | cross -0.014 (-0.224 to 0.196; p 0.886; mean of burst taus -0.014); fee 0.419 (0.289 to 0.548; p 2.89e-07; mean of burst taus 0.419); ties -0.083 (-0.399 to 0.233; p 0.519; mean of burst taus -0.083) | 0.269 (0.197 to 0.340); 0 of 8 bursts without a violation |
+| JitoLabs | independent | slot2 | 7 | undetermined | - | cross 0.196 (0.079 to 0.312; p 0.0236; mean of burst taus 0.196); fee -0.067 (-0.366 to 0.232; p 0.47; mean of burst taus -0.067); ties 0.381 (0.104 to 0.658; p 0.00198; mean of burst taus 0.381) | 0.537 (0.372 to 0.702); 0 of 7 bursts without a violation |
+| JitoLabs | shared | pre300 | 5 | fee-rule | ties-arrival | cross 0.148 (-0.137 to 0.433; p 0.216; mean of burst taus 0.148); fee 0.905 (0.905 to 0.905; p 2.9e-28; mean of burst taus 0.905); ties 0.500 (0.061 to 0.939; p 0.000546; mean of burst taus 0.500) | 0.000 (0.000 to 0.000); 5 of 5 bursts without a violation |
+| JitoLabs | shared | slot2 | 6 | arrival-rule | forward | cross 0.654 (0.499 to 0.809; p 9.3e-14; mean of burst taus 0.654); fee 0.179 (-0.113 to 0.470; p 0.0674; mean of burst taus 0.179); ties 0.722 (0.483 to 0.961; p 9.03e-09; mean of burst taus 0.722) | 0.401 (0.240 to 0.562); 0 of 6 bursts without a violation |
+| Rakurai | denominator | pre300 | 7 | divides | - | limit 0.510 (0.185 to 0.835; p 3.17e-08; mean of burst taus 0.510); send 0.069 (-0.205 to 0.344; p 0.423; mean of burst taus 0.069) | 0.155 (-0.065 to 0.375); 4 of 7 bursts without a violation |
+| Rakurai | denominator | slot2 | 5 | undetermined | - | limit 0.164 (0.062 to 0.266; p 0.164; mean of burst taus 0.164); send 0.188 (-0.317 to 0.692; p 0.0612; mean of burst taus 0.188) | 0.389 (0.320 to 0.458); 0 of 5 bursts without a violation |
+| Rakurai | equal_fee | pre300 | 8 | undetermined | - | send -0.057 (-0.230 to 0.116; p 0.483; mean of burst taus -0.057) | 0.528 (0.442 to 0.615); 0 of 8 bursts without a violation |
+| Rakurai | equal_fee | slot2 | 6 | arrival-rule | forward | send 1.000 (1.000 to 1.000; p 5.41e-48; mean of burst taus 1.000) | 0.000 (0.000 to 0.000); 6 of 6 bursts without a violation |
+| Rakurai | independent | pre300 | 8 | fee-rule | ties-unordered | cross 0.051 (-0.196 to 0.298; p 0.578; mean of burst taus 0.051); fee 0.360 (0.066 to 0.654; p 1.22e-05; mean of burst taus 0.360); ties -0.125 (-0.391 to 0.141; p 0.31; mean of burst taus -0.125) | 0.301 (0.138 to 0.463); 1 of 8 bursts without a violation |
+| Rakurai | independent | slot2 | 6 | arrival-rule | forward | cross 0.426 (0.211 to 0.641; p 3.09e-06; mean of burst taus 0.426); fee 0.067 (-0.139 to 0.273; p 0.506; mean of burst taus 0.067); ties 0.389 (0.103 to 0.675; p 0.00361; mean of burst taus 0.389) | 0.463 (0.349 to 0.577); 0 of 6 bursts without a violation |
+| Rakurai | shared | pre300 | 7 | fee-rule | ties-unordered | cross -0.069 (-0.380 to 0.242; p 0.503; mean of burst taus -0.069); fee 0.905 (0.905 to 0.905; p 2.12e-39; mean of burst taus 0.905); ties 0.024 (-0.314 to 0.362; p 0.922; mean of burst taus 0.024) | 0.000 (0.000 to 0.000); 7 of 7 bursts without a violation |
+| Rakurai | shared | slot2 | 5 | arrival-rule | forward | cross 0.733 (0.433 to 1.034; p 1.56e-14; mean of burst taus 0.733); fee 0.087 (-0.582 to 0.756; p 0.429; mean of burst taus 0.087); ties 0.600 (0.041 to 1.159; p 2.38e-05; mean of burst taus 0.600) | 0.452 (0.082 to 0.822); 1 of 5 bursts without a violation |
 <!-- itb:end campaign-cells -->
 
 Hypotheses H3 and H4 take tau send of the equal-fee arm before the window under the rules of [campaign addendum, section 3](prereg/CAMPAIGN-ADDENDUM.md). The other classes stand beside them for comparison, without a judgement on either hypothesis.
 
 <!-- itb:begin campaign-hypotheses -->
-No runs of this stage yet.
+| Class | Hypothesis | Bursts | tau send, equal fee, pre300 (95% CI) | p | Significant after Holm | TOST passed after Holm | Outcome |
+|---|---|---|---|---|---|---|---|
+| AgaveBam | comparison | 8 | -0.011 (-0.289 to 0.266) | 0.904 | no | no | - |
+| JitoLabs | comparison | 7 | 0.160 (-0.119 to 0.439) | 0.0583 | no | no | - |
+| HarmonicAgave | comparison | 7 | -0.047 (-0.164 to 0.071) | 0.606 | no | no | - |
+| HarmonicFiredancer | comparison | 6 | 0.187 (-0.225 to 0.599) | 0.0407 | no | no | - |
+| Firedancer | H3 | 8 | -1.000 (-1.000 to -1.000) | 7.22e-70 | yes | no | holds |
+| FireBAM | comparison | 6 | -0.061 (-0.482 to 0.361) | 0.521 | no | no | - |
+| Rakurai | comparison | 8 | -0.057 (-0.230 to 0.116) | 0.483 | no | no | - |
+| Agave | H4 | 7 | 0.095 (-0.085 to 0.275) | 0.266 | no | no | undecided |
 <!-- itb:end campaign-hypotheses -->
 
 ### 6.3 Builder against its base
 
 <!-- itb:begin campaign-pairs -->
-No runs of this stage yet.
+| Pair | Timing | Statistic | Strata | Mean difference | p | TOST p | Label test | Form |
+|---|---|---|---|---|---|---|---|---|
+| AgaveBam vs JitoLabs | pre300 | fee | 11 | 0.286 | 0.0156 | 0.859 | exact over 2048 | undetermined |
+| AgaveBam vs JitoLabs | pre300 | cross | 11 | -0.054 | 0.585 | 0.0561 | exact over 2048 | undetermined |
+| AgaveBam vs JitoLabs | slot2 | fee | 5 | 0.750 | 0.0625 | 0.982 | exact over 32 | undetermined |
+| AgaveBam vs JitoLabs | slot2 | cross | 5 | -0.467 | 0.375 | 0.77 | exact over 32 | undetermined |
+| FireBAM vs Firedancer | pre300 | fee | 10 | -0.027 | 0.125 | 8.03e-08 | exact over 1024 | builder-does-not-change-order |
+| FireBAM vs Firedancer | pre300 | cross | 10 | 0.130 | 0.273 | 0.262 | exact over 1024 | undetermined |
+| FireBAM vs Firedancer | slot2 | fee | 13 | -0.064 | 0.0312 | 0.00131 | exact over 8192 | builder-does-not-change-order |
+| FireBAM vs Firedancer | slot2 | cross | 13 | -0.165 | 0.17 | 0.376 | exact over 8192 | undetermined |
+| HarmonicAgave vs Agave | pre300 | fee | 12 | -0.193 | 0.00488 | 0.439 | exact over 4096 | undetermined |
+| HarmonicAgave vs Agave | pre300 | cross | 12 | 0.003 | 1 | 0.0314 | exact over 4096 | undetermined |
+| HarmonicAgave vs Agave | slot2 | fee | 10 | 0.298 | 0.111 | 0.725 | exact over 1024 | undetermined |
+| HarmonicAgave vs Agave | slot2 | cross | 10 | -0.359 | 0.0391 | 0.856 | exact over 1024 | undetermined |
+| HarmonicFiredancer vs Firedancer | pre300 | fee | 15 | -0.172 | 0.000122 | 0.154 | exact over 32768 | builder-changes-order |
+| HarmonicFiredancer vs Firedancer | pre300 | cross | 15 | 0.141 | 0.246 | 0.304 | exact over 32768 | undetermined |
+| HarmonicFiredancer vs Firedancer | slot2 | fee | 11 | -0.518 | 0.000977 | 0.992 | exact over 2048 | builder-changes-order |
+| HarmonicFiredancer vs Firedancer | slot2 | cross | 11 | -0.222 | 0.104 | 0.567 | exact over 2048 | undetermined |
 <!-- itb:end campaign-pairs -->
 
 ### 6.4 Segments between ticks
 
 <!-- itb:begin campaign-rounds -->
-No runs of this stage yet.
+Arm equal_fee, timing slot2: 50 bursts, 18 with probes in two segments or more, share of bursts with a negative S 0.00. Pooled: tau 0.757, p 6.56e-59. Form: **supported**.
+
+| Class | Bursts | tau send rank against segment | p |
+|---|---|---|---|
+| AgaveBam | 6 | 0.854 | 1.31e-27 |
+| FireBAM | 1 | 0.769 | 0.000505 |
+| HarmonicAgave | 5 | 0.705 | 1.11e-14 |
+| HarmonicFiredancer | 6 | 0.669 | 1.13e-14 |
 <!-- itb:end campaign-rounds -->
 
 ### 6.5 Inclusion
 
 <!-- itb:begin campaign-inclusion -->
-No runs of this stage yet.
+| Class | Timing | Path | Priority fee (lamports) | Delivered | In target window | Share |
+|---|---|---|---|---|---|---|
+| Agave | pre300 | quic | 0 | 93 | 93 | 1.00 |
+| Agave | pre300 | quic | 10 | 93 | 93 | 1.00 |
+| Agave | pre300 | quic | 100 | 93 | 93 | 1.00 |
+| Agave | pre300 | quic | 1000 | 93 | 93 | 1.00 |
+| Agave | pre300 | rpc | 0 | 12 | 7 | 0.58 |
+| Agave | pre300 | rpc | 10 | 12 | 5 | 0.42 |
+| Agave | pre300 | rpc | 100 | 12 | 7 | 0.58 |
+| Agave | pre300 | rpc | 1000 | 12 | 7 | 0.58 |
+| Agave | slot2 | quic | 0 | 93 | 93 | 1.00 |
+| Agave | slot2 | quic | 10 | 93 | 93 | 1.00 |
+| Agave | slot2 | quic | 100 | 93 | 93 | 1.00 |
+| Agave | slot2 | quic | 1000 | 93 | 93 | 1.00 |
+| Agave | slot2 | rpc | 0 | 12 | 11 | 0.92 |
+| Agave | slot2 | rpc | 10 | 12 | 12 | 1.00 |
+| Agave | slot2 | rpc | 100 | 12 | 10 | 0.83 |
+| Agave | slot2 | rpc | 1000 | 12 | 7 | 0.58 |
+| AgaveBam | pre300 | quic | 0 | 93 | 93 | 1.00 |
+| AgaveBam | pre300 | quic | 10 | 93 | 93 | 1.00 |
+| AgaveBam | pre300 | quic | 100 | 93 | 93 | 1.00 |
+| AgaveBam | pre300 | quic | 1000 | 93 | 93 | 1.00 |
+| AgaveBam | pre300 | rpc | 0 | 12 | 8 | 0.67 |
+| AgaveBam | pre300 | rpc | 10 | 12 | 11 | 0.92 |
+| AgaveBam | pre300 | rpc | 100 | 12 | 12 | 1.00 |
+| AgaveBam | pre300 | rpc | 1000 | 12 | 11 | 0.92 |
+| AgaveBam | slot2 | quic | 0 | 87 | 87 | 1.00 |
+| AgaveBam | slot2 | quic | 10 | 87 | 87 | 1.00 |
+| AgaveBam | slot2 | quic | 100 | 75 | 75 | 1.00 |
+| AgaveBam | slot2 | quic | 1000 | 75 | 75 | 1.00 |
+| AgaveBam | slot2 | rpc | 0 | 12 | 9 | 0.75 |
+| AgaveBam | slot2 | rpc | 10 | 12 | 6 | 0.50 |
+| AgaveBam | slot2 | rpc | 100 | 12 | 9 | 0.75 |
+| AgaveBam | slot2 | rpc | 1000 | 12 | 7 | 0.58 |
+| FireBAM | pre300 | quic | 0 | 93 | 90 | 0.97 |
+| FireBAM | pre300 | quic | 10 | 93 | 93 | 1.00 |
+| FireBAM | pre300 | quic | 100 | 93 | 93 | 1.00 |
+| FireBAM | pre300 | quic | 1000 | 93 | 93 | 1.00 |
+| FireBAM | pre300 | rpc | 0 | 12 | 10 | 0.83 |
+| FireBAM | pre300 | rpc | 10 | 12 | 10 | 0.83 |
+| FireBAM | pre300 | rpc | 100 | 12 | 12 | 1.00 |
+| FireBAM | pre300 | rpc | 1000 | 12 | 10 | 0.83 |
+| FireBAM | slot2 | quic | 0 | 93 | 93 | 1.00 |
+| FireBAM | slot2 | quic | 10 | 93 | 93 | 1.00 |
+| FireBAM | slot2 | quic | 100 | 93 | 93 | 1.00 |
+| FireBAM | slot2 | quic | 1000 | 93 | 93 | 1.00 |
+| FireBAM | slot2 | rpc | 0 | 12 | 11 | 0.92 |
+| FireBAM | slot2 | rpc | 10 | 12 | 10 | 0.83 |
+| FireBAM | slot2 | rpc | 100 | 12 | 9 | 0.75 |
+| FireBAM | slot2 | rpc | 1000 | 12 | 11 | 0.92 |
+| Firedancer | pre300 | quic | 0 | 93 | 93 | 1.00 |
+| Firedancer | pre300 | quic | 10 | 93 | 93 | 1.00 |
+| Firedancer | pre300 | quic | 100 | 93 | 93 | 1.00 |
+| Firedancer | pre300 | quic | 1000 | 93 | 93 | 1.00 |
+| Firedancer | pre300 | rpc | 0 | 12 | 11 | 0.92 |
+| Firedancer | pre300 | rpc | 10 | 12 | 9 | 0.75 |
+| Firedancer | pre300 | rpc | 100 | 12 | 11 | 0.92 |
+| Firedancer | pre300 | rpc | 1000 | 12 | 7 | 0.58 |
+| Firedancer | slot2 | quic | 0 | 93 | 93 | 1.00 |
+| Firedancer | slot2 | quic | 10 | 93 | 93 | 1.00 |
+| Firedancer | slot2 | quic | 100 | 93 | 93 | 1.00 |
+| Firedancer | slot2 | quic | 1000 | 93 | 93 | 1.00 |
+| Firedancer | slot2 | rpc | 0 | 12 | 10 | 0.83 |
+| Firedancer | slot2 | rpc | 10 | 12 | 12 | 1.00 |
+| Firedancer | slot2 | rpc | 100 | 12 | 12 | 1.00 |
+| Firedancer | slot2 | rpc | 1000 | 12 | 9 | 0.75 |
+| HarmonicAgave | pre300 | quic | 0 | 93 | 93 | 1.00 |
+| HarmonicAgave | pre300 | quic | 10 | 93 | 81 | 0.87 |
+| HarmonicAgave | pre300 | quic | 100 | 93 | 93 | 1.00 |
+| HarmonicAgave | pre300 | quic | 1000 | 93 | 93 | 1.00 |
+| HarmonicAgave | pre300 | rpc | 0 | 12 | 9 | 0.75 |
+| HarmonicAgave | pre300 | rpc | 10 | 12 | 11 | 0.92 |
+| HarmonicAgave | pre300 | rpc | 100 | 12 | 7 | 0.58 |
+| HarmonicAgave | pre300 | rpc | 1000 | 12 | 10 | 0.83 |
+| HarmonicAgave | slot2 | quic | 0 | 93 | 93 | 1.00 |
+| HarmonicAgave | slot2 | quic | 10 | 93 | 93 | 1.00 |
+| HarmonicAgave | slot2 | quic | 100 | 93 | 93 | 1.00 |
+| HarmonicAgave | slot2 | quic | 1000 | 93 | 93 | 1.00 |
+| HarmonicAgave | slot2 | rpc | 0 | 12 | 9 | 0.75 |
+| HarmonicAgave | slot2 | rpc | 10 | 12 | 10 | 0.83 |
+| HarmonicAgave | slot2 | rpc | 100 | 12 | 11 | 0.92 |
+| HarmonicAgave | slot2 | rpc | 1000 | 12 | 10 | 0.83 |
+| HarmonicFiredancer | pre300 | quic | 0 | 93 | 93 | 1.00 |
+| HarmonicFiredancer | pre300 | quic | 10 | 93 | 93 | 1.00 |
+| HarmonicFiredancer | pre300 | quic | 100 | 93 | 93 | 1.00 |
+| HarmonicFiredancer | pre300 | quic | 1000 | 93 | 93 | 1.00 |
+| HarmonicFiredancer | pre300 | rpc | 0 | 12 | 9 | 0.75 |
+| HarmonicFiredancer | pre300 | rpc | 10 | 12 | 12 | 1.00 |
+| HarmonicFiredancer | pre300 | rpc | 100 | 12 | 10 | 0.83 |
+| HarmonicFiredancer | pre300 | rpc | 1000 | 12 | 11 | 0.92 |
+| HarmonicFiredancer | slot2 | quic | 0 | 93 | 93 | 1.00 |
+| HarmonicFiredancer | slot2 | quic | 10 | 93 | 93 | 1.00 |
+| HarmonicFiredancer | slot2 | quic | 100 | 93 | 93 | 1.00 |
+| HarmonicFiredancer | slot2 | quic | 1000 | 93 | 93 | 1.00 |
+| HarmonicFiredancer | slot2 | rpc | 0 | 12 | 9 | 0.75 |
+| HarmonicFiredancer | slot2 | rpc | 10 | 12 | 8 | 0.67 |
+| HarmonicFiredancer | slot2 | rpc | 100 | 12 | 8 | 0.67 |
+| HarmonicFiredancer | slot2 | rpc | 1000 | 12 | 11 | 0.92 |
+| JitoLabs | pre300 | quic | 0 | 93 | 93 | 1.00 |
+| JitoLabs | pre300 | quic | 10 | 93 | 93 | 1.00 |
+| JitoLabs | pre300 | quic | 100 | 93 | 93 | 1.00 |
+| JitoLabs | pre300 | quic | 1000 | 93 | 93 | 1.00 |
+| JitoLabs | pre300 | rpc | 0 | 12 | 8 | 0.67 |
+| JitoLabs | pre300 | rpc | 10 | 12 | 9 | 0.75 |
+| JitoLabs | pre300 | rpc | 100 | 12 | 11 | 0.92 |
+| JitoLabs | pre300 | rpc | 1000 | 12 | 8 | 0.67 |
+| JitoLabs | slot2 | quic | 0 | 93 | 93 | 1.00 |
+| JitoLabs | slot2 | quic | 10 | 93 | 93 | 1.00 |
+| JitoLabs | slot2 | quic | 100 | 93 | 93 | 1.00 |
+| JitoLabs | slot2 | quic | 1000 | 81 | 81 | 1.00 |
+| JitoLabs | slot2 | rpc | 0 | 12 | 9 | 0.75 |
+| JitoLabs | slot2 | rpc | 10 | 12 | 5 | 0.42 |
+| JitoLabs | slot2 | rpc | 100 | 12 | 9 | 0.75 |
+| JitoLabs | slot2 | rpc | 1000 | 12 | 10 | 0.83 |
+| Rakurai | pre300 | quic | 0 | 93 | 93 | 1.00 |
+| Rakurai | pre300 | quic | 10 | 93 | 93 | 1.00 |
+| Rakurai | pre300 | quic | 100 | 93 | 93 | 1.00 |
+| Rakurai | pre300 | quic | 1000 | 93 | 93 | 1.00 |
+| Rakurai | pre300 | rpc | 0 | 12 | 9 | 0.75 |
+| Rakurai | pre300 | rpc | 10 | 12 | 11 | 0.92 |
+| Rakurai | pre300 | rpc | 100 | 12 | 8 | 0.67 |
+| Rakurai | pre300 | rpc | 1000 | 12 | 8 | 0.67 |
+| Rakurai | slot2 | quic | 0 | 93 | 93 | 1.00 |
+| Rakurai | slot2 | quic | 10 | 93 | 85 | 0.91 |
+| Rakurai | slot2 | quic | 100 | 93 | 93 | 1.00 |
+| Rakurai | slot2 | quic | 1000 | 93 | 93 | 1.00 |
+| Rakurai | slot2 | rpc | 0 | 12 | 9 | 0.75 |
+| Rakurai | slot2 | rpc | 10 | 12 | 9 | 0.75 |
+| Rakurai | slot2 | rpc | 100 | 12 | 10 | 0.83 |
+| Rakurai | slot2 | rpc | 1000 | 12 | 9 | 0.75 |
 <!-- itb:end campaign-inclusion -->
 
 ### 6.6 Moment condition and client labels
 
 <!-- itb:begin campaign-timing -->
-No runs of this stage yet.
+| Condition | Bursts | In the band | Share | Median arrival estimate from the target (ms) | Range (ms) | Slot clock behind |
+|---|---|---|---|---|---|---|
+| pre300 | 248 | 218 | 0.88 | -0 | -507 to 764 | 0 |
+| slot2 | 248 | 197 | 0.79 | -1 | -571 to 334 | 0 |
+
+| Class | In the band, pre300 | In the band, slot2 |
+|---|---|---|
+| AgaveBam | 26 of 31 | 19 of 31 |
+| JitoLabs | 28 of 31 | 28 of 31 |
+| HarmonicAgave | 26 of 31 | 26 of 31 |
+| HarmonicFiredancer | 29 of 31 | 25 of 31 |
+| Firedancer | 31 of 31 | 25 of 31 |
+| FireBAM | 21 of 31 | 26 of 31 |
+| Rakurai | 30 of 31 | 22 of 31 |
+| Agave | 27 of 31 | 26 of 31 |
 <!-- itb:end campaign-timing -->
 
 <!-- itb:begin campaign-labels -->
-No runs of this stage yet.
+| Class at selection | Bursts | Leader showed another clientId | Share | clientId shown |
+|---|---|---|---|---|
+| AgaveBam | 62 | 0 | 0.00 | - |
+| JitoLabs | 62 | 0 | 0.00 | - |
+| HarmonicAgave | 62 | 0 | 0.00 | - |
+| HarmonicFiredancer | 62 | 0 | 0.00 | - |
+| Firedancer | 62 | 0 | 0.00 | - |
+| FireBAM | 62 | 0 | 0.00 | - |
+| Rakurai | 62 | 0 | 0.00 | - |
+| Agave | 62 | 0 | 0.00 | - |
 <!-- itb:end campaign-labels -->
 
 ### 6.7 Probes outside their window
 
 <!-- itb:begin campaign-elsewhere -->
-No runs of this stage yet.
+| Path | Timing | Delivered | In target window | Same leader, outside the window | Another leader's block | Not included | Class of the other leaders |
+|---|---|---|---|---|---|---|---|
+| quic | pre300 | 2976 | 2961 | 12 | 3 | 0 | AgaveBam 3 |
+| quic | slot2 | 2916 | 2908 | 0 | 0 | 8 | - |
+| rpc | pre300 | 384 | 299 | 0 | 85 | 0 | AgaveBam 15, Firedancer 4, HarmonicAgave 14, HarmonicFiredancer 18, JitoLabs 22, unknown 12 |
+| rpc | slot2 | 384 | 301 | 2 | 81 | 0 | AgaveBam 28, Firedancer 9, HarmonicAgave 24, JitoLabs 16, unknown 4 |
+
+| Class of the target | Delivered | In target window | Same leader, outside the window | Another leader's block | Not included |
+|---|---|---|---|---|---|
+| AgaveBam | 792 | 769 | 0 | 23 | 0 |
+| JitoLabs | 828 | 801 | 0 | 27 | 0 |
+| HarmonicAgave | 840 | 809 | 12 | 19 | 0 |
+| HarmonicFiredancer | 840 | 822 | 2 | 16 | 0 |
+| Firedancer | 840 | 825 | 0 | 15 | 0 |
+| FireBAM | 840 | 824 | 0 | 16 | 0 |
+| Rakurai | 840 | 809 | 0 | 23 | 8 |
+| Agave | 840 | 810 | 0 | 30 | 0 |
 <!-- itb:end campaign-elsewhere -->
 
 ### 6.8 Path latency
 
 <!-- itb:begin campaign-latency -->
-No runs of this stage yet.
+| Class | Leader | Bursts | Median one-way estimate (ms) | Class median (ms) |
+|---|---|---|---|---|
+| AgaveBam | `5Cchr1XGEg7dbBXByV5NY2ad8jfxAM7HA3x8D56rq9Ux` | 31 | 81.6 | 71.3 |
+| AgaveBam | `DRpbCBMxVnDK7maPM5tGv6MvB3v1sRMC86PZ8okm21hy` | 31 | 57.1 | 71.3 |
+| JitoLabs | `E1r4Psq84tHfQ6aPTvvDka4U3u8zPVD7gEUrH25RdxHL` | 31 | 19.1 | 19.3 |
+| JitoLabs | `HEL1USMZKAL2odpNBj2oCjffnFGaYwmbGmyewGv1e2TU` | 31 | 19.5 | 19.3 |
+| HarmonicAgave | `CAo1dCGYrB6NhHh5xb1cGjUiu86iyCfMTENxgHumSve4` | 31 | 24.0 | 21.3 |
+| HarmonicAgave | `Fd7btgySsrjuo25CJCj7oE7VPMyezDhnx7pZkj2v69Nk` | 31 | 18.0 | 21.3 |
+| HarmonicFiredancer | `Awes4Tr6TX8JDzEhCZY2QVNimT6iD1zWHzf1vNyGvpLM` | 31 | 17.3 | 17.3 |
+| HarmonicFiredancer | `JUPiTERrZqgf1jUyR7dSkhMx4Kn2qJyekWsg3LT1h4b` | 31 | 17.3 | 17.3 |
+| Firedancer | `4VRs6A9zBRXz6MLcmQGsBiSoWE2JjHrmw7LintC3T4Nv` | 31 | 24.1 | 24.3 |
+| Firedancer | `BFmqBsaGjeYA7gHpReKmnVkRyhqiMmHoR9ttv1crWmzy` | 31 | 24.3 | 24.3 |
+| FireBAM | `9jxgosAfHgHzwnxsHw4RAZYaLVokMbnYtmiZBreynGFP` | 31 | 16.0 | 18.6 |
+| FireBAM | `LA1NEzryoih6CQW3gwQqJQffK2mKgnXcjSQZSRpM3wc` | 31 | 19.1 | 18.6 |
+| Rakurai | `E3mDbFMr8yZcCAZx5wPUFCRmLX31u8Nnj4jPoPc54h3F` | 31 | 18.3 | 17.7 |
+| Rakurai | `ana2y2YvQ3ZPMwm6qhnN3nJoUSiT3qx5Pvetkq9xcfY` | 31 | 16.0 | 17.7 |
+| Agave | `5Us18hLZPXJTS4QVuGSsUw137Dyd2tgBaem24Xsf5nBS` | 31 | 29.7 | 26.4 |
+| Agave | `7QQGNm3ptwinipDCyaCF7jY5katgmFUu1ieP2f7nwLpE` | 31 | 22.7 | 26.4 |
 <!-- itb:end campaign-latency -->
 
 ### 6.9 Load
 
 <!-- itb:begin campaign-loads -->
-No runs of this stage yet.
+| Load by | Quartile | Mean load of the burst's blocks | Bursts | tau fee, independent and shared | tau send, equal fee | tau send, equal fee, Agave, pre300 |
+|---|---|---|---|---|---|---|
+| costUnits | Q1 | 983322 to 9681380 | 103 | 0.444 (0.319 to 0.570), 42 bursts | 0.414 (0.219 to 0.609), 30 bursts | 0.172 (-0.330 to 0.673), 3 bursts |
+| costUnits | Q2 | 9693014 to 12989788 | 103 | 0.553 (0.433 to 0.673), 48 bursts | 0.218 (-0.029 to 0.465), 28 bursts | 0.091 (0.091 to 0.091), 2 bursts |
+| costUnits | Q3 | 12992911 to 18667855 | 103 | 0.620 (0.521 to 0.719), 51 bursts | 0.209 (-0.011 to 0.429), 30 bursts | -0.242 (no interval), 1 bursts |
+| costUnits | Q4 | 18670736 to 49978378 | 102 | 0.713 (0.629 to 0.796), 59 bursts | 0.139 (-0.171 to 0.449), 19 bursts | 0.212 (no interval), 1 bursts |
+| transactions | Q1 | 114 to 239 | 103 | 0.422 (0.287 to 0.557), 39 bursts | 0.492 (0.263 to 0.721), 28 bursts | 0.303 (no interval), 1 bursts |
+| transactions | Q2 | 239 to 316 | 103 | 0.542 (0.436 to 0.647), 53 bursts | 0.295 (0.097 to 0.494), 28 bursts | 0.101 (-0.314 to 0.516), 3 bursts |
+| transactions | Q3 | 318 to 430 | 103 | 0.642 (0.544 to 0.740), 47 bursts | 0.183 (-0.040 to 0.407), 29 bursts | 0.152 (-0.619 to 0.922), 2 bursts |
+| transactions | Q4 | 431 to 1713 | 102 | 0.713 (0.625 to 0.802), 61 bursts | 0.000 (-0.273 to 0.273), 22 bursts | -0.242 (no interval), 1 bursts |
 <!-- itb:end campaign-loads -->
 
 ### 6.10 First slot of the window
 
 <!-- itb:begin campaign-first-slot -->
-No runs of this stage yet.
+| Blocks | tau fee | tau cross | tau send, equal fee |
+|---|---|---|---|
+| first slot of the window | 0.696 (0.645 to 0.746), 131 bursts | 0.040 (-0.013 to 0.092), 131 bursts | -0.083 (-0.201 to 0.036), 65 bursts |
+| later slots | 0.402 (0.295 to 0.509), 69 bursts | 0.187 (0.100 to 0.274), 69 bursts | 0.733 (0.623 to 0.843), 49 bursts |
 <!-- itb:end campaign-first-slot -->
 
 ### 6.11 HarmonicAgave strategy
 
 <!-- itb:begin campaign-strategy -->
-No runs of this stage yet.
+| Strategy in the memo | Leaders | tau fee | tau cross | tau send, equal fee |
+|---|---|---|---|---|
+| FBA | `CAo1dCGY...` | 0.455 (0.133 to 0.776), 7 bursts | -0.048 (-0.233 to 0.138), 7 bursts | -0.023 (-0.137 to 0.091), 4 bursts |
+| MRV | `Fd7btgyS...` | 0.369 (0.158 to 0.579), 7 bursts | 0.063 (-0.191 to 0.318), 7 bursts | -0.182 (-0.567 to 0.203), 2 bursts |
+| no memo | `CAo1dCGY...`, `Fd7btgyS...` | 0.496 (0.215 to 0.778), 11 bursts | 0.088 (-0.083 to 0.258), 11 bursts | 0.651 (0.517 to 0.786), 7 bursts |
 <!-- itb:end campaign-strategy -->
 
 ### 6.12 Epochs and rounds
 
 <!-- itb:begin campaign-epochs -->
-No runs of this stage yet.
+| Class | tau fee, epoch 1071 | tau fee, epoch 1072 | tau fee, epoch 1073 | tau fee, epoch 1074 | Round means of tau fee |
+|---|---|---|---|---|---|
+| AgaveBam | 0.888 (2 cells) | 0.879 (4 cells) | 0.804 (3 cells) | 0.893 (3 cells) | 13 rounds, 0.754 to 0.905 |
+| JitoLabs | 0.507 (4 cells) | 0.255 (4 cells) | 0.331 (4 cells) | 0.377 (4 cells) | 14 rounds, -0.067 to 0.670 |
+| HarmonicAgave | 0.441 (3 cells) | 0.473 (4 cells) | 0.507 (4 cells) | 0.398 (4 cells) | 15 rounds, 0.000 to 0.871 |
+| HarmonicFiredancer | 0.497 (3 cells) | 0.645 (4 cells) | 0.578 (4 cells) | 0.586 (3 cells) | 15 rounds, 0.335 to 0.871 |
+| Firedancer | 0.905 (4 cells) | 0.905 (4 cells) | 0.905 (4 cells) | 0.905 (4 cells) | 15 rounds, 0.905 to 0.905 |
+| FireBAM | 0.879 (4 cells) | 0.838 (4 cells) | 0.882 (3 cells) | 0.875 (4 cells) | 14 rounds, 0.670 to 0.905 |
+| Rakurai | 0.645 (4 cells) | 0.272 (4 cells) | 0.264 (4 cells) | 0.264 (4 cells) | 15 rounds, -0.134 to 0.905 |
+| Agave | 0.448 (4 cells) | 0.427 (4 cells) | 0.494 (4 cells) | 0.394 (4 cells) | 15 rounds, 0.000 to 0.905 |
 <!-- itb:end campaign-epochs -->
 
 The analysis plan fixes no test of stability over epochs, so this table describes it without a verdict (section 9).
@@ -538,13 +861,27 @@ The analysis plan fixes no test of stability over epochs, so this table describe
 ### 6.13 Competition inside the block
 
 <!-- itb:begin campaign-competition -->
-No runs of this stage yet.
+| Class | Probes | Median position (share of block) | Median rank by requested-limit priority | Median rank by costUnits priority | Jito tip transactions | Transactions without a CU limit |
+|---|---|---|---|---|---|---|
+| AgaveBam | 516 | 0.16 | 0.13 | 0.03 | 2.7% | 8.9% |
+| JitoLabs | 660 | 0.22 | 0.17 | 0.05 | 4.0% | 7.4% |
+| HarmonicAgave | 612 | 0.09 | 0.19 | 0.07 | 3.8% | 9.9% |
+| HarmonicFiredancer | 647 | 0.05 | 0.19 | 0.07 | 2.9% | 9.1% |
+| Firedancer | 671 | 0.06 | 0.15 | 0.05 | 5.2% | 9.8% |
+| FireBAM | 564 | 0.21 | 0.15 | 0.04 | 3.7% | 6.9% |
+| Rakurai | 624 | 0.13 | 0.19 | 0.06 | 1.2% | 8.9% |
+| Agave | 636 | 0.14 | 0.18 | 0.06 | 0.2% | 8.4% |
 <!-- itb:end campaign-competition -->
 
 ### 6.14 Control path
 
 <!-- itb:begin campaign-control -->
-No runs of this stage yet.
+| Measure | Strata (leader, epoch, arm, condition) | Mean RPC minus QUIC | p | Label test |
+|---|---|---|---|---|
+| inclusion share | 54 | -0.208 | 5e-05 | 19999 draws, seed itb-prereg-label-v1, Monte Carlo SE 5e-05 |
+| tau fee | 54 | -0.483 | 5e-05 | 19999 draws, seed itb-prereg-label-v1, Monte Carlo SE 5e-05 |
+
+Path latency: quic median 0.0 slots after the window's first slot (4944 probes); rpc median 1.0 slots after the window's first slot (660 probes).
 <!-- itb:end campaign-control -->
 
 The control path is compared with the direct path only within the same leader and epoch. The p of each measure comes from swapping path labels within those strata, exact while the arrangements stay within the label-test budget of the analysis plan and from seeded draws above it.
@@ -554,6 +891,46 @@ The control path is compared with the direct path only within the same leader an
 <!-- itb:begin tick-runs -->
 | Run | Class of the slot's leader | Its builder | Slots | With a BAM tick | With a Harmonic tick |
 |---|---|---|---|---|---|
+| `campaign-mainnet-20261028T055501Z` | AgaveBam | BAM | 13 | 13 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261028T055501Z` | JitoLabs | none | 14 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261028T055501Z` | HarmonicAgave | Harmonic | 14 | 0 (0.0%) | 14 (100.0%) |
+| `campaign-mainnet-20261028T055501Z` | HarmonicFiredancer | Harmonic | 13 | 0 (0.0%) | 13 (100.0%) |
+| `campaign-mainnet-20261028T055501Z` | Firedancer | none | 12 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261028T055501Z` | FireBAM | BAM | 12 | 12 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261028T055501Z` | Rakurai | none | 11 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261028T055501Z` | Agave | none | 13 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261029T120927Z` | AgaveBam | BAM | 15 | 15 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261029T120927Z` | JitoLabs | none | 14 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261029T120927Z` | HarmonicAgave | Harmonic | 15 | 0 (0.0%) | 15 (100.0%) |
+| `campaign-mainnet-20261029T120927Z` | HarmonicFiredancer | Harmonic | 15 | 0 (0.0%) | 15 (100.0%) |
+| `campaign-mainnet-20261029T120927Z` | Firedancer | none | 14 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261029T120927Z` | FireBAM | BAM | 16 | 16 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261029T120927Z` | Rakurai | none | 12 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261029T120927Z` | Agave | none | 13 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261030T015219Z` | AgaveBam | BAM | 31 | 31 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261030T015219Z` | JitoLabs | none | 31 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261030T015219Z` | HarmonicAgave | Harmonic | 32 | 0 (0.0%) | 32 (100.0%) |
+| `campaign-mainnet-20261030T015219Z` | HarmonicFiredancer | Harmonic | 34 | 0 (0.0%) | 34 (100.0%) |
+| `campaign-mainnet-20261030T015219Z` | Firedancer | none | 23 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261030T015219Z` | FireBAM | BAM | 30 | 30 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261030T015219Z` | Rakurai | none | 28 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261030T015219Z` | Agave | none | 31 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261031T014357Z` | AgaveBam | BAM | 29 | 29 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261031T014357Z` | JitoLabs | none | 30 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261031T014357Z` | HarmonicAgave | Harmonic | 30 | 0 (0.0%) | 30 (100.0%) |
+| `campaign-mainnet-20261031T014357Z` | HarmonicFiredancer | Harmonic | 31 | 0 (0.0%) | 31 (100.0%) |
+| `campaign-mainnet-20261031T014357Z` | Firedancer | none | 25 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261031T014357Z` | FireBAM | BAM | 28 | 28 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261031T014357Z` | Rakurai | none | 26 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261031T014357Z` | Agave | none | 31 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261101T041655Z` | AgaveBam | BAM | 29 | 29 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261101T041655Z` | JitoLabs | none | 31 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261101T041655Z` | HarmonicAgave | Harmonic | 28 | 0 (0.0%) | 28 (100.0%) |
+| `campaign-mainnet-20261101T041655Z` | HarmonicFiredancer | Harmonic | 27 | 0 (0.0%) | 27 (100.0%) |
+| `campaign-mainnet-20261101T041655Z` | Firedancer | none | 22 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261101T041655Z` | FireBAM | BAM | 28 | 28 (100.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261101T041655Z` | Rakurai | none | 24 | 0 (0.0%) | 0 (0.0%) |
+| `campaign-mainnet-20261101T041655Z` | Agave | none | 27 | 0 (0.0%) | 0 (0.0%) |
 | `pilot-mainnet-20261027T085253Z` | AgaveBam | BAM | 12 | 12 (100.0%) | 0 (0.0%) |
 | `pilot-mainnet-20261027T085253Z` | JitoLabs | none | 11 | 0 (0.0%) | 0 (0.0%) |
 | `pilot-mainnet-20261027T085253Z` | HarmonicAgave | Harmonic | 13 | 0 (0.0%) | 13 (100.0%) |
@@ -563,7 +940,7 @@ The control path is compared with the direct path only within the same leader an
 | `pilot-mainnet-20261027T085253Z` | Rakurai | none | 11 | 0 (0.0%) | 0 (0.0%) |
 | `pilot-mainnet-20261027T085253Z` | Agave | none | 10 | 0 (0.0%) | 0 (0.0%) |
 
-Slots left out because no burst row names their leader, so neither this table nor the label check classes them: `pilot-mainnet-20261027T085253Z` 1 of 96.
+Slots left out because no burst row names their leader, so neither this table nor the label check classes them: `campaign-mainnet-20261028T034521Z` 0 of 0, `campaign-mainnet-20261028T055501Z` 4 of 106, `campaign-mainnet-20261029T120927Z` 7 of 121, `campaign-mainnet-20261030T015219Z` 15 of 255, `campaign-mainnet-20261031T014357Z` 17 of 247, `campaign-mainnet-20261101T041655Z` 24 of 240, `pilot-mainnet-20261027T085253Z` 1 of 96.
 <!-- itb:end tick-runs -->
 
 In every pilot slot of a builder-class leader the block carried a tick from that builder's signer, and no slot of another class carried a tick from either signer.
@@ -622,6 +999,12 @@ The table comes from the gossip snapshot and the leader schedule stored with eac
 <!-- itb:begin what-went-wrong -->
 | Run | Windows planned | Bursts written | Skipped before sending | Failed | Left out of the order tests |
 |---|---|---|---|---|---|
+| `campaign-mainnet-20261028T034521Z` | 16 | 0 | none | 0 | none |
+| `campaign-mainnet-20261028T055501Z` | 72 | 56 | none | 0 | control-path 8, fewer-than-two-in-a-block 2, outside-timing-band 5 |
+| `campaign-mainnet-20261029T120927Z` | 72 | 72 | none | 0 | control-path 8, fewer-than-two-in-a-block 1, outside-timing-band 12 |
+| `campaign-mainnet-20261030T015219Z` | 144 | 144 | none | 0 | control-path 16, outside-timing-band 16 |
+| `campaign-mainnet-20261031T014357Z` | 144 | 144 | none | 0 | control-path 16, fewer-than-two-in-a-block 2, outside-timing-band 24 |
+| `campaign-mainnet-20261101T041655Z` | 144 | 144 | none | 0 | control-path 16, fewer-than-two-in-a-block 1, outside-timing-band 33 |
 | `pilot-mainnet-20261027T085253Z` | 68 | 68 | none | 0 | fewer-than-two-in-a-block 1, outside-timing-band 6 |
 <!-- itb:end what-went-wrong -->
 
@@ -658,6 +1041,566 @@ Two parts of this kit appear in none of these reports, by a text search of the p
 <!-- itb:begin bursts -->
 | Run | Burst | UTC (blockTime) | Epoch | Window slots | Leader | Class | clientId at burst | Arm | Timing | Delivered | In window | Other leaders' class | Fee (lamports) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `campaign-mainnet-20261028T055501Z` | 181 | 2026-10-29 03:00:16 | 1071 | 462721436-462721439 | `4VRs6A9z...` | Firedancer | Firedancer | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261028T055501Z` | 182 | 2026-10-29 03:04:07 | 1071 | 462722516-462722519 | `E3mDbFMr...` | Rakurai | Rakurai | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 183 | 2026-10-29 03:05:42 | 1071 | 462722960-462722963 | `7QQGNm3p...` | Agave | Agave | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 184 | 2026-10-29 03:06:40 | 1071 | 462723232-462723235 | `LA1NEzry...` | FireBAM | FireBAM | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261028T055501Z` | 185 | 2026-10-29 03:07:14 | 1071 | 462723392-462723395 | `ana2y2Yv...` | Rakurai | Rakurai | denominator | slot2 | 12 | 4 | - | 20040 |
+| `campaign-mainnet-20261028T055501Z` | 186 | 2026-10-29 03:08:01 | 1071 | 462723608-462723611 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261028T055501Z` | 187 | 2026-10-29 03:08:36 | 1071 | 462723776-462723779 | `5Us18hLZ...` | Agave | Agave | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 188 | 2026-10-29 03:09:11 | 1071 | 462723936-462723939 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261028T055501Z` | 189 | 2026-10-29 03:09:45 | 1071 | 462724096-462724099 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 190 | 2026-10-29 03:10:21 | 1071 | 462724260-462724263 | `DRpbCBMx...` | AgaveBam | AgaveBam | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 191 | 2026-10-29 03:11:22 | 1071 | 462724548-462724551 | `E1r4Psq8...` | JitoLabs | JitoLabs | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261028T055501Z` | 192 | 2026-10-29 03:12:10 | 1071 | 462724776-462724779 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 193 | 2026-10-29 03:13:03 | 1071 | 462725020-462725023 | `9jxgosAf...` | FireBAM | FireBAM | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261028T055501Z` | 194 | 2026-10-29 03:13:56 (tool clock) | 1071 | 462725268-462725271 | `HEL1USMZ...` | JitoLabs | JitoLabs | denominator | slot2 | 0 | 0 | - | 0 |
+| `campaign-mainnet-20261028T055501Z` | 195 | 2026-10-29 03:15:01 | 1071 | 462725564-462725567 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 196 | 2026-10-29 03:16:33 | 1071 | 462725996-462725999 | `BFmqBsaG...` | Firedancer | Firedancer | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 197 | 2026-10-29 05:52:07 | 1071 | 462769692-462769695 | `LA1NEzry...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 198 | 2026-10-29 06:19:08 | 1071 | 462777292-462777295 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 199 | 2026-10-29 06:19:49 | 1071 | 462777480-462777483 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 11 | Firedancer | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 200 | 2026-10-29 06:21:24 | 1071 | 462777924-462777927 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 201 | 2026-10-29 06:21:58 | 1071 | 462778084-462778087 | `4VRs6A9z...` | Firedancer | Firedancer | independent | pre300 | 12 | 10 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 202 | 2026-10-29 06:22:34 | 1071 | 462778252-462778255 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 9 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 203 | 2026-10-29 06:23:19 | 1071 | 462778460-462778463 | `7QQGNm3p...` | Agave | Agave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 204 | 2026-10-29 06:24:25 | 1071 | 462778772-462778775 | `BFmqBsaG...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 205 | 2026-10-29 06:25:38 | 1071 | 462779112-462779115 | `ana2y2Yv...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 206 | 2026-10-29 06:26:18 | 1071 | 462779296-462779299 | `7QQGNm3p...` | Agave | Agave | independent | slot2 | 12 | 10 | JitoLabs | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 207 | 2026-10-29 06:26:55 | 1071 | 462779468-462779471 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 11 | AgaveBam | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 208 | 2026-10-29 06:27:29 | 1071 | 462779628-462779631 | `9jxgosAf...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 209 | 2026-10-29 06:28:08 | 1071 | 462779812-462779815 | `ana2y2Yv...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 210 | 2026-10-29 06:29:11 | 1071 | 462780108-462780111 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 211 | 2026-10-29 06:30:05 | 1071 | 462780364-462780367 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 212 | 2026-10-29 06:30:50 | 1071 | 462780572-462780575 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 213 | 2026-10-29 06:31:50 | 1071 | 462780856-462780859 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 214 | 2026-10-29 06:32:29 | 1071 | 462781040-462781043 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 10 | JitoLabs | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 215 | 2026-10-29 06:33:25 | 1071 | 462781300-462781303 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 216 | 2026-10-29 06:34:16 | 1071 | 462781540-462781543 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 217 | 2026-10-29 06:35:27 | 1071 | 462781868-462781871 | `E3mDbFMr...` | Rakurai | Rakurai | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 218 | 2026-10-29 06:36:15 | 1071 | 462782092-462782095 | `5Us18hLZ...` | Agave | Agave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 219 | 2026-10-29 06:39:15 | 1071 | 462782940-462782943 | `LA1NEzry...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 220 | 2026-10-29 06:47:31 | 1071 | 462785280-462785283 | `4VRs6A9z...` | Firedancer | Firedancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261028T055501Z` | 221 | 2026-10-29 09:26:53 | 1071 | 462830128-462830131 | `E3mDbFMr...` | Rakurai | Rakurai | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 222 | 2026-10-29 09:28:01 | 1071 | 462830448-462830451 | `4VRs6A9z...` | Firedancer | Firedancer | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 223 | 2026-10-29 09:28:46 | 1071 | 462830660-462830663 | `9jxgosAf...` | FireBAM | FireBAM | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 224 | 2026-10-29 09:29:25 | 1071 | 462830844-462830847 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 225 | 2026-10-29 09:30:40 | 1071 | 462831192-462831195 | `5Us18hLZ...` | Agave | Agave | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261028T055501Z` | 226 | 2026-10-29 09:31:20 | 1071 | 462831380-462831383 | `ana2y2Yv...` | Rakurai | Rakurai | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 227 | 2026-10-29 09:32:18 | 1071 | 462831652-462831655 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 228 | 2026-10-29 09:33:27 | 1071 | 462831976-462831979 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | equal_fee | pre300 | 12 | 0 | HarmonicAgave | 60120 |
+| `campaign-mainnet-20261028T055501Z` | 229 | 2026-10-29 09:34:02 | 1071 | 462832140-462832143 | `HEL1USMZ...` | JitoLabs | JitoLabs | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 230 | 2026-10-29 09:34:37 | 1071 | 462832304-462832307 | `E1r4Psq8...` | JitoLabs | JitoLabs | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261028T055501Z` | 231 | 2026-10-29 09:35:15 | 1071 | 462832484-462832487 | `DRpbCBMx...` | AgaveBam | AgaveBam | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 232 | 2026-10-29 09:35:58 | 1071 | 462832684-462832687 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261028T055501Z` | 233 | 2026-10-29 09:36:43 | 1071 | 462832896-462832899 | `BFmqBsaG...` | Firedancer | Firedancer | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261028T055501Z` | 234 | 2026-10-29 09:37:43 | 1071 | 462833172-462833175 | `5Cchr1XG...` | AgaveBam | AgaveBam | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261028T055501Z` | 235 | 2026-10-29 09:40:04 | 1071 | 462833824-462833827 | `7QQGNm3p...` | Agave | Agave | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261028T055501Z` | 236 | 2026-10-29 09:41:33 | 1071 | 462834240-462834243 | `LA1NEzry...` | FireBAM | FireBAM | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261029T120927Z` | 237 | 2026-10-29 13:20:08 | 1071 | 462895568-462895571 | `4VRs6A9z...` | Firedancer | Firedancer | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 238 | 2026-10-29 13:23:20 | 1071 | 462896460-462896463 | `LA1NEzry...` | FireBAM | FireBAM | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 239 | 2026-10-29 13:24:48 | 1071 | 462896880-462896883 | `ana2y2Yv...` | Rakurai | Rakurai | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 240 | 2026-10-29 13:26:19 | 1071 | 462897308-462897311 | `7QQGNm3p...` | Agave | Agave | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 241 | 2026-10-29 13:27:15 | 1071 | 462897568-462897571 | `5Cchr1XG...` | AgaveBam | AgaveBam | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261029T120927Z` | 242 | 2026-10-29 13:28:06 | 1071 | 462897804-462897807 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 243 | 2026-10-29 13:28:40 | 1071 | 462897964-462897967 | `9jxgosAf...` | FireBAM | FireBAM | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261029T120927Z` | 244 | 2026-10-29 13:29:32 | 1071 | 462898200-462898203 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261029T120927Z` | 245 | 2026-10-29 13:30:11 | 1071 | 462898380-462898383 | `HEL1USMZ...` | JitoLabs | JitoLabs | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 246 | 2026-10-29 13:31:21 | 1071 | 462898704-462898707 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 247 | 2026-10-29 13:32:03 | 1071 | 462898900-462898903 | `5Us18hLZ...` | Agave | Agave | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261029T120927Z` | 248 | 2026-10-29 13:32:41 | 1071 | 462899076-462899079 | `DRpbCBMx...` | AgaveBam | AgaveBam | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 249 | 2026-10-29 13:33:20 | 1071 | 462899260-462899263 | `E3mDbFMr...` | Rakurai | Rakurai | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 250 | 2026-10-29 13:34:38 | 1071 | 462899620-462899623 | `E1r4Psq8...` | JitoLabs | JitoLabs | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 251 | 2026-10-29 13:35:30 | 1071 | 462899868-462899871 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 252 | 2026-10-29 13:39:57 | 1071 | 462901120-462901123 | `BFmqBsaG...` | Firedancer | Firedancer | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261029T120927Z` | 253 | 2026-10-29 18:55:47 | 1071 | 462989656-462989659 | `LA1NEzry...` | FireBAM | FireBAM | denominator | pre300 | 12 | 9 | AgaveBam | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 254 | 2026-10-29 18:57:57 | 1071 | 462990264-462990267 | `4VRs6A9z...` | Firedancer | Firedancer | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261029T120927Z` | 255 | 2026-10-29 19:02:27 | 1071 | 462991520-462991523 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261029T120927Z` | 256 | 2026-10-29 19:03:12 | 1071 | 462991728-462991731 | `E1r4Psq8...` | JitoLabs | JitoLabs | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261029T120927Z` | 257 | 2026-10-29 19:04:13 | 1071 | 462992016-462992019 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 258 | 2026-10-29 19:05:15 | 1071 | 462992308-462992311 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 259 | 2026-10-29 19:06:21 | 1071 | 462992616-462992619 | `HEL1USMZ...` | JitoLabs | JitoLabs | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261029T120927Z` | 260 | 2026-10-29 19:07:09 | 1071 | 462992848-462992851 | `ana2y2Yv...` | Rakurai | Rakurai | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261029T120927Z` | 261 | 2026-10-29 19:07:55 | 1071 | 462993068-462993071 | `9jxgosAf...` | FireBAM | FireBAM | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 262 | 2026-10-29 19:08:30 | 1071 | 462993232-462993235 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 263 | 2026-10-29 19:09:05 | 1071 | 462993392-462993395 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261029T120927Z` | 264 | 2026-10-29 19:09:42 | 1071 | 462993564-462993567 | `DRpbCBMx...` | AgaveBam | AgaveBam | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261029T120927Z` | 265 | 2026-10-29 19:11:01 | 1071 | 462993936-462993939 | `5Us18hLZ...` | Agave | Agave | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261029T120927Z` | 266 | 2026-10-29 19:12:28 | 1071 | 462994340-462994343 | `7QQGNm3p...` | Agave | Agave | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 267 | 2026-10-29 19:14:08 | 1071 | 462994804-462994807 | `E3mDbFMr...` | Rakurai | Rakurai | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261029T120927Z` | 268 | 2026-10-29 19:15:25 | 1071 | 462995168-462995171 | `BFmqBsaG...` | Firedancer | Firedancer | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261029T120927Z` | 269 | 2026-10-29 20:04:16 | 1071 | 463008832-463008835 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 270 | 2026-10-29 20:04:57 | 1071 | 463009028-463009031 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 271 | 2026-10-29 20:06:13 | 1071 | 463009380-463009383 | `9jxgosAf...` | FireBAM | FireBAM | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 272 | 2026-10-29 20:06:48 | 1071 | 463009544-463009547 | `LA1NEzry...` | FireBAM | FireBAM | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 273 | 2026-10-29 20:07:29 | 1071 | 463009736-463009739 | `E3mDbFMr...` | Rakurai | Rakurai | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 274 | 2026-10-29 20:08:19 | 1071 | 463009972-463009975 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 275 | 2026-10-29 20:09:01 | 1071 | 463010164-463010167 | `HEL1USMZ...` | JitoLabs | JitoLabs | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 276 | 2026-10-29 20:09:41 | 1071 | 463010352-463010355 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 277 | 2026-10-29 20:10:39 (tool clock) | 1071 | 463010612-463010615 | `5Cchr1XG...` | AgaveBam | AgaveBam | shared | slot2 | 0 | 0 | - | 0 |
+| `campaign-mainnet-20261029T120927Z` | 278 | 2026-10-29 20:11:14 | 1071 | 463010788-463010791 | `DRpbCBMx...` | AgaveBam | AgaveBam | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 279 | 2026-10-29 20:12:12 | 1071 | 463011060-463011063 | `4VRs6A9z...` | Firedancer | Firedancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 280 | 2026-10-29 20:12:57 | 1071 | 463011264-463011267 | `BFmqBsaG...` | Firedancer | Firedancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 281 | 2026-10-29 20:14:12 | 1071 | 463011620-463011623 | `7QQGNm3p...` | Agave | Agave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 282 | 2026-10-29 20:15:07 | 1071 | 463011876-463011879 | `E1r4Psq8...` | JitoLabs | JitoLabs | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 283 | 2026-10-29 20:15:53 | 1071 | 463012092-463012095 | `ana2y2Yv...` | Rakurai | Rakurai | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 284 | 2026-10-29 20:18:39 | 1071 | 463012868-463012871 | `5Us18hLZ...` | Agave | Agave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 285 | 2026-10-30 01:02:46 | 1071 | 463092440-463092443 | `BFmqBsaG...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 286 | 2026-10-30 01:05:13 | 1071 | 463093128-463093131 | `4VRs6A9z...` | Firedancer | Firedancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 287 | 2026-10-30 01:06:51 | 1071 | 463093596-463093599 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 11 | AgaveBam | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 288 | 2026-10-30 01:07:33 | 1071 | 463093792-463093795 | `5Us18hLZ...` | Agave | Agave | independent | pre300 | 12 | 7 | JitoLabs | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 289 | 2026-10-30 01:08:15 | 1071 | 463093992-463093995 | `ana2y2Yv...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 290 | 2026-10-30 01:08:49 | 1071 | 463094152-463094155 | `5Us18hLZ...` | Agave | Agave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 291 | 2026-10-30 01:10:27 | 1071 | 463094608-463094611 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 292 | 2026-10-30 01:11:05 | 1071 | 463094792-463094795 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 293 | 2026-10-30 01:11:40 | 1071 | 463094956-463094959 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 10 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 294 | 2026-10-30 01:12:39 | 1071 | 463095236-463095239 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 295 | 2026-10-30 01:13:50 | 1071 | 463095568-463095571 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 9 | JitoLabs | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 296 | 2026-10-30 01:14:31 | 1071 | 463095760-463095763 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 297 | 2026-10-30 01:15:36 | 1071 | 463096060-463096063 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 298 | 2026-10-30 01:16:33 | 1071 | 463096328-463096331 | `9jxgosAf...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 299 | 2026-10-30 01:17:39 | 1071 | 463096640-463096643 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 300 | 2026-10-30 01:19:02 | 1071 | 463097020-463097023 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 301 | 2026-10-30 01:19:40 | 1071 | 463097196-463097199 | `9jxgosAf...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 302 | 2026-10-30 01:20:17 | 1071 | 463097368-463097371 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 303 | 2026-10-30 01:21:20 | 1071 | 463097660-463097663 | `E3mDbFMr...` | Rakurai | Rakurai | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 304 | 2026-10-30 01:22:01 | 1071 | 463097856-463097859 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 11 | AgaveBam | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 305 | 2026-10-30 01:23:40 | 1071 | 463098312-463098315 | `LA1NEzry...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 306 | 2026-10-30 01:25:01 | 1071 | 463098696-463098699 | `E3mDbFMr...` | Rakurai | Rakurai | independent | pre300 | 12 | 10 | AgaveBam | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 307 | 2026-10-30 01:27:30 | 1071 | 463099392-463099395 | `7QQGNm3p...` | Agave | Agave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261029T120927Z` | 308 | 2026-10-30 01:36:49 | 1071 | 463102024-463102027 | `BFmqBsaG...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 309 | 2026-10-30 04:32:23 | 1072 | 463151364-463151367 | `LA1NEzry...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 310 | 2026-10-30 04:32:58 | 1072 | 463151528-463151531 | `5Us18hLZ...` | Agave | Agave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 311 | 2026-10-30 04:36:11 | 1072 | 463152432-463152435 | `4VRs6A9z...` | Firedancer | Firedancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 312 | 2026-10-30 04:44:02 | 1072 | 463154640-463154643 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 313 | 2026-10-30 04:45:03 | 1072 | 463154928-463154931 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 314 | 2026-10-30 04:45:47 | 1072 | 463155140-463155143 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 11 | AgaveBam | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 315 | 2026-10-30 04:46:26 | 1072 | 463155320-463155323 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 316 | 2026-10-30 04:47:00 | 1072 | 463155480-463155483 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 317 | 2026-10-30 04:47:35 | 1072 | 463155648-463155651 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 8 | HarmonicFiredancer | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 318 | 2026-10-30 04:48:09 | 1072 | 463155808-463155811 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 319 | 2026-10-30 04:49:08 | 1072 | 463156080-463156083 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 320 | 2026-10-30 04:50:11 | 1072 | 463156372-463156375 | `9jxgosAf...` | FireBAM | FireBAM | independent | slot2 | 12 | 10 | AgaveBam | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 321 | 2026-10-30 04:50:57 | 1072 | 463156592-463156595 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 10 | Firedancer | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 322 | 2026-10-30 04:51:35 | 1072 | 463156768-463156771 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 323 | 2026-10-30 04:52:13 | 1072 | 463156948-463156951 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 324 | 2026-10-30 04:53:03 | 1072 | 463157172-463157175 | `ana2y2Yv...` | Rakurai | Rakurai | independent | slot2 | 12 | 8 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 325 | 2026-10-30 04:53:36 | 1072 | 463157332-463157335 | `ana2y2Yv...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 326 | 2026-10-30 04:54:19 | 1072 | 463157528-463157531 | `7QQGNm3p...` | Agave | Agave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 327 | 2026-10-30 04:54:53 | 1072 | 463157692-463157695 | `BFmqBsaG...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 328 | 2026-10-30 04:55:38 | 1072 | 463157900-463157903 | `9jxgosAf...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 329 | 2026-10-30 04:56:43 | 1072 | 463158208-463158211 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 10 | HarmonicFiredancer | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 330 | 2026-10-30 05:02:16 | 1072 | 463159772-463159775 | `E3mDbFMr...` | Rakurai | Rakurai | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 331 | 2026-10-30 05:07:47 | 1072 | 463161324-463161327 | `5Us18hLZ...` | Agave | Agave | independent | pre300 | 12 | 8 | HarmonicFiredancer | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 332 | 2026-10-30 05:10:42 | 1072 | 463162152-463162155 | `4VRs6A9z...` | Firedancer | Firedancer | independent | pre300 | 12 | 8 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 333 | 2026-10-30 06:07:11 | 1072 | 463178020-463178023 | `LA1NEzry...` | FireBAM | FireBAM | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 334 | 2026-10-30 06:17:20 | 1072 | 463180864-463180867 | `7QQGNm3p...` | Agave | Agave | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 335 | 2026-10-30 06:19:46 | 1072 | 463181544-463181547 | `E3mDbFMr...` | Rakurai | Rakurai | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 336 | 2026-10-30 06:20:22 | 1072 | 463181712-463181715 | `BFmqBsaG...` | Firedancer | Firedancer | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 337 | 2026-10-30 06:21:21 | 1072 | 463181988-463181991 | `ana2y2Yv...` | Rakurai | Rakurai | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 338 | 2026-10-30 06:22:01 | 1072 | 463182172-463182175 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 339 | 2026-10-30 06:22:43 | 1072 | 463182372-463182375 | `9jxgosAf...` | FireBAM | FireBAM | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 340 | 2026-10-30 06:23:37 | 1072 | 463182624-463182627 | `E1r4Psq8...` | JitoLabs | JitoLabs | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 341 | 2026-10-30 06:24:10 | 1072 | 463182784-463182787 | `DRpbCBMx...` | AgaveBam | AgaveBam | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 342 | 2026-10-30 06:24:48 | 1072 | 463182964-463182967 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 343 | 2026-10-30 06:25:48 | 1072 | 463183244-463183247 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 344 | 2026-10-30 06:26:30 | 1072 | 463183444-463183447 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 345 | 2026-10-30 06:27:44 | 1072 | 463183792-463183795 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 346 | 2026-10-30 06:28:27 | 1072 | 463183996-463183999 | `HEL1USMZ...` | JitoLabs | JitoLabs | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 347 | 2026-10-30 06:29:22 | 1072 | 463184252-463184255 | `5Us18hLZ...` | Agave | Agave | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 348 | 2026-10-30 06:44:22 | 1072 | 463188484-463188487 | `4VRs6A9z...` | Firedancer | Firedancer | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 349 | 2026-10-30 07:57:52 | 1072 | 463209112-463209115 | `4VRs6A9z...` | Firedancer | Firedancer | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 350 | 2026-10-30 08:04:12 | 1072 | 463210888-463210891 | `5Cchr1XG...` | AgaveBam | AgaveBam | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 351 | 2026-10-30 08:05:13 | 1072 | 463211172-463211175 | `LA1NEzry...` | FireBAM | FireBAM | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 352 | 2026-10-30 08:06:22 | 1072 | 463211496-463211499 | `ana2y2Yv...` | Rakurai | Rakurai | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 353 | 2026-10-30 08:07:41 | 1072 | 463211868-463211871 | `9jxgosAf...` | FireBAM | FireBAM | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 354 | 2026-10-30 08:08:17 | 1072 | 463212036-463212039 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 355 | 2026-10-30 08:08:52 | 1072 | 463212196-463212199 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 356 | 2026-10-30 08:09:38 | 1072 | 463212412-463212415 | `DRpbCBMx...` | AgaveBam | AgaveBam | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 357 | 2026-10-30 08:10:20 | 1072 | 463212608-463212611 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 358 | 2026-10-30 08:10:54 | 1072 | 463212768-463212771 | `HEL1USMZ...` | JitoLabs | JitoLabs | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 359 | 2026-10-30 08:11:56 | 1072 | 463213060-463213063 | `E1r4Psq8...` | JitoLabs | JitoLabs | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 360 | 2026-10-30 08:13:19 | 1072 | 463213448-463213451 | `5Us18hLZ...` | Agave | Agave | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 361 | 2026-10-30 08:13:54 | 1072 | 463213612-463213615 | `7QQGNm3p...` | Agave | Agave | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 362 | 2026-10-30 08:14:46 | 1072 | 463213856-463213859 | `E3mDbFMr...` | Rakurai | Rakurai | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 363 | 2026-10-30 08:15:27 | 1072 | 463214052-463214055 | `BFmqBsaG...` | Firedancer | Firedancer | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 364 | 2026-10-30 08:16:44 | 1072 | 463214408-463214411 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 365 | 2026-10-30 12:48:24 | 1072 | 463290796-463290799 | `7QQGNm3p...` | Agave | Agave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 366 | 2026-10-30 12:49:05 | 1072 | 463290984-463290987 | `9jxgosAf...` | FireBAM | FireBAM | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 367 | 2026-10-30 12:50:47 | 1072 | 463291468-463291471 | `4VRs6A9z...` | Firedancer | Firedancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 368 | 2026-10-30 12:52:07 | 1072 | 463291836-463291839 | `E3mDbFMr...` | Rakurai | Rakurai | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 369 | 2026-10-30 12:52:42 | 1072 | 463291996-463291999 | `E1r4Psq8...` | JitoLabs | JitoLabs | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 370 | 2026-10-30 12:53:28 | 1072 | 463292212-463292215 | `BFmqBsaG...` | Firedancer | Firedancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 371 | 2026-10-30 12:54:43 | 1072 | 463292564-463292567 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 372 | 2026-10-30 12:55:27 | 1072 | 463292772-463292775 | `HEL1USMZ...` | JitoLabs | JitoLabs | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 373 | 2026-10-30 12:56:01 | 1072 | 463292932-463292935 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 374 | 2026-10-30 12:56:36 | 1072 | 463293096-463293099 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 375 | 2026-10-30 12:57:15 | 1072 | 463293276-463293279 | `DRpbCBMx...` | AgaveBam | AgaveBam | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 376 | 2026-10-30 12:58:24 | 1072 | 463293600-463293603 | `ana2y2Yv...` | Rakurai | Rakurai | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 377 | 2026-10-30 12:59:01 | 1072 | 463293764-463293767 | `5Us18hLZ...` | Agave | Agave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 378 | 2026-10-30 12:59:37 | 1072 | 463293936-463293939 | `5Cchr1XG...` | AgaveBam | AgaveBam | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 379 | 2026-10-30 13:00:15 | 1072 | 463294116-463294119 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 380 | 2026-10-30 13:11:24 | 1072 | 463297260-463297263 | `LA1NEzry...` | FireBAM | FireBAM | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 381 | 2026-10-30 15:29:34 | 1072 | 463336068-463336071 | `LA1NEzry...` | FireBAM | FireBAM | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 382 | 2026-10-30 15:44:14 | 1072 | 463340180-463340183 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 383 | 2026-10-30 15:45:15 | 1072 | 463340464-463340467 | `E3mDbFMr...` | Rakurai | Rakurai | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 384 | 2026-10-30 15:46:26 | 1072 | 463340796-463340799 | `9jxgosAf...` | FireBAM | FireBAM | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 385 | 2026-10-30 15:47:19 | 1072 | 463341040-463341043 | `HEL1USMZ...` | JitoLabs | JitoLabs | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 386 | 2026-10-30 15:48:07 | 1072 | 463341268-463341271 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 387 | 2026-10-30 15:48:46 | 1072 | 463341452-463341455 | `5Us18hLZ...` | Agave | Agave | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 388 | 2026-10-30 15:49:51 | 1072 | 463341756-463341759 | `5Cchr1XG...` | AgaveBam | AgaveBam | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 389 | 2026-10-30 15:50:36 | 1072 | 463341964-463341967 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 390 | 2026-10-30 15:51:24 | 1072 | 463342188-463342191 | `7QQGNm3p...` | Agave | Agave | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 391 | 2026-10-30 15:52:02 | 1072 | 463342376-463342379 | `E1r4Psq8...` | JitoLabs | JitoLabs | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 392 | 2026-10-30 15:52:44 | 1072 | 463342568-463342571 | `DRpbCBMx...` | AgaveBam | AgaveBam | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 393 | 2026-10-30 15:53:39 | 1072 | 463342828-463342831 | `ana2y2Yv...` | Rakurai | Rakurai | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 394 | 2026-10-30 15:54:22 | 1072 | 463343032-463343035 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 395 | 2026-10-30 15:56:41 | 1072 | 463343688-463343691 | `4VRs6A9z...` | Firedancer | Firedancer | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 396 | 2026-10-30 16:00:05 | 1072 | 463344632-463344635 | `BFmqBsaG...` | Firedancer | Firedancer | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 397 | 2026-10-30 19:08:40 | 1072 | 463397412-463397415 | `BFmqBsaG...` | Firedancer | Firedancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 398 | 2026-10-30 19:09:33 | 1072 | 463397656-463397659 | `E3mDbFMr...` | Rakurai | Rakurai | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 399 | 2026-10-30 19:10:22 | 1072 | 463397884-463397887 | `ana2y2Yv...` | Rakurai | Rakurai | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 400 | 2026-10-30 19:11:16 | 1072 | 463398140-463398143 | `5Cchr1XG...` | AgaveBam | AgaveBam | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 401 | 2026-10-30 19:12:07 | 1072 | 463398376-463398379 | `DRpbCBMx...` | AgaveBam | AgaveBam | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 402 | 2026-10-30 19:12:48 | 1072 | 463398564-463398567 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 403 | 2026-10-30 19:13:27 | 1072 | 463398744-463398747 | `5Us18hLZ...` | Agave | Agave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 404 | 2026-10-30 19:14:03 | 1072 | 463398908-463398911 | `HEL1USMZ...` | JitoLabs | JitoLabs | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 405 | 2026-10-30 19:14:39 | 1072 | 463399072-463399075 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 406 | 2026-10-30 19:15:32 | 1072 | 463399316-463399319 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 407 | 2026-10-30 19:16:06 | 1072 | 463399480-463399483 | `E1r4Psq8...` | JitoLabs | JitoLabs | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 408 | 2026-10-30 19:16:40 | 1072 | 463399640-463399643 | `9jxgosAf...` | FireBAM | FireBAM | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 409 | 2026-10-30 19:18:00 | 1072 | 463400016-463400019 | `7QQGNm3p...` | Agave | Agave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 410 | 2026-10-30 19:19:02 | 1072 | 463400308-463400311 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 411 | 2026-10-30 19:27:29 | 1072 | 463402696-463402699 | `4VRs6A9z...` | Firedancer | Firedancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 412 | 2026-10-30 19:33:36 | 1072 | 463404400-463404403 | `LA1NEzry...` | FireBAM | FireBAM | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 413 | 2026-10-30 23:36:25 | 1072 | 463472300-463472303 | `5Us18hLZ...` | Agave | Agave | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 414 | 2026-10-30 23:37:38 | 1072 | 463472644-463472647 | `BFmqBsaG...` | Firedancer | Firedancer | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261030T015219Z` | 415 | 2026-10-30 23:38:24 | 1072 | 463472856-463472859 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 416 | 2026-10-30 23:39:20 | 1072 | 463473120-463473123 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 417 | 2026-10-30 23:39:56 | 1072 | 463473284-463473287 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 418 | 2026-10-30 23:40:48 | 1072 | 463473532-463473535 | `E3mDbFMr...` | Rakurai | Rakurai | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 419 | 2026-10-30 23:41:30 | 1072 | 463473728-463473731 | `E1r4Psq8...` | JitoLabs | JitoLabs | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 420 | 2026-10-30 23:42:07 | 1072 | 463473900-463473903 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 421 | 2026-10-30 23:43:13 | 1072 | 463474212-463474215 | `ana2y2Yv...` | Rakurai | Rakurai | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261030T015219Z` | 422 | 2026-10-30 23:44:09 | 1072 | 463474472-463474475 | `9jxgosAf...` | FireBAM | FireBAM | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 423 | 2026-10-30 23:44:51 | 1072 | 463474668-463474671 | `HEL1USMZ...` | JitoLabs | JitoLabs | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 424 | 2026-10-30 23:45:44 | 1072 | 463474920-463474923 | `DRpbCBMx...` | AgaveBam | AgaveBam | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 425 | 2026-10-30 23:46:24 | 1072 | 463475108-463475111 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 426 | 2026-10-30 23:47:46 | 1072 | 463475492-463475495 | `7QQGNm3p...` | Agave | Agave | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261030T015219Z` | 427 | 2026-10-30 23:50:33 | 1072 | 463476256-463476259 | `4VRs6A9z...` | Firedancer | Firedancer | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 428 | 2026-10-30 23:56:59 | 1072 | 463478072-463478075 | `LA1NEzry...` | FireBAM | FireBAM | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261030T015219Z` | 429 | 2026-10-31 00:40:44 | 1072 | 463490296-463490299 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 430 | 2026-10-31 00:41:23 | 1072 | 463490480-463490483 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 431 | 2026-10-31 00:42:00 | 1072 | 463490652-463490655 | `ana2y2Yv...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 432 | 2026-10-31 00:42:47 | 1072 | 463490872-463490875 | `BFmqBsaG...` | Firedancer | Firedancer | independent | slot2 | 12 | 9 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 433 | 2026-10-31 00:43:23 | 1072 | 463491044-463491047 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 11 | ? | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 434 | 2026-10-31 00:44:19 | 1072 | 463491304-463491307 | `LA1NEzry...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 435 | 2026-10-31 00:45:01 | 1072 | 463491496-463491499 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 7 | JitoLabs | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 436 | 2026-10-31 00:46:05 | 1072 | 463491796-463491799 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 437 | 2026-10-31 00:46:54 | 1072 | 463492024-463492027 | `E3mDbFMr...` | Rakurai | Rakurai | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 438 | 2026-10-31 00:47:46 | 1072 | 463492268-463492271 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 439 | 2026-10-31 00:48:44 | 1072 | 463492540-463492543 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 440 | 2026-10-31 00:49:29 | 1072 | 463492752-463492755 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 10 | ? | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 441 | 2026-10-31 00:50:06 | 1072 | 463492920-463492923 | `7QQGNm3p...` | Agave | Agave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 442 | 2026-10-31 00:50:40 | 1072 | 463493084-463493087 | `9jxgosAf...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 443 | 2026-10-31 00:51:26 | 1072 | 463493300-463493303 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 444 | 2026-10-31 00:52:05 | 1072 | 463493476-463493479 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 445 | 2026-10-31 00:52:45 | 1072 | 463493660-463493663 | `E3mDbFMr...` | Rakurai | Rakurai | independent | pre300 | 12 | 9 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 446 | 2026-10-31 00:53:23 | 1072 | 463493836-463493839 | `5Us18hLZ...` | Agave | Agave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 447 | 2026-10-31 00:54:23 | 1072 | 463494120-463494123 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 9 | Firedancer | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 448 | 2026-10-31 00:54:58 | 1072 | 463494284-463494287 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 449 | 2026-10-31 00:55:56 | 1072 | 463494556-463494559 | `BFmqBsaG...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 450 | 2026-10-31 00:58:06 | 1072 | 463495168-463495171 | `7QQGNm3p...` | Agave | Agave | independent | slot2 | 12 | 9 | AgaveBam | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 451 | 2026-10-31 01:10:38 | 1072 | 463498684-463498687 | `4VRs6A9z...` | Firedancer | Firedancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261030T015219Z` | 452 | 2026-10-31 01:24:18 | 1072 | 463502508-463502511 | `LA1NEzry...` | FireBAM | FireBAM | independent | pre300 | 12 | 10 | AgaveBam | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 453 | 2026-10-31 03:53:16 | 1073 | 463544140-463544143 | `BFmqBsaG...` | Firedancer | Firedancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 454 | 2026-10-31 03:56:33 | 1073 | 463545060-463545063 | `LA1NEzry...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 455 | 2026-10-31 03:58:42 | 1073 | 463545660-463545663 | `BFmqBsaG...` | Firedancer | Firedancer | independent | pre300 | 12 | 10 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 456 | 2026-10-31 04:07:27 | 1073 | 463548120-463548123 | `7QQGNm3p...` | Agave | Agave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 457 | 2026-10-31 04:08:02 | 1073 | 463548280-463548283 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 8 | ? | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 458 | 2026-10-31 04:08:49 | 1073 | 463548496-463548499 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 459 | 2026-10-31 04:09:37 | 1073 | 463548720-463548723 | `5Us18hLZ...` | Agave | Agave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 460 | 2026-10-31 04:10:44 | 1073 | 463549036-463549039 | `ana2y2Yv...` | Rakurai | Rakurai | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 461 | 2026-10-31 04:11:20 | 1073 | 463549204-463549207 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 462 | 2026-10-31 04:11:54 | 1073 | 463549364-463549367 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 463 | 2026-10-31 04:12:55 | 1073 | 463549652-463549655 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 464 | 2026-10-31 04:13:35 | 1073 | 463549836-463549839 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 10 | AgaveBam | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 465 | 2026-10-31 04:14:12 | 1073 | 463550004-463550007 | `9jxgosAf...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 466 | 2026-10-31 04:14:46 | 1073 | 463550164-463550167 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 9 | JitoLabs | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 467 | 2026-10-31 04:15:24 | 1073 | 463550340-463550343 | `5Us18hLZ...` | Agave | Agave | independent | slot2 | 12 | 11 | AgaveBam | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 468 | 2026-10-31 04:16:08 | 1073 | 463550544-463550547 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 469 | 2026-10-31 04:17:01 | 1073 | 463550788-463550791 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 470 | 2026-10-31 04:17:46 | 1073 | 463551000-463551003 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 9 | JitoLabs | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 471 | 2026-10-31 04:18:42 | 1073 | 463551260-463551263 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 472 | 2026-10-31 04:19:35 | 1073 | 463551516-463551519 | `ana2y2Yv...` | Rakurai | Rakurai | independent | pre300 | 12 | 8 | JitoLabs | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 473 | 2026-10-31 04:20:20 | 1073 | 463551720-463551723 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 474 | 2026-10-31 04:21:41 | 1073 | 463552096-463552099 | `4VRs6A9z...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 475 | 2026-10-31 04:24:50 | 1073 | 463552976-463552979 | `E3mDbFMr...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 476 | 2026-10-31 04:38:49 | 1073 | 463556908-463556911 | `LA1NEzry...` | FireBAM | FireBAM | independent | slot2 | 12 | 8 | Firedancer | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 477 | 2026-10-31 09:08:24 | 1073 | 463632444-463632447 | `5Us18hLZ...` | Agave | Agave | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 478 | 2026-10-31 09:14:16 | 1073 | 463634104-463634107 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 479 | 2026-10-31 09:14:58 | 1073 | 463634300-463634303 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 480 | 2026-10-31 09:15:38 | 1073 | 463634488-463634491 | `E3mDbFMr...` | Rakurai | Rakurai | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 481 | 2026-10-31 09:16:52 | 1073 | 463634836-463634839 | `LA1NEzry...` | FireBAM | FireBAM | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 482 | 2026-10-31 09:17:34 | 1073 | 463635032-463635035 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 483 | 2026-10-31 09:18:08 | 1073 | 463635192-463635195 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 484 | 2026-10-31 09:19:15 | 1073 | 463635504-463635507 | `DRpbCBMx...` | AgaveBam | AgaveBam | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 485 | 2026-10-31 09:19:51 | 1073 | 463635668-463635671 | `HEL1USMZ...` | JitoLabs | JitoLabs | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 486 | 2026-10-31 09:20:42 | 1073 | 463635904-463635907 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 487 | 2026-10-31 09:21:18 | 1073 | 463636072-463636075 | `E1r4Psq8...` | JitoLabs | JitoLabs | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 488 | 2026-10-31 09:22:00 | 1073 | 463636268-463636271 | `7QQGNm3p...` | Agave | Agave | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 489 | 2026-10-31 09:23:21 | 1073 | 463636652-463636655 | `ana2y2Yv...` | Rakurai | Rakurai | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 490 | 2026-10-31 09:25:52 | 1073 | 463637356-463637359 | `9jxgosAf...` | FireBAM | FireBAM | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 491 | 2026-10-31 09:30:58 | 1073 | 463638788-463638791 | `BFmqBsaG...` | Firedancer | Firedancer | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 492 | 2026-10-31 09:34:51 | 1073 | 463639876-463639879 | `4VRs6A9z...` | Firedancer | Firedancer | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 493 | 2026-10-31 09:43:13 | 1073 | 463642220-463642223 | `5Us18hLZ...` | Agave | Agave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 494 | 2026-10-31 09:46:21 | 1073 | 463643088-463643091 | `4VRs6A9z...` | Firedancer | Firedancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 495 | 2026-10-31 09:47:18 | 1073 | 463643352-463643355 | `BFmqBsaG...` | Firedancer | Firedancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 496 | 2026-10-31 09:49:21 | 1073 | 463643924-463643927 | `E3mDbFMr...` | Rakurai | Rakurai | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 497 | 2026-10-31 09:50:07 | 1073 | 463644136-463644139 | `LA1NEzry...` | FireBAM | FireBAM | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 498 | 2026-10-31 09:51:22 | 1073 | 463644492-463644495 | `7QQGNm3p...` | Agave | Agave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 499 | 2026-10-31 09:51:59 | 1073 | 463644664-463644667 | `HEL1USMZ...` | JitoLabs | JitoLabs | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 500 | 2026-10-31 09:52:34 | 1073 | 463644824-463644827 | `9jxgosAf...` | FireBAM | FireBAM | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 501 | 2026-10-31 09:53:08 | 1073 | 463644988-463644991 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 502 | 2026-10-31 09:53:46 | 1073 | 463645164-463645167 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 503 | 2026-10-31 09:54:46 | 1073 | 463645444-463645447 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 504 | 2026-10-31 09:55:36 | 1073 | 463645680-463645683 | `DRpbCBMx...` | AgaveBam | AgaveBam | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 505 | 2026-10-31 09:56:23 | 1073 | 463645900-463645903 | `E1r4Psq8...` | JitoLabs | JitoLabs | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 506 | 2026-10-31 09:57:05 | 1073 | 463646100-463646103 | `ana2y2Yv...` | Rakurai | Rakurai | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 507 | 2026-10-31 09:57:41 | 1073 | 463646264-463646267 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 508 | 2026-10-31 09:58:17 | 1073 | 463646432-463646435 | `5Cchr1XG...` | AgaveBam | AgaveBam | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 509 | 2026-10-31 13:57:12 | 1073 | 463713440-463713443 | `BFmqBsaG...` | Firedancer | Firedancer | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 510 | 2026-10-31 13:59:16 | 1073 | 463714024-463714027 | `7QQGNm3p...` | Agave | Agave | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 511 | 2026-10-31 14:00:04 | 1073 | 463714248-463714251 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 512 | 2026-10-31 14:00:53 | 1073 | 463714472-463714475 | `4VRs6A9z...` | Firedancer | Firedancer | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 513 | 2026-10-31 14:01:45 | 1073 | 463714712-463714715 | `LA1NEzry...` | FireBAM | FireBAM | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 514 | 2026-10-31 14:02:37 | 1073 | 463714956-463714959 | `E1r4Psq8...` | JitoLabs | JitoLabs | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 515 | 2026-10-31 14:03:15 | 1073 | 463715132-463715135 | `DRpbCBMx...` | AgaveBam | AgaveBam | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 516 | 2026-10-31 14:04:05 | 1073 | 463715368-463715371 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 517 | 2026-10-31 14:05:13 | 1073 | 463715688-463715691 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 518 | 2026-10-31 14:05:49 | 1073 | 463715856-463715859 | `HEL1USMZ...` | JitoLabs | JitoLabs | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 519 | 2026-10-31 14:06:53 | 1073 | 463716152-463716155 | `ana2y2Yv...` | Rakurai | Rakurai | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 520 | 2026-10-31 14:07:38 | 1073 | 463716368-463716371 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 521 | 2026-10-31 14:08:13 | 1073 | 463716532-463716535 | `9jxgosAf...` | FireBAM | FireBAM | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 522 | 2026-10-31 14:09:16 | 1073 | 463716824-463716827 | `5Us18hLZ...` | Agave | Agave | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 523 | 2026-10-31 14:10:09 | 1073 | 463717072-463717075 | `E3mDbFMr...` | Rakurai | Rakurai | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 524 | 2026-10-31 14:13:28 | 1073 | 463717996-463717999 | `5Cchr1XG...` | AgaveBam | AgaveBam | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 525 | 2026-10-31 18:52:32 | 1073 | 463796148-463796151 | `4VRs6A9z...` | Firedancer | Firedancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 526 | 2026-10-31 19:00:41 | 1073 | 463798428-463798431 | `LA1NEzry...` | FireBAM | FireBAM | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 527 | 2026-10-31 19:03:18 | 1073 | 463799164-463799167 | `E3mDbFMr...` | Rakurai | Rakurai | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 528 | 2026-10-31 19:06:30 | 1073 | 463800056-463800059 | `HEL1USMZ...` | JitoLabs | JitoLabs | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 529 | 2026-10-31 19:07:40 | 1073 | 463800380-463800383 | `5Cchr1XG...` | AgaveBam | AgaveBam | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 530 | 2026-10-31 19:08:29 | 1073 | 463800612-463800615 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 531 | 2026-10-31 19:09:29 | 1073 | 463800896-463800899 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 532 | 2026-10-31 19:10:14 | 1073 | 463801104-463801107 | `5Us18hLZ...` | Agave | Agave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 533 | 2026-10-31 19:11:13 | 1073 | 463801380-463801383 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 534 | 2026-10-31 19:12:14 | 1073 | 463801664-463801667 | `ana2y2Yv...` | Rakurai | Rakurai | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 535 | 2026-10-31 19:12:49 (tool clock) | 1073 | 463801828-463801831 | `DRpbCBMx...` | AgaveBam | AgaveBam | shared | slot2 | 0 | 0 | - | 0 |
+| `campaign-mainnet-20261031T014357Z` | 536 | 2026-10-31 19:13:25 | 1073 | 463801992-463801995 | `E1r4Psq8...` | JitoLabs | JitoLabs | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 537 | 2026-10-31 19:14:05 | 1073 | 463802180-463802183 | `7QQGNm3p...` | Agave | Agave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 538 | 2026-10-31 19:14:48 | 1073 | 463802380-463802383 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 539 | 2026-10-31 19:15:45 | 1073 | 463802644-463802647 | `9jxgosAf...` | FireBAM | FireBAM | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 540 | 2026-10-31 19:16:22 | 1073 | 463802816-463802819 | `BFmqBsaG...` | Firedancer | Firedancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 541 | 2026-10-31 21:00:19 | 1073 | 463831952-463831955 | `LA1NEzry...` | FireBAM | FireBAM | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 542 | 2026-10-31 21:02:25 | 1073 | 463832544-463832547 | `7QQGNm3p...` | Agave | Agave | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 543 | 2026-10-31 21:03:18 | 1073 | 463832788-463832791 | `BFmqBsaG...` | Firedancer | Firedancer | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 544 | 2026-10-31 21:04:37 | 1073 | 463833160-463833163 | `HEL1USMZ...` | JitoLabs | JitoLabs | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 545 | 2026-10-31 21:05:11 | 1073 | 463833320-463833323 | `DRpbCBMx...` | AgaveBam | AgaveBam | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 546 | 2026-10-31 21:05:45 | 1073 | 463833480-463833483 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 547 | 2026-10-31 21:06:27 | 1073 | 463833680-463833683 | `ana2y2Yv...` | Rakurai | Rakurai | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 548 | 2026-10-31 21:07:10 | 1073 | 463833884-463833887 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 549 | 2026-10-31 21:08:12 | 1073 | 463834172-463834175 | `5Us18hLZ...` | Agave | Agave | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 550 | 2026-10-31 21:08:58 | 1073 | 463834380-463834383 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 551 | 2026-10-31 21:09:57 | 1073 | 463834660-463834663 | `E3mDbFMr...` | Rakurai | Rakurai | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 552 | 2026-10-31 21:10:46 | 1073 | 463834884-463834887 | `9jxgosAf...` | FireBAM | FireBAM | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 553 | 2026-10-31 21:11:39 | 1073 | 463835132-463835135 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 554 | 2026-10-31 21:12:23 | 1073 | 463835336-463835339 | `E1r4Psq8...` | JitoLabs | JitoLabs | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 555 | 2026-10-31 21:15:46 (tool clock) | 1073 | 463836232-463836235 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | slot2 | 0 | 0 | - | 0 |
+| `campaign-mainnet-20261031T014357Z` | 556 | 2026-10-31 21:19:54 | 1073 | 463837440-463837443 | `4VRs6A9z...` | Firedancer | Firedancer | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 557 | 2026-11-01 00:35:44 | 1073 | 463892364-463892367 | `5Us18hLZ...` | Agave | Agave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 558 | 2026-11-01 00:37:23 | 1073 | 463892828-463892831 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 559 | 2026-11-01 00:38:03 | 1073 | 463893016-463893019 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 8 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 560 | 2026-11-01 00:39:20 | 1073 | 463893376-463893379 | `9jxgosAf...` | FireBAM | FireBAM | independent | pre300 | 12 | 9 | AgaveBam | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 561 | 2026-11-01 00:40:16 | 1073 | 463893632-463893635 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 562 | 2026-11-01 00:40:51 | 1073 | 463893796-463893799 | `BFmqBsaG...` | Firedancer | Firedancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 563 | 2026-11-01 00:41:28 | 1073 | 463893964-463893967 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 564 | 2026-11-01 00:42:19 | 1073 | 463894200-463894203 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 565 | 2026-11-01 00:43:08 | 1073 | 463894432-463894435 | `ana2y2Yv...` | Rakurai | Rakurai | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 566 | 2026-11-01 00:43:47 | 1073 | 463894612-463894615 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 567 | 2026-11-01 00:44:25 | 1073 | 463894788-463894791 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 568 | 2026-11-01 00:45:09 | 1073 | 463894996-463894999 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 11 | AgaveBam | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 569 | 2026-11-01 00:45:57 | 1073 | 463895220-463895223 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 8 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 570 | 2026-11-01 00:46:38 | 1073 | 463895408-463895411 | `4VRs6A9z...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 571 | 2026-11-01 00:47:31 | 1073 | 463895652-463895655 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 572 | 2026-11-01 00:48:08 | 1073 | 463895828-463895831 | `7QQGNm3p...` | Agave | Agave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 573 | 2026-11-01 00:48:45 | 1073 | 463896000-463896003 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 9 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 574 | 2026-11-01 00:49:34 | 1073 | 463896228-463896231 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 575 | 2026-11-01 00:50:36 | 1073 | 463896520-463896523 | `E3mDbFMr...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 576 | 2026-11-01 00:51:12 | 1073 | 463896688-463896691 | `9jxgosAf...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 577 | 2026-11-01 00:51:59 | 1073 | 463896904-463896907 | `LA1NEzry...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 578 | 2026-11-01 00:54:17 | 1073 | 463897552-463897555 | `7QQGNm3p...` | Agave | Agave | independent | pre300 | 12 | 9 | Firedancer | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 579 | 2026-11-01 00:58:47 | 1073 | 463898792-463898795 | `E3mDbFMr...` | Rakurai | Rakurai | independent | slot2 | 12 | 9 | AgaveBam | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 580 | 2026-11-01 01:04:08 | 1073 | 463900304-463900307 | `4VRs6A9z...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261031T014357Z` | 581 | 2026-11-01 03:30:05 | 1073 | 463941232-463941235 | `E3mDbFMr...` | Rakurai | Rakurai | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 582 | 2026-11-01 03:44:15 | 1073 | 463945200-463945203 | `5Us18hLZ...` | Agave | Agave | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 583 | 2026-11-01 03:46:36 | 1073 | 463945860-463945863 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 584 | 2026-11-01 03:47:14 | 1073 | 463946036-463946039 | `4VRs6A9z...` | Firedancer | Firedancer | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 585 | 2026-11-01 03:48:07 | 1073 | 463946284-463946287 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 586 | 2026-11-01 03:49:09 | 1073 | 463946572-463946575 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 587 | 2026-11-01 03:49:48 | 1073 | 463946752-463946755 | `HEL1USMZ...` | JitoLabs | JitoLabs | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261031T014357Z` | 588 | 2026-11-01 03:50:31 | 1073 | 463946952-463946955 | `9jxgosAf...` | FireBAM | FireBAM | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 589 | 2026-11-01 03:51:09 | 1073 | 463947132-463947135 | `DRpbCBMx...` | AgaveBam | AgaveBam | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 590 | 2026-11-01 03:51:45 | 1073 | 463947300-463947303 | `E1r4Psq8...` | JitoLabs | JitoLabs | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261031T014357Z` | 591 | 2026-11-01 03:52:23 | 1073 | 463947476-463947479 | `5Cchr1XG...` | AgaveBam | AgaveBam | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 592 | 2026-11-01 03:53:14 | 1073 | 463947712-463947715 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 593 | 2026-11-01 03:54:41 | 1073 | 463948124-463948127 | `7QQGNm3p...` | Agave | Agave | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 594 | 2026-11-01 03:55:15 | 1073 | 463948284-463948287 | `ana2y2Yv...` | Rakurai | Rakurai | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261031T014357Z` | 595 | 2026-11-01 03:56:30 | 1073 | 463948628-463948631 | `LA1NEzry...` | FireBAM | FireBAM | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261031T014357Z` | 596 | 2026-11-01 03:58:01 | 1073 | 463949052-463949055 | `BFmqBsaG...` | Firedancer | Firedancer | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 597 | 2026-11-01 06:55:11 | 1074 | 463998656-463998659 | `E3mDbFMr...` | Rakurai | Rakurai | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 598 | 2026-11-01 07:00:01 | 1074 | 464000004-464000007 | `BFmqBsaG...` | Firedancer | Firedancer | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 599 | 2026-11-01 07:01:19 (tool clock) | 1074 | 464000368-464000371 | `DRpbCBMx...` | AgaveBam | AgaveBam | equal_fee | slot2 | 0 | 0 | - | 0 |
+| `campaign-mainnet-20261101T041655Z` | 600 | 2026-11-01 07:02:07 | 1074 | 464000596-464000599 | `HEL1USMZ...` | JitoLabs | JitoLabs | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 601 | 2026-11-01 07:02:46 | 1074 | 464000780-464000783 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 602 | 2026-11-01 07:03:44 | 1074 | 464001052-464001055 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 603 | 2026-11-01 07:04:30 | 1074 | 464001268-464001271 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 604 | 2026-11-01 07:05:24 | 1074 | 464001516-464001519 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 605 | 2026-11-01 07:06:03 | 1074 | 464001692-464001695 | `5Cchr1XG...` | AgaveBam | AgaveBam | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 606 | 2026-11-01 07:06:56 | 1074 | 464001936-464001939 | `ana2y2Yv...` | Rakurai | Rakurai | equal_fee | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 607 | 2026-11-01 07:07:58 | 1074 | 464002228-464002231 | `E1r4Psq8...` | JitoLabs | JitoLabs | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 608 | 2026-11-01 07:08:43 | 1074 | 464002432-464002435 | `9jxgosAf...` | FireBAM | FireBAM | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 609 | 2026-11-01 07:09:26 | 1074 | 464002632-464002635 | `5Us18hLZ...` | Agave | Agave | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 610 | 2026-11-01 07:10:46 | 1074 | 464003004-464003007 | `4VRs6A9z...` | Firedancer | Firedancer | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 611 | 2026-11-01 07:12:18 | 1074 | 464003432-464003435 | `7QQGNm3p...` | Agave | Agave | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 612 | 2026-11-01 07:14:56 | 1074 | 464004168-464004171 | `LA1NEzry...` | FireBAM | FireBAM | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 613 | 2026-11-01 09:01:49 | 1074 | 464034168-464034171 | `LA1NEzry...` | FireBAM | FireBAM | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 614 | 2026-11-01 09:08:53 | 1074 | 464036156-464036159 | `BFmqBsaG...` | Firedancer | Firedancer | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 615 | 2026-11-01 09:11:39 | 1074 | 464036920-464036923 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 616 | 2026-11-01 09:12:53 | 1074 | 464037264-464037267 | `E1r4Psq8...` | JitoLabs | JitoLabs | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 617 | 2026-11-01 09:13:37 | 1074 | 464037472-464037475 | `5Us18hLZ...` | Agave | Agave | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 618 | 2026-11-01 09:14:24 | 1074 | 464037684-464037687 | `DRpbCBMx...` | AgaveBam | AgaveBam | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 619 | 2026-11-01 09:15:00 | 1074 | 464037856-464037859 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 620 | 2026-11-01 09:15:38 | 1074 | 464038036-464038039 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 621 | 2026-11-01 09:16:18 | 1074 | 464038224-464038227 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 622 | 2026-11-01 09:16:53 | 1074 | 464038388-464038391 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 623 | 2026-11-01 09:18:06 | 1074 | 464038728-464038731 | `4VRs6A9z...` | Firedancer | Firedancer | denominator | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 624 | 2026-11-01 09:18:56 | 1074 | 464038956-464038959 | `7QQGNm3p...` | Agave | Agave | denominator | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 625 | 2026-11-01 09:19:31 | 1074 | 464039124-464039127 | `E3mDbFMr...` | Rakurai | Rakurai | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 626 | 2026-11-01 09:20:37 | 1074 | 464039424-464039427 | `HEL1USMZ...` | JitoLabs | JitoLabs | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 627 | 2026-11-01 09:21:44 | 1074 | 464039736-464039739 | `9jxgosAf...` | FireBAM | FireBAM | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 628 | 2026-11-01 09:22:57 | 1074 | 464040080-464040083 | `ana2y2Yv...` | Rakurai | Rakurai | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 629 | 2026-11-01 12:13:17 | 1074 | 464087892-464087895 | `LA1NEzry...` | FireBAM | FireBAM | independent | slot2 | 12 | 11 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 630 | 2026-11-01 12:27:49 | 1074 | 464091976-464091979 | `LA1NEzry...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 631 | 2026-11-01 12:38:45 | 1074 | 464095024-464095027 | `BFmqBsaG...` | Firedancer | Firedancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 632 | 2026-11-01 12:39:58 | 1074 | 464095364-464095367 | `5Us18hLZ...` | Agave | Agave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 633 | 2026-11-01 12:41:30 | 1074 | 464095792-464095795 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 5 | AgaveBam | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 634 | 2026-11-01 12:42:19 | 1074 | 464096020-464096023 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 635 | 2026-11-01 12:43:12 | 1074 | 464096264-464096267 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 636 | 2026-11-01 12:43:50 | 1074 | 464096448-464096451 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 637 | 2026-11-01 12:44:25 | 1074 | 464096612-464096615 | `7QQGNm3p...` | Agave | Agave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 638 | 2026-11-01 12:45:12 | 1074 | 464096828-464096831 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 11 | JitoLabs | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 639 | 2026-11-01 12:46:01 | 1074 | 464097060-464097063 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 6 | AgaveBam | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 640 | 2026-11-01 12:46:50 | 1074 | 464097288-464097291 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 641 | 2026-11-01 12:47:49 | 1074 | 464097572-464097575 | `9jxgosAf...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 642 | 2026-11-01 12:48:30 | 1074 | 464097764-464097767 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 643 | 2026-11-01 12:49:22 | 1074 | 464098008-464098011 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 644 | 2026-11-01 12:50:09 | 1074 | 464098224-464098227 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 10 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 645 | 2026-11-01 12:50:50 | 1074 | 464098416-464098419 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 646 | 2026-11-01 12:51:38 | 1074 | 464098640-464098643 | `4VRs6A9z...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 647 | 2026-11-01 12:52:17 | 1074 | 464098820-464098823 | `E3mDbFMr...` | Rakurai | Rakurai | independent | slot2 | 12 | 8 | ? | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 648 | 2026-11-01 12:53:36 | 1074 | 464099184-464099187 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 649 | 2026-11-01 12:55:18 | 1074 | 464099664-464099667 | `4VRs6A9z...` | Firedancer | Firedancer | independent | slot2 | 12 | 10 | AgaveBam | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 650 | 2026-11-01 12:56:34 | 1074 | 464100024-464100027 | `5Us18hLZ...` | Agave | Agave | independent | slot2 | 12 | 10 | AgaveBam | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 651 | 2026-11-01 12:57:39 | 1074 | 464100328-464100331 | `ana2y2Yv...` | Rakurai | Rakurai | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 652 | 2026-11-01 12:59:05 | 1074 | 464100728-464100731 | `E3mDbFMr...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 653 | 2026-11-01 15:27:46 | 1074 | 464142308-464142311 | `LA1NEzry...` | FireBAM | FireBAM | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 654 | 2026-11-01 15:28:24 | 1074 | 464142484-464142487 | `ana2y2Yv...` | Rakurai | Rakurai | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 655 | 2026-11-01 15:30:10 | 1074 | 464142984-464142987 | `E1r4Psq8...` | JitoLabs | JitoLabs | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 656 | 2026-11-01 15:30:54 | 1074 | 464143184-464143187 | `DRpbCBMx...` | AgaveBam | AgaveBam | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 657 | 2026-11-01 15:31:47 | 1074 | 464143436-464143439 | `4VRs6A9z...` | Firedancer | Firedancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 658 | 2026-11-01 15:32:22 | 1074 | 464143596-464143599 | `9jxgosAf...` | FireBAM | FireBAM | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 659 | 2026-11-01 15:33:28 | 1074 | 464143900-464143903 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 660 | 2026-11-01 15:34:09 | 1074 | 464144092-464144095 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 661 | 2026-11-01 15:34:50 | 1074 | 464144288-464144291 | `HEL1USMZ...` | JitoLabs | JitoLabs | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 662 | 2026-11-01 15:35:29 | 1074 | 464144468-464144471 | `5Cchr1XG...` | AgaveBam | AgaveBam | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 663 | 2026-11-01 15:36:36 | 1074 | 464144780-464144783 | `7QQGNm3p...` | Agave | Agave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 664 | 2026-11-01 15:37:33 | 1074 | 464145048-464145051 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 665 | 2026-11-01 15:38:36 | 1074 | 464145348-464145351 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 666 | 2026-11-01 15:39:53 | 1074 | 464145708-464145711 | `E3mDbFMr...` | Rakurai | Rakurai | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 667 | 2026-11-01 15:40:52 | 1074 | 464145980-464145983 | `5Us18hLZ...` | Agave | Agave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 668 | 2026-11-01 15:42:29 | 1074 | 464146440-464146443 | `BFmqBsaG...` | Firedancer | Firedancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 669 | 2026-11-01 20:53:38 | 1074 | 464233548-464233551 | `E3mDbFMr...` | Rakurai | Rakurai | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 670 | 2026-11-01 20:59:21 | 1074 | 464235144-464235147 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 671 | 2026-11-01 21:00:08 | 1074 | 464235364-464235367 | `5Us18hLZ...` | Agave | Agave | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 672 | 2026-11-01 21:00:48 | 1074 | 464235548-464235551 | `9jxgosAf...` | FireBAM | FireBAM | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 673 | 2026-11-01 21:01:35 | 1074 | 464235768-464235771 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 674 | 2026-11-01 21:02:22 | 1074 | 464235988-464235991 | `4VRs6A9z...` | Firedancer | Firedancer | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 675 | 2026-11-01 21:03:15 | 1074 | 464236236-464236239 | `HEL1USMZ...` | JitoLabs | JitoLabs | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 676 | 2026-11-01 21:03:49 | 1074 | 464236396-464236399 | `DRpbCBMx...` | AgaveBam | AgaveBam | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 677 | 2026-11-01 21:04:23 | 1074 | 464236556-464236559 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 678 | 2026-11-01 21:05:09 | 1074 | 464236768-464236771 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 679 | 2026-11-01 21:06:12 | 1074 | 464237064-464237067 | `LA1NEzry...` | FireBAM | FireBAM | denominator | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 680 | 2026-11-01 21:06:59 | 1074 | 464237280-464237283 | `E1r4Psq8...` | JitoLabs | JitoLabs | denominator | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 681 | 2026-11-01 21:07:41 | 1074 | 464237472-464237475 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | denominator | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 682 | 2026-11-01 21:08:21 | 1074 | 464237660-464237663 | `ana2y2Yv...` | Rakurai | Rakurai | denominator | slot2 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 683 | 2026-11-01 21:09:13 | 1074 | 464237900-464237903 | `BFmqBsaG...` | Firedancer | Firedancer | denominator | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 684 | 2026-11-01 21:13:44 | 1074 | 464239156-464239159 | `7QQGNm3p...` | Agave | Agave | denominator | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 685 | 2026-11-02 00:17:11 | 1074 | 464290552-464290555 | `DRpbCBMx...` | AgaveBam | AgaveBam | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 686 | 2026-11-02 00:18:11 | 1074 | 464290832-464290835 | `ana2y2Yv...` | Rakurai | Rakurai | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 687 | 2026-11-02 00:18:53 | 1074 | 464291028-464291031 | `BFmqBsaG...` | Firedancer | Firedancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 688 | 2026-11-02 00:19:41 | 1074 | 464291252-464291255 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 689 | 2026-11-02 00:20:25 | 1074 | 464291452-464291455 | `9jxgosAf...` | FireBAM | FireBAM | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 690 | 2026-11-02 00:21:07 | 1074 | 464291640-464291643 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 691 | 2026-11-02 00:21:47 | 1074 | 464291828-464291831 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 692 | 2026-11-02 00:22:30 | 1074 | 464292028-464292031 | `5Cchr1XG...` | AgaveBam | AgaveBam | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 693 | 2026-11-02 00:23:10 | 1074 | 464292208-464292211 | `E3mDbFMr...` | Rakurai | Rakurai | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 694 | 2026-11-02 00:23:47 | 1074 | 464292380-464292383 | `5Us18hLZ...` | Agave | Agave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 695 | 2026-11-02 00:24:34 | 1074 | 464292604-464292607 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 696 | 2026-11-02 00:25:25 | 1074 | 464292836-464292839 | `E1r4Psq8...` | JitoLabs | JitoLabs | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 697 | 2026-11-02 00:26:47 | 1074 | 464293212-464293215 | `HEL1USMZ...` | JitoLabs | JitoLabs | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 698 | 2026-11-02 00:27:28 | 1074 | 464293408-464293411 | `LA1NEzry...` | FireBAM | FireBAM | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 699 | 2026-11-02 00:28:13 | 1074 | 464293608-464293611 | `7QQGNm3p...` | Agave | Agave | shared | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 700 | 2026-11-02 00:29:22 | 1074 | 464293932-464293935 | `4VRs6A9z...` | Firedancer | Firedancer | shared | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 701 | 2026-11-02 01:44:14 | 1074 | 464314904-464314907 | `DRpbCBMx...` | AgaveBam | AgaveBam | equal_fee | slot2 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 702 | 2026-11-02 01:44:50 | 1074 | 464315080-464315083 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 703 | 2026-11-02 01:46:04 | 1074 | 464315424-464315427 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 704 | 2026-11-02 01:46:52 | 1074 | 464315644-464315647 | `E3mDbFMr...` | Rakurai | Rakurai | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 705 | 2026-11-02 01:47:38 | 1074 | 464315856-464315859 | `7QQGNm3p...` | Agave | Agave | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 706 | 2026-11-02 01:48:44 | 1074 | 464316168-464316171 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | pre300 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 707 | 2026-11-02 01:49:22 | 1074 | 464316344-464316347 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 708 | 2026-11-02 01:50:14 | 1074 | 464316584-464316587 | `5Cchr1XG...` | AgaveBam | AgaveBam | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 709 | 2026-11-02 01:51:08 | 1074 | 464316840-464316843 | `9jxgosAf...` | FireBAM | FireBAM | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 710 | 2026-11-02 01:52:08 | 1074 | 464317120-464317123 | `ana2y2Yv...` | Rakurai | Rakurai | equal_fee | slot2 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 711 | 2026-11-02 01:52:43 | 1074 | 464317280-464317283 | `5Us18hLZ...` | Agave | Agave | equal_fee | pre300 | 12 | 12 | - | 61200 |
+| `campaign-mainnet-20261101T041655Z` | 712 | 2026-11-02 01:54:01 | 1074 | 464317640-464317643 | `HEL1USMZ...` | JitoLabs | JitoLabs | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 713 | 2026-11-02 01:55:31 | 1074 | 464318060-464318063 | `BFmqBsaG...` | Firedancer | Firedancer | equal_fee | slot2 | 12 | 12 | - | 60120 |
+| `campaign-mainnet-20261101T041655Z` | 714 | 2026-11-02 01:56:06 | 1074 | 464318224-464318227 | `E1r4Psq8...` | JitoLabs | JitoLabs | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 715 | 2026-11-02 01:56:48 | 1074 | 464318428-464318431 | `LA1NEzry...` | FireBAM | FireBAM | equal_fee | pre300 | 12 | 12 | - | 72000 |
+| `campaign-mainnet-20261101T041655Z` | 716 | 2026-11-02 02:15:00 | 1074 | 464323532-464323535 | `4VRs6A9z...` | Firedancer | Firedancer | equal_fee | pre300 | 12 | 12 | - | 60000 |
+| `campaign-mainnet-20261101T041655Z` | 717 | 2026-11-02 04:51:44 | 1074 | 464367400-464367403 | `4VRs6A9z...` | Firedancer | Firedancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 718 | 2026-11-02 05:00:38 | 1074 | 464369892-464369895 | `LA1NEzry...` | FireBAM | FireBAM | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 719 | 2026-11-02 05:02:11 | 1074 | 464370316-464370319 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 720 | 2026-11-02 05:04:18 | 1074 | 464370900-464370903 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 721 | 2026-11-02 05:04:59 | 1074 | 464371092-464371095 | `9jxgosAf...` | FireBAM | FireBAM | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 722 | 2026-11-02 05:05:48 | 1074 | 464371324-464371327 | `DRpbCBMx...` | AgaveBam | AgaveBam | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 723 | 2026-11-02 05:06:23 | 1074 | 464371492-464371495 | `7QQGNm3p...` | Agave | Agave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 724 | 2026-11-02 05:07:01 | 1074 | 464371668-464371671 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 8 | ? | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 725 | 2026-11-02 05:08:07 | 1074 | 464371972-464371975 | `E1r4Psq8...` | JitoLabs | JitoLabs | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 726 | 2026-11-02 05:09:02 | 1074 | 464372228-464372231 | `Awes4Tr6...` | HarmonicFiredancer | HarmonicFiredancer | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 727 | 2026-11-02 05:09:49 | 1074 | 464372444-464372447 | `E3mDbFMr...` | Rakurai | Rakurai | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 728 | 2026-11-02 05:10:44 | 1074 | 464372700-464372703 | `7QQGNm3p...` | Agave | Agave | independent | pre300 | 12 | 2 | HarmonicFiredancer | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 729 | 2026-11-02 05:11:25 | 1074 | 464372888-464372891 | `HEL1USMZ...` | JitoLabs | JitoLabs | independent | pre300 | 12 | 10 | JitoLabs | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 730 | 2026-11-02 05:11:59 | 1074 | 464373048-464373051 | `5Us18hLZ...` | Agave | Agave | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 731 | 2026-11-02 05:12:55 | 1074 | 464373312-464373315 | `9jxgosAf...` | FireBAM | FireBAM | independent | pre300 | 12 | 11 | HarmonicAgave | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 732 | 2026-11-02 05:13:55 | 1074 | 464373588-464373591 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 6 | JitoLabs | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 733 | 2026-11-02 05:14:34 | 1074 | 464373772-464373775 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 734 | 2026-11-02 05:15:11 | 1074 | 464373948-464373951 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 11 | ? | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 735 | 2026-11-02 05:15:47 | 1074 | 464374112-464374115 | `5Cchr1XG...` | AgaveBam | AgaveBam | independent | slot2 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 736 | 2026-11-02 05:16:47 | 1074 | 464374396-464374399 | `BFmqBsaG...` | Firedancer | Firedancer | independent | pre300 | 12 | 10 | JitoLabs | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 737 | 2026-11-02 05:17:48 | 1074 | 464374680-464374683 | `ana2y2Yv...` | Rakurai | Rakurai | independent | pre300 | 12 | 9 | AgaveBam | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 738 | 2026-11-02 05:18:43 | 1074 | 464374936-464374939 | `JUPiTERr...` | HarmonicFiredancer | HarmonicFiredancer | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 739 | 2026-11-02 05:21:09 | 1074 | 464375620-464375623 | `ana2y2Yv...` | Rakurai | Rakurai | independent | pre300 | 12 | 12 | - | 63330 |
+| `campaign-mainnet-20261101T041655Z` | 740 | 2026-11-02 05:24:46 | 1074 | 464376632-464376635 | `BFmqBsaG...` | Firedancer | Firedancer | independent | pre300 | 12 | 12 | - | 63330 |
 | `pilot-mainnet-20261027T085253Z` | 41 | 2026-10-27 08:56:00 | 1069 | 462010628-462010631 | `Fd7btgyS...` | HarmonicAgave | HarmonicAgave | denominator | pre300 | 12 | 12 | - | 72000 |
 | `pilot-mainnet-20261027T085253Z` | 42 | 2026-10-27 08:57:11 | 1069 | 462010960-462010963 | `CAo1dCGY...` | HarmonicAgave | HarmonicAgave | denominator | slot2 | 12 | 12 | - | 60000 |
 | `pilot-mainnet-20261027T085253Z` | 43 | 2026-10-27 08:57:51 | 1069 | 462011144-462011147 | `5Cchr1XG...` | AgaveBam | AgaveBam | denominator | slot2 | 12 | 12 | - | 72000 |

@@ -1,0 +1,35 @@
+commit 6df1ef939b63a9ddbf7265dcd8c2ffc09744df7a, 2026-10-28T03:45:06Z, panel data/panels/mainnet-e1071-20261027T233028Z/panel.json, epoch indexes 0 to 3 from chain epoch 1071
+== epoch index 0 in chain epoch 1071, attempt 1, 2026-10-28T03:45:06Z
+ Container inside-the-block-plan-run-a46a5ad79167 Creating 
+ Container inside-the-block-plan-run-a46a5ad79167 Created 
+campaign: plan carries prereg manifest /repo/prereg/manifest-campaign.json sha256 8e7d834a090444b4b9f84b5faa6311a74233a468d3c074ab9a779c7ac12e480d
+campaign: gossip /repo/data/plans/campaign-mainnet-e1071-20261028T005742Z/cluster-nodes.json
+campaign: /repo/data/plans/campaign-mainnet-e1071-20261028T034518Z/plan.json
+campaign: epoch index 0 in epoch 1071, 144 bursts, 1728 probes, fees 9107400 lamports (8640000 base, 467400 priority); 213.5 ms per slot over 30 samples
+  round 0 (part 0): 16 bursts, slots 462721436 to 462725996 (4560 slots), about 29.10 03:02 UTC to 29.10 03:18 UTC
+  round 1 (part 1): 24 bursts, slots 462769692 to 462785280 (15588 slots), about 29.10 05:54 UTC to 29.10 06:49 UTC
+  round 2 (part 2): 16 bursts, slots 462830128 to 462834240 (4112 slots), about 29.10 09:29 UTC to 29.10 09:43 UTC
+  round 3 (part 3): 16 bursts, slots 462872092 to 462876816 (4724 slots), about 29.10 11:58 UTC to 29.10 12:15 UTC
+  round 4 (part 4): 16 bursts, slots 462895568 to 462901120 (5552 slots), about 29.10 13:22 UTC to 29.10 13:41 UTC
+  round 5 (part 5): 16 bursts, slots 462989656 to 462995168 (5512 slots), about 29.10 18:57 UTC to 29.10 19:16 UTC
+  round 6 (part 6): 16 bursts, slots 463008832 to 463012868 (4036 slots), about 29.10 20:05 UTC to 29.10 20:19 UTC
+  round 7 (part 7): 24 bursts, slots 463092440 to 463102024 (9584 slots), about 30.10 01:02 UTC to 30.10 01:36 UTC
+campaign: note: windows scanned with the gossip snapshot of 2026-10-28T00:57:37.293394Z
+ Container inside-the-block-probe-run-adf8c11b0571 Creating 
+ Container inside-the-block-probe-run-adf8c11b0571 Created 
+== live run: limit 13527630 lamports = committed 4355230 + plan fees 9107400 + overhead 65000
+ Container inside-the-block-probe-run-d9e06863055d Creating 
+ Container inside-the-block-probe-run-d9e06863055d Created 
+itb-probe info start {"bursts":144,"code_limit_lamports":50000000,"mode":"live","network":"mainnet","plan":"/data/plans/campaign-mainnet-e1071-20261028T034518Z/plan.json","rpc":"https://api.mainnet-beta.solana.com","spend_limit_lamports":13527630,"ws":"wss://api.mainnet-beta.solana.com"}
+itb-probe LIVE run campaign-mainnet-20261028T034521Z: 144 bursts, spend limit 13527630 lamports
+itb-probe info tls_issuer {"error":null,"host":"api.mainnet-beta.solana.com","issuer":"C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2","verified":true}
+TLS issuer of api.mainnet-beta.solana.com: C=AT, O=ZeroSSL GmbH, CN=ZeroSSL ECC DV SSL CA 2 (verified)
+itb-probe info journal_reconciled {"adjust":0,"chain_fee_total":4355230,"chain_max_burst_seq":null,"chain_signatures":826,"committed":4355230,"fetched":0}
+itb-probe info plan_cost {"committed":4355230,"limit":13527630,"overhead_lamports":65000,"worst_fee_lamports":9107400}
+plan worst-case fees 9107400 lamports plus 65000 for funding and closing; committed 4355230; limit 13527630 (100.0% used after the plan)
+itb-probe info slot_clock_ready {"anchor_slot":462329071,"basis":"node_ts","slot_ms":218.0183596038908,"source":"first_shred","step_ms_by_window_position":[148.0,200.0,200.0,282.0]}
+slot clock: first_shred at 218.0 ms per slot
+itb-probe info payer_balances {"balances":[0,0,0,0,0,0,0,0,0,0,0,0],"deficits":[1412120,1417240,1417350,1409130,1417210,1415760,1407960,1416200,1412160,1412040,1419600,1413510],"needs":[761880,767000,767110,758890,766970,765520,757720,765960,761920,761800,769360,763270],"rent":650240}
+itb-probe info fund_send {"lamports":16970280,"payers":12,"signature":"2NDRKutsepsmNh1RCNmT3pRn3rr5EEcjk4wxfif6Z7cnx4Qesmm2TWjbXNNszX7PXchU1NdQpkL6ukjKzH8b68rd"}
+itb-probe info journal_resolved {"committed":4360230,"finalized_block_height":440353748,"pending":0,"released":0,"settled":1}
+itb-probe info funded {"balances":[1412120,1417240,1417350,1409130,1417210,1415760,1407960,1416200,1412160,1412040,1419600,1413510],"signature":"2NDRKutsepsmNh1RCNmT3pRn3rr5EEcjk4wxfif6Z7cnx4Qesmm2TWjbXNNszX7PXchU1NdQpkL6ukjKzH8b68rd"}
