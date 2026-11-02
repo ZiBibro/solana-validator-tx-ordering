@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Line check before the live campaign (plan-implementation, section 11).
+# Line check before the live campaign (build plan, section 11).
 #
 #   scripts/channel-check.sh PANEL [BURSTS [SECONDS]]
 #

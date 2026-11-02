@@ -34,29 +34,29 @@ The panel of each stage holds 16 validators in 8 classes by gossip `clientId`, t
 ## 3. Measurements and their dates
 
 <!-- itb:begin runs -->
-| Run | Stage | Network | Mode | Started (UTC) | Bursts | Probes | Delivered | Included | In target window | Commit |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `campaign-mainnet-20261028T034521Z` | campaign | mainnet | live | 2026-10-28 03:46:01 | 0 | 0 | 0 | - | - | `6df1ef9` |
-| `campaign-mainnet-20261028T055501Z` | campaign | mainnet | live | 2026-10-28 05:55:36 | 56 | 672 | 660 | 652 | 629 | `5501e6e` |
-| `campaign-mainnet-20261029T120927Z` | campaign | mainnet | live | 2026-10-29 12:15:03 | 72 | 864 | 852 | 852 | 835 | `18a543c` |
-| `campaign-mainnet-20261030T015219Z` | campaign | mainnet | live | 2026-10-30 01:52:56 | 144 | 1728 | 1728 | 1728 | 1683 | `18a543c` |
-| `campaign-mainnet-20261031T014357Z` | campaign | mainnet | live | 2026-10-31 01:46:50 | 144 | 1728 | 1704 | 1704 | 1660 | `18a543c` |
-| `campaign-mainnet-20261101T041655Z` | campaign | mainnet | live | 2026-11-01 04:17:34 | 144 | 1728 | 1716 | 1716 | 1662 | `18a543c` |
-| `devnet-devnet-20261027T083150Z` | devnet | devnet | live | 2026-10-27 08:32:32 | 4 | 48 | 48 | 48 | 48 | `8ff9207` |
-| `dry-run-devnet-20261026T231756Z` | dry-run | devnet | dry-run | 2026-10-26 23:18:33 | 4 | 48 | 0 | - | - | `0e87340` |
-| `dry-run-devnet-20261027T082858Z` | dry-run | devnet | dry-run | 2026-10-27 08:29:35 | 4 | 48 | 0 | - | - | `8ff9207` |
-| `dry-run-mainnet-20261026T232506Z` | dry-run | mainnet | dry-run | 2026-10-26 23:25:45 | 4 | 48 | 0 | - | - | `7aaee67` |
-| `dry-run-mainnet-20261027T002723Z` | dry-run | mainnet | dry-run | 2026-10-27 00:28:04 | 4 | 48 | 0 | - | - | `2bacfa2` |
-| `dry-run-mainnet-20261027T003443Z` | dry-run | mainnet | dry-run | 2026-10-27 00:35:15 | 4 | 48 | 0 | - | - | `d8699aa` |
-| `dry-run-mainnet-20261027T010659Z` | dry-run | mainnet | dry-run | 2026-10-27 01:07:38 | 17 | 204 | 0 | - | - | `d4f2cca` |
-| `dry-run-mainnet-20261027T130541Z` | dry-run | mainnet | dry-run | 2026-10-27 13:06:16 | 12 | 144 | 0 | - | - | `5ffb53a` |
-| `dry-run-mainnet-20261028T005747Z` | dry-run | mainnet | dry-run | 2026-10-28 00:58:24 | 0 | 0 | 0 | - | - | `2293eb4` |
-| `dry-run-mainnet-20261028T011115Z` | dry-run | mainnet | dry-run | 2026-10-28 01:11:48 | 12 | 144 | 0 | - | - | `321b11d` |
-| `dry-run-mainnet-20261028T014101Z` | dry-run | mainnet | dry-run | 2026-10-28 01:41:35 | 12 | 144 | 0 | - | - | `73f3d20` |
-| `dry-run-mainnet-20261028T020206Z` | dry-run | mainnet | dry-run | 2026-10-28 02:02:40 | 12 | 144 | 0 | - | - | `732f502` |
-| `dry-run-mainnet-20261028T021746Z` | dry-run | mainnet | dry-run | 2026-10-28 02:18:18 | 12 | 144 | 0 | - | - | `cf7c56a` |
-| `dry-run-mainnet-20261028T043400Z` | dry-run | mainnet | dry-run | 2026-10-28 04:34:32 | 12 | 144 | 0 | - | - | `6fdceca` |
-| `pilot-mainnet-20261027T085253Z` | pilot | mainnet | live | 2026-10-27 08:53:32 | 68 | 816 | 811 | 811 | 799 | `ef77ca3` |
+| Run | Stage | Network | Mode | Started (UTC) | First burst (UTC) | Last burst (UTC) | Bursts | Probes | Delivered | Included | In target window | Commit |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `campaign-mainnet-20261028T034521Z` | campaign | mainnet | live | 2026-10-28 03:46:01 | - | - | 0 | 0 | 0 | - | - | `6df1ef9` |
+| `campaign-mainnet-20261028T055501Z` | campaign | mainnet | live | 2026-10-28 05:55:36 | 2026-10-29 03:00:13 | 2026-10-29 09:41:31 | 56 | 672 | 660 | 652 | 629 | `5501e6e` |
+| `campaign-mainnet-20261029T120927Z` | campaign | mainnet | live | 2026-10-29 12:15:03 | 2026-10-29 13:20:06 | 2026-10-30 01:36:46 | 72 | 864 | 852 | 852 | 835 | `18a543c` |
+| `campaign-mainnet-20261030T015219Z` | campaign | mainnet | live | 2026-10-30 01:52:56 | 2026-10-30 04:32:21 | 2026-10-31 01:24:15 | 144 | 1728 | 1728 | 1728 | 1683 | `18a543c` |
+| `campaign-mainnet-20261031T014357Z` | campaign | mainnet | live | 2026-10-31 01:46:50 | 2026-10-31 03:53:13 | 2026-11-01 03:57:58 | 144 | 1728 | 1704 | 1704 | 1660 | `18a543c` |
+| `campaign-mainnet-20261101T041655Z` | campaign | mainnet | live | 2026-11-01 04:17:34 | 2026-11-01 06:55:08 | 2026-11-02 05:24:44 | 144 | 1728 | 1716 | 1716 | 1662 | `18a543c` |
+| `devnet-devnet-20261027T083150Z` | devnet | devnet | live | 2026-10-27 08:32:32 | 2026-10-27 08:32:58 | 2026-10-27 08:34:52 | 4 | 48 | 48 | 48 | 48 | `8ff9207` |
+| `dry-run-devnet-20261026T231756Z` | dry-run | devnet | dry-run | 2026-10-26 23:18:33 | 2026-10-26 23:18:46 | 2026-10-26 23:20:41 | 4 | 48 | 0 | - | - | `0e87340` |
+| `dry-run-devnet-20261027T082858Z` | dry-run | devnet | dry-run | 2026-10-27 08:29:35 | 2026-10-27 08:29:45 | 2026-10-27 08:31:40 | 4 | 48 | 0 | - | - | `8ff9207` |
+| `dry-run-mainnet-20261026T232506Z` | dry-run | mainnet | dry-run | 2026-10-26 23:25:45 | 2026-10-26 23:26:07 | 2026-10-26 23:27:50 | 4 | 48 | 0 | - | - | `7aaee67` |
+| `dry-run-mainnet-20261027T002723Z` | dry-run | mainnet | dry-run | 2026-10-27 00:28:04 | 2026-10-27 00:28:20 | 2026-10-27 00:30:02 | 4 | 48 | 0 | - | - | `2bacfa2` |
+| `dry-run-mainnet-20261027T003443Z` | dry-run | mainnet | dry-run | 2026-10-27 00:35:15 | 2026-10-27 00:35:41 | 2026-10-27 00:37:22 | 4 | 48 | 0 | - | - | `d8699aa` |
+| `dry-run-mainnet-20261027T010659Z` | dry-run | mainnet | dry-run | 2026-10-27 01:07:38 | 2026-10-27 01:09:06 | 2026-10-27 01:48:43 | 17 | 204 | 0 | - | - | `d4f2cca-dirty` |
+| `dry-run-mainnet-20261027T130541Z` | dry-run | mainnet | dry-run | 2026-10-27 13:06:16 | 2026-10-27 13:06:41 | 2026-10-27 13:13:28 | 12 | 144 | 0 | - | - | `5ffb53a` |
+| `dry-run-mainnet-20261028T005747Z` | dry-run | mainnet | dry-run | 2026-10-28 00:58:24 | - | - | 0 | 0 | 0 | - | - | `2293eb4` |
+| `dry-run-mainnet-20261028T011115Z` | dry-run | mainnet | dry-run | 2026-10-28 01:11:48 | 2026-10-28 01:12:21 | 2026-10-28 01:19:07 | 12 | 144 | 0 | - | - | `321b11d` |
+| `dry-run-mainnet-20261028T014101Z` | dry-run | mainnet | dry-run | 2026-10-28 01:41:35 | 2026-10-28 01:42:01 | 2026-10-28 01:49:28 | 12 | 144 | 0 | - | - | `73f3d20` |
+| `dry-run-mainnet-20261028T020206Z` | dry-run | mainnet | dry-run | 2026-10-28 02:02:40 | 2026-10-28 02:03:11 | 2026-10-28 02:10:16 | 12 | 144 | 0 | - | - | `732f502` |
+| `dry-run-mainnet-20261028T021746Z` | dry-run | mainnet | dry-run | 2026-10-28 02:18:18 | 2026-10-28 02:53:10 | 2026-10-28 03:00:00 | 12 | 144 | 0 | - | - | `cf7c56a` |
+| `dry-run-mainnet-20261028T043400Z` | dry-run | mainnet | dry-run | 2026-10-28 04:34:32 | 2026-10-28 04:39:41 | 2026-10-28 04:50:02 | 12 | 144 | 0 | - | - | `6fdceca` |
+| `pilot-mainnet-20261027T085253Z` | pilot | mainnet | live | 2026-10-27 08:53:32 | 2026-10-27 08:55:58 | 2026-10-27 10:56:41 | 68 | 816 | 811 | 811 | 799 | `ef77ca3` |
 <!-- itb:end runs -->
 
 Every mainnet run is dated after the Alpenglow upgrade of 2026-10-21, so no measurement mixes the two sides of it. The devnet runs test the pipeline and feed no result. The dry-run `dry-run-mainnet-20261028T005747Z` checks the campaign plan of epoch 1071 and stopped after 150 s, about 26 hours before the plan's first round, so it holds the cost check and the slot clock and no burst. The campaign run `campaign-mainnet-20261028T034521Z` funded the payers and was stopped before its first window, so that the campaign could start on the leader correction of commit `6fdceca`; it holds no burst. Appendix A dates every burst by the `blockTime` of its first included probe.
@@ -68,7 +68,7 @@ The pilot sent 68 bursts into the windows of the 16 panel leaders between 08:53 
 ### 5.1 Bursts left out of the order tests
 
 <!-- itb:begin pilot-exclusions -->
-68 bursts, 61 kept for the order tests. Reasons a burst stays out: fewer-than-two-in-a-block 1, outside-timing-band 6.
+68 bursts: 61 kept for the order tests, 7 left out, 0 of them for more than one reason. Reasons: fewer-than-two-in-a-block 1, outside-timing-band 6.
 <!-- itb:end pilot-exclusions -->
 
 ### 5.2 Order by class and cell
@@ -439,7 +439,7 @@ The campaign manifest `8e7d834a...` went on chain at 01:21:59 UTC on 2026-10-28,
 - `73f3d20` makes the sender sleep to a window in steps and skip a burst it wakes for too late.
 - `cf7c56a` fixes how the campaign runner reads the spend journal (section 9), which `tests/test_campaign_sh.py` replays on the lines of that start.
 - `6fdceca` adds a leader correction to the aim and keeps the first shreds from the aim's anchor to slot 2 in `burst_end` (raw format version 3).
-- `c062eb8` settles stale bookings of an earlier run from a listing of the payers' history on chain. `c3ae1f6` retries error -32019 and stops the listing at a short page, and `18a543c` lists the chain once per start ([REPORT.md, section 6](REPORT.md#6-what-went-wrong-in-the-campaign)). The campaign runs from 12:15 UTC on 2026-10-29 on ran on `18a543c`.
+- `c062eb8` settles stale bookings of an earlier run from a listing of the payers' history on chain. `c3ae1f6` retries error -32019 and stops the listing at a short page, and `18a543c` lists the chain once per start ([REPORT.md, section 6](REPORT.md#6-what-went-wrong-in-the-campaign)). The campaign runs from 12:15 UTC on 2026-10-29 onward ran on `18a543c`.
 - `3f012d5` makes collection take the slot of each probe from the payer listing and ask `getBlock` again when it answers null.
 - `cd50678` changes the balance check of the payers at a run's start. It applies from the end of the campaign, the close of 2026-11-02, and no campaign run ran on it.
 - `9f36bf2` names the rounds of an epoch lost once the epoch passes and keeps its epoch index, and `1275cf5` tests that hand-over after a failed run.
@@ -448,15 +448,21 @@ The campaign manifest `8e7d834a...` went on chain at 01:21:59 UTC on 2026-10-28,
 
 The other five commits after the anchor touch no code outside `tests/`. None of these commits touches a file the manifest pins (`git diff 4cb1012 HEAD` over the six pinned files lists none), so the pinned text keeps the bytes it was hashed from, and the bands and targets of the addendum stay as they were.
 
-The pilot and the four test runs of 2026-10-28 put 98 of 116 bursts in their timing band, and [logs/aim-diagnosis-20261028.txt](logs/aim-diagnosis-20261028.txt) splits the deviation of each burst into its parts. Eight of the 18 misses aimed from an anchor tens of slots old while the slot stream lagged. Two came from a distant leader: the first shreds of `5Cchr1...` (QUIC RTT 162-165 ms) reached the RPC node about 110 ms after the prediction, since the slot steps are medians over all leaders. The leader correction is the median, over that leader's earlier handoff windows in the stream the probe already holds, of the first slot's node time minus its prediction from the window before. Its two numbers come from a firstShredReceived stream of the public node ([logs/shreds-mainnet-20261028T040857Z.jsonl](logs/shreds-mainnet-20261028T040857Z.jsonl)), 75 minutes from 04:09 UTC on 2026-10-28, with 5 089 handoff windows of 534 leaders; [logs/leader-correction-20261028.txt](logs/leader-correction-20261028.txt) gives the method, the tables, the replay below and the mutants of the tests. The median of 3 earlier windows cut the mean error of the next window from 36.9 to 18.6 ms, and 10 windows cut it from 35.2 to 15.8 ms. One or two windows pushed a window that was within 150 ms of its prediction past that mark in 0.18 and 0.22 % of cases, three windows in 0.05 %, so the correction waits for 3. Leader medians over at least 3 windows ran from -46 to 205 ms (`5Cchr1...` 109 ms over 62 windows). Single windows reached -551 and 530 ms, and the bound of 250 ms lies between the two.
+The pilot and the four test runs of 2026-10-28 put 98 of 116 bursts in their timing band, and [logs/aim-diagnosis-20261028.txt](logs/aim-diagnosis-20261028.txt) splits the deviation of each burst into its parts. Eight of the 18 misses aimed from an anchor tens of slots old while the slot stream lagged. Two came from a distant leader: the first shreds of `5Cchr1...` (QUIC RTT 162-165 ms) reached the RPC node about 110 ms after the prediction, since the slot steps are medians over all leaders. The leader correction is the median, over that leader's earlier handoff windows in the stream the probe already holds, of the first slot's node time minus its prediction from the window before. Its two numbers come from a firstShredReceived stream of the public node ([logs/shreds-mainnet-20261028T040857Z.jsonl](logs/shreds-mainnet-20261028T040857Z.jsonl)), 75 minutes from 04:09 UTC on 2026-10-28, with 5089 handoff windows of 534 leaders; [logs/leader-correction-20261028.txt](logs/leader-correction-20261028.txt) gives the method, the tables, the replay below and the mutants of the tests. The median of 3 earlier windows cut the mean error of the next window from 36.9 to 18.6 ms, and 10 windows cut it from 35.2 to 15.8 ms. One or two windows pushed a window that was within 150 ms of its prediction past that mark in 0.18% and 0.22% of cases, three windows in 0.05%, so the correction waits for 3. Leader medians over at least 3 windows ran from -46 to 205 ms (`5Cchr1...` 109 ms over 62 windows). Single windows reached -551 and 530 ms, and the bound of 250 ms lies between the two.
 
 Replayed on the 116 bursts with the correction taken from the same leader's other bursts at an anchor up to 4 slots old, 101 of 116 fall in the band, and 100 when only earlier bursts count. Misses 93 and 150 move to 0.5 and 5.0 ms from the band centre, while 129 stays out at -102.6 ms. Two other misses come into the band and one burst leaves it. The dry run `dry-run-mainnet-20261028T043400Z` on commit `6fdceca` took 12 windows of `5Cchr1...` and `DRpbCB...` and put all 12 in the band. Its corrections at signing were 102 to 112 ms for `5Cchr1...` over 5 to 14 windows and 49 to 61 ms for `DRpbCB...` over 3 to 18, and the six bursts of `5Cchr1...` landed between -20 and 19.5 ms from the band centre. The stale anchor, behind 8 of the misses, is left as it was (option C of the diagnosis).
 
 ### 6.1 Bursts left out of the order tests
 
-This table stands in [REPORT.md, section 4.1](REPORT.md#41-hypotheses-h3-and-h4).
+<!-- itb:in-report campaign-exclusions -->
+This table stands in [REPORT.md, section 4](REPORT.md#4-campaign-results).
 
 ### 6.2 Verdicts by class and cell
+
+Hypotheses H3 and H4 take tau send of the equal-fee arm before the window under the rules of [campaign addendum, section 3](prereg/CAMPAIGN-ADDENDUM.md). The other classes stand beside them for comparison, without a judgement on either hypothesis.
+
+<!-- itb:in-report campaign-hypotheses -->
+The table of H3 and H4 stands in [REPORT.md, section 4.1](REPORT.md#41-hypotheses-h3-and-h4), and the table below gives every class and cell.
 
 <!-- itb:begin campaign-cells -->
 | Class | Arm | Timing | Bursts | Form | Detail | tau (95% CI; p) | Violated pair share (95% CI) |
@@ -527,17 +533,15 @@ This table stands in [REPORT.md, section 4.1](REPORT.md#41-hypotheses-h3-and-h4)
 | Rakurai | shared | slot2 | 5 | arrival-rule | forward | cross 0.733 (0.433 to 1.034; p 1.56e-14; mean of burst taus 0.733); fee 0.087 (-0.582 to 0.756; p 0.429; mean of burst taus 0.087); ties 0.600 (0.041 to 1.159; p 2.38e-05; mean of burst taus 0.600) | 0.452 (0.082 to 0.822); 1 of 5 bursts without a violation |
 <!-- itb:end campaign-cells -->
 
-Hypotheses H3 and H4 take tau send of the equal-fee arm before the window under the rules of [campaign addendum, section 3](prereg/CAMPAIGN-ADDENDUM.md). The other classes stand beside them for comparison, without a judgement on either hypothesis.
-
-This table stands in [REPORT.md, section 4.2](REPORT.md#42-builder-against-its-base).
-
 ### 6.3 Builder against its base
 
-This table stands in [REPORT.md, section 4.3](REPORT.md#43-segments-between-ticks).
+<!-- itb:in-report campaign-pairs -->
+This table stands in [REPORT.md, section 4.2](REPORT.md#42-builder-against-its-base).
 
 ### 6.4 Segments between ticks
 
-This table stands in [REPORT.md, section 4.4](REPORT.md#44-control-path).
+<!-- itb:in-report campaign-rounds -->
+This table stands in [REPORT.md, section 4.3](REPORT.md#43-segments-between-ticks).
 
 ### 6.5 Inclusion
 
@@ -820,9 +824,37 @@ The analysis plan fixes no test of stability over epochs, so this table describe
 
 ### 6.14 Control path
 
-This table stands in [REPORT.md, section 4](REPORT.md#4-campaign-results).
+<!-- itb:in-report campaign-control -->
+This table stands in [REPORT.md, section 4.4](REPORT.md#44-control-path).
 
 The control path is compared with the direct path only within the same leader and epoch. The p of each measure comes from swapping path labels within those strata, exact while the arrangements stay within the label-test budget of the analysis plan and from seeded draws above it.
+
+### 6.15 Each leader on its own
+
+The question is asked of each validator, while the verdicts stand on the client class: the analysis plan tests classes and allows values per leader only as a description (ANALYSIS-PLAN.md, line 33). Each leader holds a share of its class cell's bursts, too few for a test of its own, so this table shows whether the two leaders of a class point the same way.
+
+<!-- itb:begin campaign-leaders -->
+Descriptive, no verdict: each leader holds a share of its class cell's bursts before the window. A cell gives the pooled taus of the arm as the cells block names them, the violated pair share and the bursts behind them.
+
+| Leader | Class | Version | independent | shared | equal_fee | denominator |
+|---|---|---|---|---|---|---|
+| `5Cchr1XG...` | AgaveBam | 4.3.2 | fee 0.90; cross 0.01; violated 0.00; 4 bursts | fee 0.90; cross -0.12; violated 0.00; 3 bursts | send 0.09; violated 0.45; 4 bursts | limit 0.74; send -0.17; violated 0.00; 4 bursts |
+| `DRpbCBMx...` | AgaveBam | 4.4.0, 4.4.0-rc.1 | fee 0.88; cross 0.12; violated 0.01; 3 bursts | fee 0.90; cross -0.04; violated 0.00; 2 bursts | send -0.11; violated 0.56; 4 bursts | limit 0.74; send -0.06; violated 0.00; 2 bursts |
+| `E1r4Psq8...` | JitoLabs | 4.3.2, 4.4.0 | fee 0.46; cross -0.01; violated 0.25; 4 bursts | fee 0.90; cross 0.26; violated 0.00; 2 bursts | send 0.18; violated 0.41; 4 bursts | limit 0.42; send -0.09; violated 0.22; 4 bursts |
+| `HEL1USMZ...` | JitoLabs | 4.3.2, 4.4.0 | fee 0.38; cross -0.02; violated 0.29; 4 bursts | fee 0.90; cross 0.07; violated 0.00; 3 bursts | send 0.13; violated 0.43; 3 bursts | limit 0.35; send 0.17; violated 0.26; 4 bursts |
+| `CAo1dCGY...` | HarmonicAgave | 4.3.2 | fee 0.19; cross -0.05; violated 0.39; 4 bursts | fee 0.80; cross -0.05; violated 0.06; 3 bursts | send -0.02; violated 0.51; 4 bursts | limit 0.21; send -0.15; violated 0.36; 2 bursts |
+| `Fd7btgyS...` | HarmonicAgave | 4.3.2, 4.4.0 | fee 0.23; cross -0.07; violated 0.37; 4 bursts | fee 0.70; cross -0.04; violated 0.11; 1 burst | send -0.08; violated 0.54; 3 bursts | limit 0.12; send 0.20; violated 0.42; 4 bursts |
+| `Awes4Tr6...` | HarmonicFiredancer | 26.10.4, 26.10.5 | fee 0.78; cross -0.06; violated 0.07; 4 bursts | fee 0.72; cross 0.23; violated 0.10; 4 bursts | send 0.35; violated 0.32; 3 bursts | limit 0.74; send 0.02; violated 0.00; 4 bursts |
+| `JUPiTERr...` | HarmonicFiredancer | 26.10.4, 26.10.5 | fee 0.70; cross -0.01; violated 0.12; 4 bursts | fee 0.74; cross 0.20; violated 0.09; 3 bursts | send 0.02; violated 0.49; 3 bursts | limit 0.59; send 0.07; violated 0.10; 4 bursts |
+| `4VRs6A9z...` | Firedancer | 26.10.4, 26.10.5 | fee 0.90; cross -0.10; violated 0.00; 4 bursts | fee 0.90; cross 0.07; violated 0.00; 4 bursts | send -1.00; violated 1.00; 4 bursts | limit 0.74; send -0.23; violated 0.00; 4 bursts |
+| `BFmqBsaG...` | Firedancer | 26.10.4, 26.10.5 | fee 0.90; cross 0.04; violated 0.00; 4 bursts | fee 0.90; cross -0.30; violated 0.00; 3 bursts | send -1.00; violated 1.00; 4 bursts | limit 0.74; send -0.47; violated 0.00; 4 bursts |
+| `9jxgosAf...` | FireBAM | 26.10.5 | fee 0.82; cross 0.02; violated 0.05; 2 bursts | fee 0.90; cross 0.07; violated 0.00; 2 bursts | send -0.16; violated 0.58; 3 bursts | limit 0.74; send 0.09; violated 0.00; 2 bursts |
+| `LA1NEzry...` | FireBAM | 26.10.5 | fee 0.88; cross 0.07; violated 0.01; 4 bursts | fee 0.90; cross 0.09; violated 0.00; 2 bursts | send 0.04; violated 0.48; 3 bursts | limit 0.74; send -0.02; violated 0.00; 3 bursts |
+| `E3mDbFMr...` | Rakurai | 4.3.2 | fee 0.49; cross 0.05; violated 0.23; 4 bursts | fee 0.90; cross 0.04; violated 0.00; 4 bursts | send -0.08; violated 0.54; 4 bursts | limit 0.55; send 0.08; violated 0.12; 4 bursts |
+| `ana2y2Yv...` | Rakurai | 4.3.2, 4.4.0 | fee 0.23; cross 0.06; violated 0.37; 4 bursts | fee 0.90; cross -0.21; violated 0.00; 3 bursts | send -0.03; violated 0.52; 4 bursts | limit 0.45; send 0.06; violated 0.19; 3 bursts |
+| `5Us18hLZ...` | Agave | 4.3.2 | fee 0.46; cross 0.06; violated 0.25; 4 bursts | fee 0.90; cross 0.11; violated 0.00; 4 bursts | send -0.07; violated 0.54; 3 bursts | limit 0.74; send 0.17; violated 0.00; 3 bursts |
+| `7QQGNm3p...` | Agave | 4.3.2 | fee 0.42; cross -0.16; violated 0.27; 4 bursts | fee 0.90; cross -0.13; violated 0.00; 2 bursts | send 0.22; violated 0.39; 4 bursts | limit 0.53; send -0.06; violated 0.14; 3 bursts |
+<!-- itb:end campaign-leaders -->
 
 ## 7. The builder mark
 
@@ -935,15 +967,15 @@ The table comes from the gossip snapshot and the leader schedule stored with eac
 ## 9. What went wrong
 
 <!-- itb:begin what-went-wrong -->
-| Run | Windows planned | Bursts written | Skipped before sending | Failed | Left out of the order tests |
-|---|---|---|---|---|---|
-| `campaign-mainnet-20261028T034521Z` | 16 | 0 | none | 0 | none |
-| `campaign-mainnet-20261028T055501Z` | 72 | 56 | none | 0 | control-path 8, fewer-than-two-in-a-block 2, outside-timing-band 5 |
-| `campaign-mainnet-20261029T120927Z` | 72 | 72 | none | 0 | control-path 8, fewer-than-two-in-a-block 1, outside-timing-band 12 |
-| `campaign-mainnet-20261030T015219Z` | 144 | 144 | none | 0 | control-path 16, outside-timing-band 16 |
-| `campaign-mainnet-20261031T014357Z` | 144 | 144 | none | 0 | control-path 16, fewer-than-two-in-a-block 2, outside-timing-band 24 |
-| `campaign-mainnet-20261101T041655Z` | 144 | 144 | none | 0 | control-path 16, fewer-than-two-in-a-block 1, outside-timing-band 33 |
-| `pilot-mainnet-20261027T085253Z` | 68 | 68 | none | 0 | fewer-than-two-in-a-block 1, outside-timing-band 6 |
+| Run | Windows planned | Bursts written | Skipped before sending | Failed | Not reached | Left out of the order tests |
+|---|---|---|---|---|---|---|
+| `campaign-mainnet-20261028T034521Z` | 16 | 0 | none | 0 | 16 | none |
+| `campaign-mainnet-20261028T055501Z` | 72 | 56 | none | 0 | 16 | control-path 8, fewer-than-two-in-a-block 2, outside-timing-band 5 |
+| `campaign-mainnet-20261029T120927Z` | 72 | 72 | none | 0 | 0 | control-path 8, fewer-than-two-in-a-block 1, outside-timing-band 12 |
+| `campaign-mainnet-20261030T015219Z` | 144 | 144 | none | 0 | 0 | control-path 16, outside-timing-band 16 |
+| `campaign-mainnet-20261031T014357Z` | 144 | 144 | none | 0 | 0 | control-path 16, fewer-than-two-in-a-block 2, outside-timing-band 24 |
+| `campaign-mainnet-20261101T041655Z` | 144 | 144 | none | 0 | 0 | control-path 16, fewer-than-two-in-a-block 1, outside-timing-band 33 |
+| `pilot-mainnet-20261027T085253Z` | 68 | 68 | none | 0 | 0 | fewer-than-two-in-a-block 1, outside-timing-band 6 |
 <!-- itb:end what-went-wrong -->
 
 - **2026-10-26 23:25 UTC, mainnet dry-run `dry-run-mainnet-20261026T232506Z`.** The slot clock ran on WebSocket events of the public node, which queued them 5 to 24 slots behind the cluster. The arrival estimate used the same late events, so the run showed 2 of 4 bursts in the band while all four missed. The clock moved onto the node's own timestamps, with a guard that skips a burst when `getSlot` runs 2 or more slots ahead of it (commit 2bacfa2), and the sender now waits for the first-shred events of the window before it closes a burst (commit d8699aa). No later run skipped a burst for the clock.
@@ -955,8 +987,9 @@ The table comes from the gossip snapshot and the leader schedule stored with eac
 - **2026-10-27 22:35 UTC, first campaign package.** A review of the pre-registration found rules that lived only in code, and the panel rule still kept windows after a leader on the same IP. The [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md) states those rules, and everything drawn from the panel was drawn again at 23:30 UTC under the IP rule. The panel kept its 16 leaders, and the plan of epoch index 0 moved one burst of `Awes4Tr6...`, whose first window followed `shftkxns...` on the same IP (`198.13.140.105`).
 - **2026-10-28 00:18 UTC, second review of the campaign package.** A second review read the addendum against the code. The addendum called a pair TOST out of reach, while the code's TOST passes at zero spread, as the pilot pair FireBAM against Firedancer shows (section 5.3). It also read the step-down Holm of the pair family as a fixed bar of 10 strata, and the code refused data with a repeated table burst, which a resumed run must be able to read. The addendum now states the zero-spread rule and the step-down thresholds. It also adds the reason `repeated-burst` and sets what follows from a failed builder label, and the analysis code follows these rules. The plan of epoch index 0 was drawn again under the new manifest and kept all 144 bursts of the previous plan.
 - **2026-10-28 00:57 UTC, third check of the campaign package.** A third check found that the builder label was tested only in slots that held an included probe, while analysis plan line 89 covers every slot of a class without a builder. The label check and the tick table of section 7 now class every slot row by its leader and the class gossip showed for it at the burst, which takes 95 of the pilot's 96 slot rows where 69 counted before; no slot of another class carries a builder tick. The draw of epoch index 0 now refuses when the package's plan of that index is missing. The plan of epoch index 0 was drawn again under the new manifest. It keeps 143 of the 144 bursts of the previous plan; the burst of leader `LA1NEzry` in round 5 moved 7000 slots earlier, because the leader before that window had left the IP address the two shared.
-- **2026-10-28 01:40 UTC, slot clock over long gaps.** Before the campaign start a check of the sender found that it slept to each window in one stretch, on the slope of the slot clock at the moment it fell asleep, and woke 30 slots (about 6 s) before the window. The rounds of the campaign plan stand 13 660 to 88 532 slots apart. Over such gaps the pilot's slopes erred by up to 37 s at 40 000 slots ahead, and a slope from 20 000 slots of block times erred by up to 100 s at 80 000 slots ahead. The pilot itself never slept longer than 8 336 slots. A late wake would have sent a burst into a later leader's slots, since the clock guard compares the fresh clock with `getSlot` and both agree after the wake. The sender now sleeps in steps of at most 30 s and reads the clock again at each step, and it skips a burst it wakes for less than 4 slots before the window (`woke after the window`).
+- **2026-10-28 01:40 UTC, slot clock over long gaps.** Before the campaign start a check of the sender found that it slept to each window in one stretch, on the slope of the slot clock at the moment it fell asleep, and woke 30 slots (about 6 s) before the window. The rounds of the campaign plan stand 13 660 to 88 532 slots apart. Over such gaps the pilot's slopes erred by up to 37 s at 40 000 slots ahead, and a slope from 20 000 slots of block times erred by up to 100 s at 80 000 slots ahead. The pilot itself never slept longer than 8336 slots. A late wake would have sent a burst into a later leader's slots, since the clock guard compares the fresh clock with `getSlot` and both agree after the wake. The sender now sleeps in steps of at most 30 s and reads the clock again at each step, and it skips a burst it wakes for less than 4 slots before the window (`woke after the window`).
 - **2026-10-28 02:12 UTC, campaign start.** The campaign runner read the spend journal from `probe status` with the pattern of the line that `probe run` and `probe close` print. The status line has another form, so the runner found no number and ended its first attempt before the live run. Nothing was sent, and the plan drawn for that attempt stays in `data/plans/campaign-mainnet-e1071-20261028T021233Z`. The runner now reads the status line, which gives the journal's 4 355 230 lamports.
+- **2026-10-29, round 3 of epoch 1071.** Run `campaign-mainnet-20261028T055501Z` sent rounds 0 to 2 and never reached round 3, so its 16 windows stand under "Not reached" above; [REPORT.md, section 6](REPORT.md#6-what-went-wrong-in-the-campaign) tells why the round is lost. A start at 12:04:56 UTC ran on `c3ae1f6` with uncommitted changes and was stopped after its TLS check, before the first burst, so it left no run folder ([logs/campaign-20261029T120456Z.txt](logs/campaign-20261029T120456Z.txt)). The campaign went on at 12:09 UTC from the clean commit `18a543c` ([logs/campaign-20261029T120918Z.txt](logs/campaign-20261029T120918Z.txt)).
 - **Stability over epochs.** [DESIGN.md](DESIGN.md#noise-versus-rule) says four epochs show whether a rule holds over time, yet the analysis plan fixed no test for it. The epoch tables (sections 5.12 and 6.12) describe it without a verdict.
 
 ## Appendix A. Every burst

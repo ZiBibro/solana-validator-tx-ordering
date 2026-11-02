@@ -9,8 +9,8 @@
     python -m itb collect [run]    write inclusion and slot rows of runs from the chain
     python -m itb check-raw FILE   validate raw files against schema/raw-format.json
     python -m itb plan             draw a test plan for the probe from the live leader schedule
-    python -m itb panel            pick the leader panel of an epoch by the section 3 rule
-    python -m itb table            draw the seeded pilot table (section 6) into prereg/
+    python -m itb panel            pick the leader panel of an epoch (DESIGN.md, leader schedule and leader types)
+    python -m itb table            draw the seeded pilot table of arms and moments into prereg/
     python -m itb pilot            put the pilot table into windows of the panel leaders
     python -m itb minimum          minimum bursts per class and cell from the pilot runs, into prereg/
     python -m itb campaign-table   draw the seeded campaign table into prereg/
@@ -111,6 +111,24 @@ def _report_files(args):
     return [args.file] if getattr(args, "file", None) else list(DEFAULT_REPORTS)
 
 
+def _runs_differ(texts, paths, generated, filled):
+    """Lines naming the runs that data/ and the published runs table do not share, so a
+    run measured into the published folder is named rather than shown as a changed table."""
+    for path in paths:
+        if "runs" not in filled[path][1]:
+            continue
+        old = "\n".join(line for name, lines in report.split(texts[path]) if name == "runs" for line in lines)
+        new, had = report.run_ids(generated["runs"]), report.run_ids(old)
+        out = []
+        if new - had:
+            out.append("runs in data/ the published table does not list: %s; measure in a separate clone "
+                       "(RUNNING.md)" % ", ".join(sorted(new - had)))
+        if had - new:
+            out.append("runs the published table lists and data/ lacks: %s" % ", ".join(sorted(had - new)))
+        return out
+    return []
+
+
 def cmd_report(args):
     paths = _report_files(args)
     missing = [p for p in paths if not os.path.exists(p)]
@@ -128,10 +146,14 @@ def cmd_report(args):
     except ValueError as e:
         print("report: " + str(e), file=sys.stderr)
         return EXIT_FAIL
+    by_name = {os.path.basename(p): texts[p] for p in paths}
+    if "DETAILS.md" in by_name and "REPORT.md" in by_name:
+        placement += report.pointer_problems(by_name["DETAILS.md"], by_name["REPORT.md"])
     names = " and ".join(os.path.basename(p) for p in paths)
     if getattr(args, "check", False):
         bad = ["%s: blocks differ from the raw data: %s" % (os.path.basename(p), ", ".join(filled[p][1]))
                for p in paths if filled[p][1]]
+        bad += _runs_differ(texts, paths, generated, filled)
         if bad or placement:
             for line in placement + bad:
                 print("report: " + line, file=sys.stderr)

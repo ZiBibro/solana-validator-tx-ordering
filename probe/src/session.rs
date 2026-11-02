@@ -92,8 +92,8 @@ pub struct Settings {
     pub prereg_dir: PathBuf,
     pub key_path: PathBuf,
     pub log_level: Level,
-    /// Funded public address the dry-run simulates from (section 13); mainnet default
-    /// is the address of the craft measurement.
+    /// Funded public address the dry-run simulates from (section 13); the mainnet default
+    /// is the payer of research/probe-layout/probe-sim-out.txt.
     pub sim_payer: Option<String>,
     pub tool_version: String,
     pub git_commit: Option<String>,

@@ -2,7 +2,7 @@
 //!
 //! Dry-run is the default. Real sending needs `--live` together with an explicit
 //! `--max-spend-lamports N`, and N can only lower the limit compiled in below
-//! (plan-implementation, section 11).
+//! (build plan, section 11).
 //!
 //!   itb-probe run --plan FILE [--close-after] [--live --max-spend-lamports N]
 //!   itb-probe close [--live --max-spend-lamports N]

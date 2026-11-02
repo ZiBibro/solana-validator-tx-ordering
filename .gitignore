@@ -1,4 +1,4 @@
-# Keys never enter the repository (plan-implementation, section 11).
+# Keys never enter the repository (build plan, section 11).
 secrets/
 *.key
 .env

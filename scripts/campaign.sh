@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Live mainnet campaign, one table epoch after another (plan-implementation, sections 10 and 11).
+# Live mainnet campaign, one table epoch after another (build plan, sections 10 and 11).
 #
 #   scripts/campaign.sh PANEL FIRST_EPOCH [FROM_INDEX [TO_INDEX]]
 #

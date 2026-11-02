@@ -1,4 +1,4 @@
-# Two stages (plan-implementation, section 12): the binary is built and tested in
+# Two stages (build plan, section 12): the binary is built and tested in
 # the Rust image, then copied into a slim runtime image without the toolchain.
 # Build context is the repository root, so the probe tests can read schema/.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Devnet pipeline test (plan-implementation, sections 11, 12 and 13).
+# Devnet pipeline test (build plan, sections 11, 12 and 13).
 #
 #   tests/devnet.sh KEY_FILE [BURSTS]
 #

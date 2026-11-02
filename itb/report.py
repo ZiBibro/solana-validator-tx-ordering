@@ -100,17 +100,36 @@ def _delivered(run):
     return sum(1 for s in run.sends.values() if s["result"] in analyze.DELIVERED)
 
 
+def _commit(commit):
+    """Short hash of the commit a run measured on, with its suffix: -dirty marks
+    uncommitted changes, and a run without ITB_GIT_COMMIT records none."""
+    if not commit:
+        return "-"
+    head, dash, tail = commit.partition("-")
+    return head[:7] + dash + tail
+
+
 def runs_block(runs):
     rows = []
     for r in runs:
         inc = _included(r)
+        sent = sorted(b["utc"] for b in r.bursts.values() if b.get("utc"))
         rows.append(["`%s`" % r.run["run_id"], r.run["stage"], r.run["network"], r.run["mode"],
-                     r.run["started_utc"][:19].replace("T", " "), len(r.bursts), len(r.probes), _delivered(r),
+                     r.run["started_utc"][:19].replace("T", " "),
+                     sent[0][:19].replace("T", " ") if sent else "-",
+                     sent[-1][:19].replace("T", " ") if sent else "-",
+                     len(r.bursts), len(r.probes), _delivered(r),
                      len(inc) if r.inclusions else "-",
                      sum(1 for i in inc if i["in_target_window"]) if r.inclusions else "-",
-                     "`%s`" % r.run["git_commit"][:7]])
-    return _table(["Run", "Stage", "Network", "Mode", "Started (UTC)", "Bursts", "Probes", "Delivered",
-                   "Included", "In target window", "Commit"], rows)
+                     "`%s`" % _commit(r.run.get("git_commit"))])
+    return _table(["Run", "Stage", "Network", "Mode", "Started (UTC)", "First burst (UTC)", "Last burst (UTC)",
+                   "Bursts", "Probes", "Delivered", "Included", "In target window", "Commit"], rows)
+
+
+def run_ids(text):
+    """Run ids a runs block lists, in its first column."""
+    return {line.split("|")[1].strip().strip("`") for line in text.split("\n")
+            if line.startswith("| `")}
 
 
 def _payer_moves(logs_dir, run_id):
@@ -334,12 +353,14 @@ def _arms(items, arms):
     return [it.unit.blocks for it in items if it.unit.burst["arm"] in arms]
 
 
-def exclusions_block(result):
+def exclusions_block(result, items):
     if result is None:
         return NO_RUNS
     reasons = ", ".join("%s %d" % kv for kv in sorted(result["excluded"].items())) or "none"
-    return "%d bursts, %d kept for the order tests. Reasons a burst stays out: %s." % (
-        result["units"], result["kept"], reasons)
+    out = [it for it in items if it.unit.reasons]
+    several = sum(1 for it in out if len(set(it.unit.reasons)) > 1)
+    return ("%d bursts: %d kept for the order tests, %d left out, %d of them for more than one reason. "
+            "Reasons: %s." % (result["units"], result["kept"], len(out), several, reasons))
 
 
 def cells_block(result):
@@ -358,6 +379,56 @@ def cells_block(result):
         rows.append([c["class"], c["arm"], c["timing"], c["bursts"], c["form"], c["detail"] or "-", taus, strict])
     return _table(["Class", "Arm", "Timing", "Bursts", "Form", "Detail", "tau (95% CI; p)",
                    "Violated pair share (95% CI)"], rows)
+
+
+# The taus of each arm, named as in the cells block: send order shows as cross
+# where fees differ and as send where the burst has one fee.
+LEADER_MEASURES = {"independent": ("fee", "cross"), "shared": ("fee", "cross"), "equal_fee": ("send",),
+                   "denominator": ("limit", "send")}
+
+
+def _leader_cell(bursts, arm):
+    """Pooled taus of the arm, the violated pair share and the number of bursts,
+    for the bursts of one leader; no interval, no test."""
+    if not bursts:
+        return "-"
+    s, d = {}, {}
+    bad = total = 0
+    for blocks in bursts:
+        for block in blocks:
+            for name, piece in verdict.burst_pieces(block).items():
+                s[name] = s.get(name, 0) + piece.s
+                d[name] = d.get(name, 0) + piece.d
+        b, t = analyze.violations(blocks, arm)
+        bad += b
+        total += t
+    parts = ["%s %.2f" % (name, s[name] / d[name]) for name in LEADER_MEASURES[arm] if d.get(name)]
+    if total:
+        parts.append("violated %.2f" % (bad / total))
+    parts.append("%d burst%s" % (len(bursts), "" if len(bursts) == 1 else "s"))
+    return "; ".join(parts)
+
+
+def leaders_block(items):
+    """Each leader of the panel on its own before the window. A leader holds a share of its
+    class cell's bursts, so the values are descriptive and carry no verdict."""
+    kept = [it for it in _kept(items) if it.unit.burst["timing"] == "pre300"]
+    if not kept:
+        return NO_RUNS
+    by = {}
+    for it in kept:
+        b = it.unit.burst
+        by.setdefault((prereg.CLASSES.index(b["selection_class"]), b["leader"]), []).append(it)
+    rows = []
+    for (_, leader), mine in sorted(by.items()):
+        versions = sorted({it.unit.burst.get("leader_version") or "-" for it in mine})
+        rows.append(["`%s`" % _short(leader), mine[0].unit.burst["selection_class"], ", ".join(versions)]
+                    + [_leader_cell([it.unit.blocks for it in mine if it.unit.burst["arm"] == arm], arm)
+                       for arm in prereg.ARMS])
+    return ("Descriptive, no verdict: each leader holds a share of its class cell's bursts before the window. A cell gives "
+            "the pooled taus of the arm as the cells block names them, the violated pair share and the "
+            "bursts behind them.\n\n"
+            + _table(["Leader", "Class", "Version"] + list(prereg.ARMS), rows))
 
 
 FORM_COLUMNS = [(arm, timing) for arm in ("independent", "shared", "equal_fee", "denominator")
@@ -469,7 +540,7 @@ def _target_ms(item):
 
 
 def timing_block(items):
-    """Share of bursts in the timing band per condition and class (plan section 6)."""
+    """Share of bursts in the timing band per condition and class (analysis plan, section 6)."""
     mine = [it for it in items if it.unit.burst["path"] == "quic"]
     if not mine:
         return NO_RUNS
@@ -558,7 +629,7 @@ def elsewhere_block(runs):
 
 
 def latency_block(items):
-    """Median one-way latency estimate, half the RTT at the send, per class and leader (plan section 6)."""
+    """Median one-way latency estimate, half the RTT at the send, per class and leader (analysis plan, section 6)."""
     per = {}
     for it in items:
         b = it.unit.burst
@@ -585,7 +656,7 @@ def _load_of(item, field):
 
 
 def loads_block(items):
-    """Tau fee and tau send by quartile of block load, outside the verdict (plan section 7)."""
+    """Tau fee and tau send by quartile of block load, outside the verdict (analysis plan, section 7)."""
     kept = _kept(items)
     if not kept:
         return NO_RUNS
@@ -611,7 +682,7 @@ def loads_block(items):
 
 
 def first_slot_block(items):
-    """Bursts that landed in the window's first slot against the rest (plan section 9)."""
+    """Bursts that landed in the window's first slot against the rest (analysis plan, section 9)."""
     kept = _kept(items)
     if not kept:
         return NO_RUNS
@@ -646,7 +717,7 @@ def strategy_block(items):
 
 
 def _cell_mean_fee(group):
-    """Equal-weight mean of tau fee over the different-fee cells present (plan section 7)."""
+    """Equal-weight mean of tau fee over the different-fee cells present (analysis plan, section 7)."""
     cells = {}
     for it in group:
         b = it.unit.burst
@@ -657,7 +728,7 @@ def _cell_mean_fee(group):
 
 
 def epochs_block(items):
-    """Tau fee per class and epoch, and its spread over rounds, described only (plan section 7)."""
+    """Tau fee per class and epoch, and its spread over rounds, described only (analysis plan, section 7)."""
     kept = _kept(items)
     if not kept:
         return NO_RUNS
@@ -700,7 +771,7 @@ def _rank(value, others):
 
 def competition_block(items, data_dir):
     """Each probe's rank among the block's other transactions by client priority
-    (plan section 9). Jito tips stay out of the rank; a transaction without a
+    (analysis plan, section 9). Jito tips stay out of the rank; a transaction without a
     compute-unit limit stays out of the rank by requested limits only."""
     kept = _kept(items)
     if not kept:
@@ -869,7 +940,7 @@ def _count_cells(node, acc):
 
 
 def minimum_block(repo_dir):
-    """Minimum bursts per class and cell from the pilot against the campaign table (plan section 5)."""
+    """Minimum bursts per class and cell from the pilot against the campaign table (analysis plan, section 5)."""
     path = os.path.join(repo_dir, "prereg", "campaign-minimum.json")
     table_path = os.path.join(repo_dir, "prereg", "campaign-table.json")
     if not os.path.exists(path):
@@ -972,11 +1043,13 @@ def wrong_block(runs, data_dir, logs_dir):
         for u in analyze.units_of(r, later):
             for reason in u.reasons:
                 excluded[reason] = excluded.get(reason, 0) + 1
+        # A run that ends early leaves its later windows without a row or an event.
+        unreached = max(0, planned - len(r.bursts) - sum(skipped.values()) - failed)
         rows.append(["`%s`" % r.run["run_id"], planned, len(r.bursts),
-                     ", ".join("%s %d" % kv for kv in sorted(skipped.items())) or "none", failed,
+                     ", ".join("%s %d" % kv for kv in sorted(skipped.items())) or "none", failed, unreached,
                      ", ".join("%s %d" % kv for kv in sorted(excluded.items())) or "none"])
     return _table(["Run", "Windows planned", "Bursts written", "Skipped before sending", "Failed",
-                   "Left out of the order tests"], rows)
+                   "Not reached", "Left out of the order tests"], rows)
 
 
 def _rounds(run_dir):
@@ -1002,12 +1075,13 @@ def blocks(data_dir, repo_dir):
         chosen = _stage_runs(runs, stage)
         result = analyze.analyze(chosen, (stage,)) if chosen else None
         items = _items(chosen)
-        out[stage + "-exclusions"] = exclusions_block(result)
+        out[stage + "-exclusions"] = exclusions_block(result, items)
         out[stage + "-cells"] = cells_block(result)
         if stage == "campaign":
             out[stage + "-forms"] = forms_block(result)
             # H3 and H4 belong to the campaign addendum; the pilot reads no verdict.
             out[stage + "-hypotheses"] = hypotheses_block(result)
+            out[stage + "-leaders"] = leaders_block(items)
         out[stage + "-inclusion"] = inclusion_block(result)
         out[stage + "-rounds"] = rounds_block(result)
         out[stage + "-pairs"] = pairs_block(result)
@@ -1039,6 +1113,64 @@ def placement(texts, generated):
         out.append("blocks in no report file: " + ", ".join(lost))
     if twice:
         out.append("blocks in more than one place: " + ", ".join(twice))
+    return out
+
+
+POINTER = re.compile(r"^<!-- itb:in-report ([a-z0-9-]+) -->$")
+REPORT_LINK = re.compile(r"\(REPORT\.md#([a-z0-9-]+)\)")
+SECTION_NUMBER = re.compile(r"^#+\s*[0-9.]+\s*")
+
+
+def slug(heading):
+    """GitHub's anchor of a markdown heading line."""
+    text = heading.lstrip("#").strip().lower()
+    return re.sub(r"[^a-z0-9 _-]", "", text).replace(" ", "-")
+
+
+def _blocks_by_heading(text):
+    """[(heading line, [block names right under it, before the next heading])]."""
+    out = [("", [])]
+    for line in text.split("\n"):
+        if line.startswith("#"):
+            out.append((line, []))
+        m = BEGIN.match(line)
+        if m:
+            out[-1][1].append(m.group(1))
+    return out
+
+
+def pointer_problems(details, report_text):
+    """Lines naming each pointer of DETAILS that leads nowhere true. A pointer is the line
+    `<!-- itb:in-report NAME -->` followed by a sentence that links a REPORT section; that
+    section must hold block NAME right under its heading. Where a campaign subsection has a
+    pilot twin of the same title, NAME must be the campaign twin of the pilot's block."""
+    under = {slug(h): names for h, names in _blocks_by_heading(report_text) if h}
+    twins = {}
+    for h, names in _blocks_by_heading(details):
+        for name in names:
+            if name.startswith("pilot-"):
+                twins.setdefault(SECTION_NUMBER.sub("", h), name[len("pilot-"):])
+    out = []
+    lines = details.split("\n")
+    heading = ""
+    for i, line in enumerate(lines):
+        if line.startswith("#"):
+            heading = line
+        m = POINTER.match(line)
+        if not m:
+            continue
+        name = m.group(1)
+        link = REPORT_LINK.search(lines[i + 1]) if i + 1 < len(lines) else None
+        if link is None:
+            out.append("pointer %s under %r links no REPORT section" % (name, heading))
+            continue
+        if name not in under.get(link.group(1), []):
+            out.append("pointer %s under %r leads to REPORT #%s, which does not hold that block" % (
+                name, heading, link.group(1)))
+        twin = twins.get(SECTION_NUMBER.sub("", heading))
+        if twin and name != "campaign-" + twin:
+            out.append("pointer %s under %r: the pilot twin of this subsection holds pilot-%s" % (
+                name, heading, twin))
     return out
 
 

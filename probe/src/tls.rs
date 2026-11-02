@@ -1,8 +1,8 @@
 //! Who issued the RPC node's certificate, as this container sees it (plan, section 11).
 //!
-//! The campaign machine runs Avast, whose Web Shield re-signs HTTPS with its own root:
-//! on 2026-10-26 a container saw "Avast Web/Mail Shield Root" for crates.io and
-//! github.com and the genuine ZeroSSL issuer for api.mainnet-beta.solana.com. The check
+//! The campaign machine runs a TLS-inspecting antivirus proxy that re-signs HTTPS with
+//! its own root: on 2026-10-26 a container saw that root for crates.io and github.com
+//! and the genuine ZeroSSL issuer for api.mainnet-beta.solana.com. The check
 //! records the end-entity certificate inside a verifier that delegates every decision
 //! to the standard WebPKI verifier, so verification is never relaxed; on a rejected
 //! chain the recorded certificate still names who signed it.

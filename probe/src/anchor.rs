@@ -1,5 +1,5 @@
 //! `anchor` subcommand: the memo transaction that ties a stage's pre-registration
-//! manifest to the chain before its first live burst (plan-implementation, section 10).
+//! manifest to the chain before its first live burst (build plan, section 10).
 //!
 //! The memo reads "itb-prereg <sha256 of prereg/manifest-<stage>.json>". It goes out once
 //! per stage, as a legacy transaction with one Memo v2 instruction from the wallet, through
@@ -22,7 +22,7 @@ use std::path::Path;
 pub const STAGES: [&str; 2] = ["pilot", "campaign"];
 pub const MEMO_PREFIX: &str = "itb-prereg ";
 const ANCHORS_FILE: &str = "prereg-anchors.json";
-/// One signature and no priority fee (research/craft-probe.md, 1.8: 5000 lamports).
+/// One signature and no priority fee: 5000 lamports (research/probe-layout/probe-sim-out.txt).
 const ANCHOR_FEE: u64 = tx::LAMPORTS_PER_SIGNATURE;
 
 pub fn manifest_name(stage: &str) -> String {

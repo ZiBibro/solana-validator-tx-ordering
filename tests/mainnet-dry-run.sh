@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Mainnet dry-run without a key (plan-implementation, section 11).
+# Mainnet dry-run without a key (build plan, section 11).
 #
 #   tests/mainnet-dry-run.sh [BURSTS]
 #
@@ -31,7 +31,11 @@ mkdir -p "$repo/logs"
 exec > >(tee "$repo/logs/mainnet-dry-run-$stamp.txt") 2>&1
 
 echo "commit $ITB_GIT_COMMIT, $(date -u +%FT%TZ)"
-ls -la "$repo/secrets" 2>&1
+# What the key path holds, without the host listing's owner and group.
+key="$repo/secrets/wallet-key.json"
+if [ -d "$key" ]; then echo "secrets/wallet-key.json: a directory (Docker Desktop makes one where the file is missing)"
+elif [ -f "$key" ]; then echo "secrets/wallet-key.json: a file"
+else echo "secrets/wallet-key.json: absent"; fi
 echo "== plan"
 out=$(dc run --rm --no-deps -T plan plan --network mainnet --stage test --bursts "$bursts" --lead-slots 300) || { echo "$out"; exit 1; }
 echo "$out"

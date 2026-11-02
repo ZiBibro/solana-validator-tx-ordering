@@ -1206,7 +1206,7 @@ class _FakeRpc:
 
 
 def channel_checks():
-    """Line health of plan-implementation section 11: round summaries, thresholds,
+    """Line health of build plan section 11: round summaries, thresholds,
     the journal of the campaign watch and getSlot round trips."""
     out = []
     one = lambda arrivals, **kw: channel.rounds(*_channel_run(arrivals, **kw))
@@ -1527,7 +1527,7 @@ def addendum_checks():
     """Rules the campaign addendum states in words (sections 5 to 9). Each
     check comes with a mutant that removes the rule and must turn it red."""
     out = []
-    # Section 8: A's first window follows N on A's IP with another port, its second follows O on another IP.
+    # Addendum section 8: A's first window follows N on A's IP with another port, its second follows O on another IP.
     schedule = {"N": [0, 1, 2, 3], "A": [4, 5, 6, 7, 12, 13, 14, 15], "O": [8, 9, 10, 11]}
     tpu = {"A": "10.0.0.1:8009", "N": "10.0.0.1:9007", "O": "10.0.0.2:8009"}
 
@@ -1542,7 +1542,7 @@ def addendum_checks():
                 "the mutant comparing the whole address lets it pass",
                 got == want and whole != want, "%s; mutant %s" % (got, whole)))
 
-    # Section 8: the manifest pins the panel by its sha256.
+    # Addendum section 8: the manifest pins the panel by its sha256.
     with tempfile.TemporaryDirectory() as tmp:
         pinned_path, other_path = os.path.join(tmp, "pinned.json"), os.path.join(tmp, "other.json")
         for path, body in ((pinned_path, b'{"epoch": 1071}\n'), (other_path, b'{"epoch": 1071} \n')):
@@ -1560,7 +1560,7 @@ def addendum_checks():
                 same is None and other is not None and "hashes" in other and none is not None and mutant is None,
                 "%s; %s; mutant %s" % (same, other, mutant)))
 
-    # Section 5: index e runs only in chain epoch panel epoch + e; once that epoch has passed the
+    # Addendum section 5: index e runs only in chain epoch panel epoch + e; once that epoch has passed the
     # index draws no more rounds, and its rounds that have not run are lost.
     doc = {"epoch": 1071, "network": "mainnet", "classes": {}}
 
@@ -1611,7 +1611,7 @@ def addendum_checks():
                 "4 without it as a descriptive row; the mutant without the filter tests all 16",
                 got == (12, 4, "descriptive", False) and whole[0] == 16, "%s; mutant %s" % (got, whole)))
 
-    # Section 9: the control burst of round 0 lands outside its window; the inclusion share keeps it at 0.
+    # Addendum section 9: the control burst of round 0 lands outside its window; the inclusion share keeps it at 0.
     control_spec = [{"class": "FireBAM", "rule": "fifo", "arm": "independent", "timing": "pre300", "round": rnd,
                      "fields": {"path": path}} for rnd in range(3) for path in ("quic", "rpc")]
     with tempfile.TemporaryDirectory() as tmp:
@@ -1642,7 +1642,7 @@ def addendum_checks():
                 "with the reason repeated-burst; the mutant without the rule keeps both",
                 got == (3, 1) and mut == (3, 0), "%s; mutant %s" % (got, mut)))
 
-    # Section 7: a BAM tick in a Firedancer slot fails the BAM label; the FireBAM pair keeps its tests in the
+    # Addendum section 7: a BAM tick in a Firedancer slot fails the BAM label; the FireBAM pair keeps its tests in the
     # family of 16 with p 1 and reads as a failed label.
     with tempfile.TemporaryDirectory() as tmp:
         run_dir = os.path.join(tmp, "runs", "selftest-label")
@@ -1671,7 +1671,7 @@ def addendum_checks():
                 and mut[0] and all(form != "builder-label-failed" for form, _, _ in mut[0]),
                 "%s; mutant %s" % (got, mut)))
 
-    # Section 7 over every slot row: a BAM tick in a Firedancer slot that holds no included probe fails the
+    # Addendum section 7 over every slot row: a BAM tick in a Firedancer slot that holds no included probe fails the
     # label too, since a slot takes the class gossip showed for its leader at the burst; the copy of
     # analyze.py that classes slots by their included probes misses it. REPORT's tick table counts that
     # slot under Firedancer, and the copy of report.py that classes slots by included probes does not.
@@ -1720,7 +1720,7 @@ def addendum_checks():
                 and "left out because no burst row names their leader" in ticks,
                 "Firedancer %s, FireBAM %s; mutant Firedancer %s" % (fd_cells, bam_cells, fd_cells_m)))
 
-    # Section 7: a pair whose label failed reads builder-label-failed even with no strata; the copy of
+    # Addendum section 7: a pair whose label failed reads builder-label-failed even with no strata; the copy of
     # analyze.py without that rule reads such rows undetermined.
     def empty_forms(analyze_fn):
         result = analyze_fn(label_runs, stages=("test",))
@@ -1738,7 +1738,7 @@ def addendum_checks():
                 and all(f == "undetermined" for c, f in empty_m if c in ("AgaveBam", "FireBAM")),
                 "%s; mutant %s" % (builder_bam, empty_m)))
 
-    # Section 3: the load split of REPORT reads Agave's equal-fee arm in the pre-window condition only
+    # Addendum section 3: the load split of REPORT reads Agave's equal-fee arm in the pre-window condition only
     # (plan line 79); the copy of report.py without the timing filter also takes Agave's slot2 bursts.
     fake_run = types.SimpleNamespace(slots={s: {"cost_units": 1000 * s, "tx_count": s} for s in range(1, 9)})
     fake = [report.Item(fake_run, types.SimpleNamespace(
@@ -1770,7 +1770,7 @@ def addendum_checks():
                 cells == {("Agave", "pre300")} and ("Agave", "slot2") in cells_m,
                 "%s; mutant %s" % (sorted(cells), sorted(cells_m))))
 
-    # Section 6: with a standard error of zero the TOST of the code gives p 0 when the difference lies inside
+    # Addendum section 6: with a standard error of zero the TOST of the code gives p 0 when the difference lies inside
     # plus or minus delta and 1 otherwise, so a pair with zero spread inside delta reads as
     # builder-does-not-change-order, as the pilot's FireBAM against Firedancer did; df below 1 or a NaN
     # standard error give 1.
@@ -1797,7 +1797,7 @@ def addendum_checks():
                 got == want and edges == (1.0, 1.0) and wide[3][1] == same and never[0][1] == "undetermined",
                 "%s; %s; mutants %s, %s" % (got, edges, wide[3], never[0])))
 
-    # Section 5: a plan drawn again scans the windows with the gossip snapshot it is given (--nodes), not
+    # Addendum section 5: a plan drawn again scans the windows with the gossip snapshot it is given (--nodes), not
     # live gossip that has moved a leader since the first plan.
     snapshot = {"utc": "2026-10-28T00:00:00Z", "nodes": [{"pubkey": "A", "tpuQuic": "10.0.0.1:8009"}]}
 

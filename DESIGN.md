@@ -17,7 +17,7 @@ Most stake on mainnet no longer hands its block to a plain validator scheduler. 
 | Rakurai | 1.17% | none | |
 | Agave | 1.08% | none | |
 
-The builder classes leave a mark in the block itself. The market-tick program `tickUcsEQegChaAuo9VYQQztB4ZGApY6ZT4FkULWY6N` receives tick transactions from the signer `BAMgx3XP…` with a 20 ms target interval in slots of AgaveBam and FireBAM leaders, and from `Harmonic8So…` with a 50 ms interval in slots of Harmonic leaders. In five samples on 2026-10-26 between 02:01 and 04:08 UTC every Harmonic slot carried a tick, and no slot of a JitoLabs, Agave, Firedancer or Rakurai leader did.
+The builder classes leave a mark in the block itself. The market-tick program `tickUcsEQegChaAuo9VYQQztB4ZGApY6ZT4FkULWY6N` receives tick transactions from the signer `BAMgx3XP...` with a 20 ms target interval in slots of AgaveBam and FireBAM leaders, and from `Harmonic8So...` with a 50 ms interval in slots of Harmonic leaders. In five samples on 2026-10-26 between 02:01 and 04:08 UTC every Harmonic slot carried a tick, and no slot of a JitoLabs, Agave, Firedancer or Rakurai leader did.
 
 So a probe in a slot with a tick measures the builder's rule, and a probe in a slot of the same code base without a builder measures the validator's scheduler. The table pairs each builder class with its base. The builder's contribution is the difference in tau between the two classes of a pair, with a jackknife interval over the bursts of both. Two verdicts read one by one cannot show that difference, because the difference between a significant and a non-significant result is not itself significant (Gelman and Stern, The American Statistician 60(4), 2006).
 
@@ -29,7 +29,7 @@ Open source code gives the base rules every verdict is read against. Agave v4.3.
 
 A burst is 12 probe transactions from 12 different payers, sent into one window of one leader over one QUIC connection. Inside a burst the priority fee and the send order are random and independent of each other, so the position in the block shows the effect of the fee apart from the effect of arrival order.
 
-A probe is a v1 transaction with a transfer to the payer itself. The amount encodes the burst and the send rank, `burst_seq * 16 + send_rank + 1`, so every message is unique at no extra compute cost and the send rank is fixed by the signature before sending. Simulation prices a probe at the 5000-lamport base fee and 150 CU. The compute-unit limit (1000) and the loaded-data limit (32768 bytes) are set explicitly, because an unset field in a v1 message equals zero and fails the transaction. The fee is read back from `meta.fee` after inclusion.
+A probe is a v1 transaction with a transfer to the payer itself. The amount encodes the burst and the send rank, `burst_seq * 16 + send_rank + 1`, so every message is unique at no extra compute cost and the send rank is fixed by the signature before sending. Simulation prices a probe at the 5000-lamport base fee and 150 CU. The compute-unit limit (1000) and the loaded-data limit (32 768 bytes) are set explicitly, because an unset field in a v1 message equals zero and fails the transaction. The fee is read back from `meta.fee` after inclusion.
 
 Arms differ in exactly one property each:
 

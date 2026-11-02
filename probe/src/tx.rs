@@ -1,8 +1,8 @@
 //! Version 1 transactions (plan, section 4): the priority fee is an absolute amount in
 //! the message config, and the CU and loaded-data limits must be set explicitly.
 //!
-//! Layout as built by research/craft-probe-raw/scripts/probe-sim.mjs, whose output
-//! mainnet simulateTransaction accepted on 2026-10-25 (research/craft-probe.md, 1.8):
+//! Layout as built by research/probe-layout/probe-sim.mjs, whose unsigned messages a
+//! mainnet node priced and simulated on 2026-10-25 (research/probe-layout/probe-sim-out.txt):
 //!   0x81, num_signatures, readonly_signed, readonly_unsigned, config_mask u32 LE,
 //!   blockhash, num_instructions u8, num_keys u8, keys, config values in mask-bit order,
 //!   per instruction (program index u8, num_accounts u8, data_len u16 LE),
@@ -119,8 +119,8 @@ pub fn message_v1(
     Ok(Message { bytes: m, signers, write_accounts })
 }
 
-/// Legacy message (section 10): the anchor memo goes out in this form, which the craft
-/// measurement simulated on mainnet for 5000 lamports (research/craft-probe.md, 1.8).
+/// Legacy message (section 10): the anchor memo goes out in this form, which a mainnet
+/// node priced at 5000 lamports on 2026-10-25 (research/probe-layout/probe-sim-out.txt).
 pub fn legacy_message(payer: [u8; 32], instructions: &[Instruction], blockhash: [u8; 32]) -> Result<Message, String> {
     let keys = ordered_keys(payer, instructions)?;
     let index = |key: &[u8; 32]| keys.iter().position(|k| &k.key == key).unwrap() as u8;
@@ -277,8 +277,8 @@ mod tests {
         b.iter().map(|x| format!("{x:02x}")).collect()
     }
 
-    // Expected bytes come from the JavaScript builder of research/craft-probe-raw
-    // (scratch copy v1vector.mjs, 2026-10-26) on the same inputs.
+    // Expected bytes come from the JavaScript builder of research/probe-layout/probe-sim.mjs
+    // on the same inputs; `node research/probe-layout/vector.mjs` rebuilds and compares them.
     const A: &str = "BAPwtQzaPZYJQYeJjQbTiPXx55Gja9gX85qv8i9Jk6u9";
     const B: &str = "tickUcsEQegChaAuo9VYQQztB4ZGApY6ZT4FkULWY6N";
     const BH: &str = "EkSnNWid2cvwEVnVx9aBqawnmiCNiDgp3gUdkDPTKN1N";

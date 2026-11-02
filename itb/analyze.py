@@ -404,7 +404,7 @@ def builder_blocks(unit, cls, labelled=True):
 
 
 def pair_tests(kept, failed=None):
-    """Class differences inside the pairs of section 1 by label swaps per stratum
+    """Class differences inside the class pairs (analysis plan, section 8) by label swaps per stratum
     (epoch, round, arm, timing); both different-fee arms go into one test. The
     builder class counts only blocks with its builder's tick; its blocks without
     one form the group without a label, one descriptive row per pair, condition

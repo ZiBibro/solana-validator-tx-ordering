@@ -1,4 +1,4 @@
-"""Health of the operator's line, round by round (plan-implementation, section 11).
+"""Health of the operator's line, round by round (build plan, section 11).
 
 Other traffic on a home line shows in a run before it spoils the verdict: the
 estimated arrival leaves the timing band, the slot clock fed by first-shred

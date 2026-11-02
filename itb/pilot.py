@@ -241,7 +241,7 @@ def draw(client, panel_doc, table, table_sha, manifest_sha, lead_slots, va_fetch
     leaders = leaders_of(panel_doc)
     for cls, ids in leaders.items():
         if len(ids) < panel.PER_CLASS:
-            raise ValueError("panel: class %s has %d leaders" % (cls, len(ids)))
+            raise ValueError("panel: class %s holds %d of the %d leaders it needs" % (cls, len(ids), panel.PER_CLASS))
         for i in ids:
             if not tpu.get(i):
                 raise ValueError("panel leader %s of %s has no tpuQuic in gossip now; "

@@ -1,20 +1,22 @@
 # Report
 
-This report gives the answer of the campaign on Solana mainnet over epochs 1071 to 1074 and the conditions it ran under; [DETAILS.md](DETAILS.md) holds the pilot of 2026-10-27 with every other table. `python -m itb report` writes each table between its `<!-- itb:begin NAME -->` and `<!-- itb:end NAME -->` lines from `data/` and `logs/` alone. `python -m itb report --check` fails when a table differs from the raw data or drops out of both files. Each probe has its signature and slot in `data/runs/<run>/`, so any row can be checked against `getBlock`.
+This report gives the answer of the campaign on Solana mainnet over epochs 1071 to 1074 and the conditions it ran under; [DETAILS.md](DETAILS.md) holds the pilot of 2026-10-27 with every other table, and section 9 tells how each table comes from the raw data.
 
 ## 1. The answer
 
 Before the leader's window opens, the fee sets the order. Probes that write only their own payer follow a fee rule in 7 of 8 classes, and probes that conflict on one account follow it in 8 of 8. In 7 of 8 classes the leader divides the fee by the requested compute-unit limit. The order key is thus the fee per requested cost, as in Agave's scheduler code ([DESIGN.md](DESIGN.md#why-this-design)). HarmonicAgave stays undetermined in the independent and denominator arms.
 
-Conflict makes the rule strict. With conflicting probes, 6 of 8 classes put no pair with different fees out of fee order before the window. With probes that can run in parallel, Agave and JitoLabs break fee order in 26 and 27 % of such pairs, Rakurai in 30 %.
+Conflict makes the rule strict. With conflicting probes, 6 of 8 classes put no pair with different fees out of fee order before the window. With probes that can run in parallel, Agave and JitoLabs break fee order in 111 and 116 of 432 such pairs (26% and 27%), Rakurai in 130 (30%).
 
 At the start of slot 2, while the leader already builds the block, arrival order shows more often. With the fee held equal, the earlier-sent probe goes first in 6 of 8 classes. With random fees, Agave and Rakurai order by arrival when the probes can run in parallel, and JitoLabs and Rakurai when they conflict.
 
 Firedancer is the strictest client. In its four fee cells no pair breaks fee order, and equal fees go in reverse arrival, as its code predicts (H3, section 4.1). FireBAM keeps Firedancer's fee order, while HarmonicFiredancer changes it (section 4.2). No cell reaches "no rule visible". At the pilot's spread of tau an equivalence verdict needs 28 to 177 bursts per cell, and the campaign had 8 (section 5).
 
+Verdicts stand on the client class, which the analysis plan tests, since one leader carries at most 4 of its cell's 8 bursts. [DETAILS.md, section 6.15](DETAILS.md#615-each-leader-on-its-own) describes each of the 16 leaders without a verdict.
+
 ### 1.1 Form of each class and cell
 
-The `independent` arm gives each probe its own payer, and the `shared` arm makes all 12 write one account. The `equal_fee` arm pays one fee to all 12, and the `denominator` arm asks half of them for 1000 CU and half for 20 000. In brackets stands the share of pairs that break the order the arm predicts. The fee arms count the lower fee standing first, and `denominator` the 20 000 CU probe. `equal_fee` counts the later send standing first, so Firedancer's 1.00 there before the window means every pair in reverse send order. `pre300` aims the burst 300 ms before the window's first slot and `slot2` at the start of its second slot. Each cell names its form under the [analysis plan](prereg/ANALYSIS-PLAN.md), and [DETAILS.md, section 6.2](DETAILS.md#62-verdicts-by-class-and-cell) gives the taus behind it.
+In `independent` each probe has its own payer, and in `shared` all 12 write one account. `equal_fee` pays one fee to all 12, and `denominator` asks half of them for 1000 CU and half for 20 000. Brackets give the share of pairs against the order the arm predicts: the lower fee first in the fee arms, the 20 000 CU probe first in `denominator` and the later send first in `equal_fee`, so Firedancer's 1.00 there before the window means every pair in reverse send order. `pre300` aims the burst 300 ms before the window's first slot and `slot2` at the start of its second slot. Forms follow the [analysis plan](prereg/ANALYSIS-PLAN.md), and [DETAILS.md, section 6.2](DETAILS.md#62-verdicts-by-class-and-cell) gives the taus behind them.
 
 <!-- itb:begin campaign-forms -->
 | Class | independent pre300 | independent slot2 | shared pre300 | shared slot2 | equal_fee pre300 | equal_fee slot2 | denominator pre300 | denominator slot2 |
@@ -31,9 +33,9 @@ The `independent` arm gives each probe its own payer, and the `shared` arm makes
 
 ## 2. Panel and runs
 
-The campaign panel holds two leaders from each of 8 classes by gossip `clientId`, 16 validators. Agave-based builds 4.3.2 and 4.4.0 run under five classes, and Firedancer 26.10.4 and 26.10.5 under the other three. Fourteen leaders stayed from the pilot, and new Firedancer and FireBAM leaders, `4VRs6A9z...` and `LA1NEzry...`, joined, so 18 validators appear over both stages. In each class, 0 of 62 campaign bursts found the leader under another `clientId` than at selection.
+The campaign panel holds two leaders from each of 8 classes by gossip `clientId`, 16 validators. Agave-based builds 4.3.2 and 4.4.0 run under five classes, and Firedancer 26.10.4 and 26.10.5 under the other three. Fourteen leaders stayed from the pilot and two joined, `4VRs6A9z...` (Firedancer) and `LA1NEzry...` (FireBAM), 18 validators over both stages. In each class, 0 of 62 campaign bursts found the leader under another `clientId` than at selection.
 
-The pilot ran 68 bursts on 2026-10-27 in epoch 1069. From 2026-10-29 to 2026-11-02 the campaign wrote 560 of the 576 bursts of its seeded table, one plan per epoch from 1071 to 1074. The 16 it lacks are round 3 of epoch 1071 (section 6). Run `034521Z` funded the payers and was stopped before its first window, so that the campaign could start on the leader correction of commit `6fdceca`; it holds no burst. [DETAILS.md](DETAILS.md#2-validators-and-clients) gives the panel and run tables in sections 2 and 3.
+The pilot ran 68 bursts on 2026-10-27 in epoch 1069. From 2026-10-29 to 2026-11-02 the campaign wrote 560 of the 576 bursts of its seeded table, one plan per epoch from 1071 to 1074. The 16 it lacks are round 3 of epoch 1071 (section 6). Run `034521Z` funded the payers and was stopped before its first window so that the campaign could start on the leader correction of commit `6fdceca`. [DETAILS.md](DETAILS.md#2-validators-and-clients) gives the panel and run tables in sections 2 and 3.
 
 ## 3. Spend
 
@@ -53,17 +55,17 @@ The pilot ran 68 bursts on 2026-10-27 in epoch 1069. From 2026-10-29 to 2026-11-
 | **total** |  |  |  |  | **39528090** (0.039528 SOL) |  | code cap 0.05 SOL |
 <!-- itb:end spend -->
 
-Probe fees are `meta.fee` of each included probe; each funding or closing transaction pays the 5000-lamport base fee. With both anchors the pilot and the campaign paid 39 528 090 lamports under the compiled cap of 0.05 SOL. The sender's spend journal settles against the chain at each start, and where the table shows journal growth, it equals what the run paid. The start of `120927Z` settled the 652 included probes of `055501Z`, so the journal rose by the 3 400 800 lamports the table gives for that run. After the closing transactions of 2026-11-02 the journal holds the table's total.
+Probe fees are `meta.fee` of each included probe, and each funding or closing transaction pays the 5000-lamport base fee. With both anchors the pilot and the campaign paid 39 528 090 lamports under the compiled cap of 0.05 SOL. The spend journal settles against the chain at each start, so its growth equals what the run paid; the start of `120927Z` settled the 652 included probes of `055501Z`, the 3 400 800 lamports of that run. After the closing transactions of 2026-11-02 the journal holds the table's total.
 
 ## 4. Campaign results
 
-The campaign ran the [analysis plan](prereg/ANALYSIS-PLAN.md) with the [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md), which states the rules the plan leaves to the code. Their manifest went on chain at 01:21:59 UTC on 2026-10-28 (`data/prereg-anchors.json`), before the first campaign probe. No later commit changes a file it pins ([DETAILS.md, section 6](DETAILS.md#6-campaign)). Of the bursts written, the order tests keep these:
+The campaign ran the [analysis plan](prereg/ANALYSIS-PLAN.md) with the [campaign addendum](prereg/CAMPAIGN-ADDENDUM.md), the rules the plan leaves to the code. Their manifest went on chain at 01:21:59 UTC on 2026-10-28 (`data/prereg-anchors.json`), before the first campaign probe, and no later commit changes a file it pins ([DETAILS.md, section 6](DETAILS.md#6-campaign)). The order tests keep these bursts:
 
 <!-- itb:begin campaign-exclusions -->
-560 bursts, 411 kept for the order tests. Reasons a burst stays out: control-path 64, fewer-than-two-in-a-block 6, outside-timing-band 90.
+560 bursts: 411 kept for the order tests, 149 left out, 11 of them for more than one reason. Reasons: control-path 64, fewer-than-two-in-a-block 6, outside-timing-band 90.
 <!-- itb:end campaign-exclusions -->
 
-Burst 194 of `055501Z`, JitoLabs in the denominator arm at slot 2, met a connection the leader closed. Its 12 sends read `connection_closed` and no probe landed, so the order tests leave it out ([tests/test_campaign_data.py](tests/test_campaign_data.py)).
+Burst 194 of `055501Z` (JitoLabs, denominator, slot 2) met a connection the leader closed: its 12 sends read `connection_closed`, no probe landed, and the order tests leave it out ([tests/test_campaign_data.py](tests/test_campaign_data.py)).
 
 ### 4.1 Hypotheses H3 and H4
 
@@ -109,7 +111,7 @@ Each builder class stands against its base client within the same round and arm.
 
 ### 4.3 Segments between ticks
 
-Builder slots carry market-tick transactions, and the analysis plan asks whether the segments between two ticks are rounds in time. In the equal-fee bursts at slot 2, send rank against segment gives tau 0.757 over 50 bursts. Of these, 18 spread over two segments or more, and none has a negative tau numerator, so the form reads supported.
+The analysis plan asks whether the segments between two market ticks in builder slots are rounds in time. Of the 50 equal-fee bursts at slot 2, 18 spread their probes over two segments or more and carry the test; the other 32 sit in one segment and give no pair to compare. Over those 18, send rank against segment gives tau 0.757, and none has a negative tau numerator, so the form reads supported.
 
 <!-- itb:begin campaign-rounds -->
 Arm equal_fee, timing slot2: 50 bursts, 18 with probes in two segments or more, share of bursts with a negative S 0.00. Pooled: tau 0.757, p 6.56e-59. Form: **supported**.
@@ -124,7 +126,7 @@ Arm equal_fee, timing slot2: 50 bursts, 18 with probes in two segments or more, 
 
 ### 4.4 Control path
 
-The control path sends the same kind of burst through `sendTransaction` on `api.mainnet-beta.solana.com` with `skipPreflight` and `maxRetries` 0, once per leader and epoch, 64 bursts in all. Within the same leader and epoch, its share of probes in the target window is lower by 0.208 than on the direct path. Its tau fee is lower by 0.483, and both differences have p 5e-05 over 54 strata. Of its 768 probes 166 landed in another leader's block, against 3 of 5892 delivered direct probes ([DETAILS.md, section 6.7](DETAILS.md#67-probes-outside-their-window)). A class verdict from probes sent through public RPC thus measures the route together with the scheduler.
+The control path sends the same kind of burst through `sendTransaction` on `api.mainnet-beta.solana.com` with `skipPreflight` and `maxRetries` 0, once per leader and epoch, 64 bursts in all. Within the same leader and epoch its share of probes in the target window is lower than on the direct path by 0.208 and its tau fee by 0.483, both at p 5e-05 over 54 strata. Of its 768 probes 166 landed in another leader's block, against 3 of 5892 delivered direct probes ([DETAILS.md, section 6.7](DETAILS.md#67-probes-outside-their-window)). Through public RPC a class verdict measures the route together with the scheduler.
 
 <!-- itb:begin campaign-control -->
 | Measure | Strata (leader, epoch, arm, condition) | Mean RPC minus QUIC | p | Label test |
@@ -137,37 +139,42 @@ Path latency: quic median 0.0 slots after the window's first slot (4944 probes);
 
 ## 5. Conditions of the measurement
 
-The campaign ran as a bounded experiment, and each condition limits what the tables can say.
+Each condition limits what the tables can say.
 
-- **A spend cap of 0.05 SOL in code**. It set 8 bursts per class and cell, while an equivalence verdict needs 28 to 177 at the pilot's spread of tau ([DETAILS.md, section 5.15](DETAILS.md#515-minimum-for-the-campaign)). An undetermined cell therefore reads as lack of power.
-- **One sending machine on one network line**. Median one-way estimates ran from 16 to 82 ms by leader ([DETAILS.md, section 6.8](DETAILS.md#68-path-latency)). With the send moment corrected for half the round trip, 218 of 248 pre-window bursts and 197 of 248 slot-2 bursts had their arrival estimate in the band. How leaders treat probes from much further away stays unmeasured.
+- **A spend cap of 0.05 SOL in code**. The cap allowed 8 bursts per class and cell ([DETAILS.md, section 5.15](DETAILS.md#515-minimum-for-the-campaign)), so an undetermined cell reads as lack of power.
+- **One sending machine on one network line**. Median one-way estimates ran from 16 to 82 ms by leader ([DETAILS.md, section 6.8](DETAILS.md#68-path-latency)); with the send moment corrected for half the round trip, 218 of 248 pre-window and 197 of 248 slot-2 bursts had their arrival estimate in the band. Probes from much further away stay unmeasured.
 - **The public RPC node as the eye on the chain**. The slot clock runs on its `firstShredReceived` events, so shred propagation from the leader to that node enters the arrival estimate as error of unknown source ([DESIGN.md](DESIGN.md#what-it-does-not-separate)).
 - **Four epochs and two leaders per class**. Stability is described without a test, and the split between a client's rule and one operator's setup rests on two leaders. Firedancer gives tau fee 0.905 in each epoch, while Rakurai falls from 0.645 in epoch 1071 to 0.264 in 1074 ([DETAILS.md, section 6.12](DETAILS.md#612-epochs-and-rounds)).
-- **One control route**. The control path uses one public endpoint with preflight off, and section 4.4 describes that route alone.
+- **One control route**. Section 4.4 describes one public endpoint with preflight off.
 
 ## 6. What went wrong in the campaign
 
-Round 3 of epoch 1071 is lost. The run of 2026-10-28 sent rounds 0 to 2 of that epoch, and four starts on 2026-10-29 between 11:10 and 11:56 UTC sent no burst. Three logged an error of the public node while settling the bookings of the earlier run ([logs/campaign-20261029T111032Z.txt](logs/campaign-20261029T111032Z.txt), [logs/campaign-20261029T113554Z.txt](logs/campaign-20261029T113554Z.txt)). One was `getSignatureStatuses: Network Error`, two were error -32019 "Failed to query long-term storage" from `getSignaturesForAddress`. Commit `c062eb8` settles such bookings from one listing of the payers' history, and `c3ae1f6` with `18a543c` retry -32019 and list the chain once per start.
+Round 3 of epoch 1071 is lost. The run started on 2026-10-28 sent rounds 0 to 2 on 2026-10-29, from 03:00 to 09:41 UTC. Four starts between 11:10 and 11:56 UTC sent no burst; three logged a public-node error, two of them -32019 from `getSignaturesForAddress`, while settling the earlier run's bookings ([logs/campaign-20261029T111032Z.txt](logs/campaign-20261029T111032Z.txt), [logs/campaign-20261029T113554Z.txt](logs/campaign-20261029T113554Z.txt)). Commit `c062eb8` settles such bookings from one listing of the payers' history, which `c3ae1f6` and `18a543c` retry on -32019 and run once per start.
 
-The plan drawn at 11:55 UTC left round 3 out, noting that its first window 462872092 lies before slot 462872795 ([draw-notes.json](data/plans/campaign-mainnet-e1071-20261029T115552Z/draw-notes.json)). The run started at 12:15 UTC on `18a543c` sent rounds 4 to 7, and the later epochs ran on the same commit. A lost round moves to no other hour, since that would break the blocking by round. [DETAILS.md, section 9](DETAILS.md#9-what-went-wrong) gives the planned and written bursts of each run.
+The plan drawn at 11:55 UTC left round 3 out, since its first window 462872092 lay before slot 462872795 ([draw-notes.json](data/plans/campaign-mainnet-e1071-20261029T115552Z/draw-notes.json)). The run started at 12:15 UTC on `18a543c` sent rounds 4 to 7, and later epochs ran on the same commit. A lost round moves to no other hour, which would break the blocking by round. [DETAILS.md, section 9](DETAILS.md#9-what-went-wrong) gives the planned, written and unreached bursts of each run.
 
 ## 7. Other measurements of the same question
 
-Six public repositories measured the ordering rule on mainnet after Alpenglow. The first four stand as their reports read on 2026-10-27, the last two as their READMEs read on 2026-11-02.
+Seven public repositories measured the ordering rule on mainnet after Alpenglow; the first four are read as of 2026-10-27, the last three as of 2026-11-02.
 
-- [fomoles/superteam-inside-the-block](https://github.com/fomoles/superteam-inside-the-block), epoch 1066. Probe pairs go straight to the leader's TPU with a controlled gap. It reads the key as fee per estimated cost unit (check C6, -0.61), and Firedancer 26.10.4 gives fee ties to the later arrival; the denominator arm and H3 agree by another design.
-- [eternally-black/alpenglow-validator-ordering](https://github.com/eternally-black/alpenglow-validator-ordering), 2026-10-24 to 2026-10-26, pre-registered with plan hashes in a mainnet Memo and positive controls. Six core targets order by Agave's `reward / (cost + 1)`, five of them in our panel, and Firedancer lands the later of two identical probes first in 50 of 54 pairs.
-- [ukraineopt/inside-the-block](https://github.com/ukraineopt/inside-the-block), 5,296 probes at 27 validators without pre-registration. It reads arrival order in short batches for both Harmonic classes. Our slot-2 equal-fee cells agree for both, while before the window HarmonicFiredancer follows a fee rule.
+- [fomoles/superteam-inside-the-block](https://github.com/fomoles/superteam-inside-the-block), epoch 1066. Probe pairs go straight to the leader's TPU. It reads the key as fee per estimated cost unit (check C6, -0.61) and Firedancer 26.10.4 giving fee ties to the later arrival, as our denominator arm and H3 do.
+- [eternally-black/alpenglow-validator-ordering](https://github.com/eternally-black/alpenglow-validator-ordering), 2026-10-24 to 2026-10-26, pre-registered by plan hashes in a mainnet Memo. Six core targets, five in our panel, order by Agave's `reward / (cost + 1)`, and Firedancer lands the later of two identical probes first in 50 of 54 pairs.
+- [ukraineopt/inside-the-block](https://github.com/ukraineopt/inside-the-block), 5296 probes at 27 validators without pre-registration. It reads arrival order in short batches for both Harmonic classes; our slot-2 equal-fee cells agree, while before the window HarmonicFiredancer follows a fee rule.
 - [zdfgu113/inside-the-block](https://github.com/zdfgu113/inside-the-block), from 2026-10-23. Of 135 same-block pairs, AgaveBam puts the higher fee first in 25 of 32, and both Harmonic classes stay near chance at its price range.
-- [factoruuu/inside-the-block-solana](https://github.com/factoruuu/inside-the-block-solana), epoch 1071, 2026-10-29. Its 51 bursts sent 612 transactions through one public RPC endpoint with preflight on. It detects no ordering rule in any class, Firedancer at fee concordance 0.589 (0.442 to 0.736). Its README names "RPC forwarding behaviour vs the leader's own scheduler" among what its design does not separate. Our control path measures that split within the same leader and epoch (section 4.4), and our direct path gives Firedancer tau fee 0.905 in each epoch. The two results part at the route; what preflight adds, our data do not show.
-- [tempometer/inside-the-block](https://github.com/tempometer/inside-the-block), mainnet runs of 2026-10-26 and 2026-10-27. Its probes go through public RPC relays, whose forwarding latency its operator log puts at 8 to 30 s. Each probe is therefore attributed after the fact to the leader of its landing slot, over 398 rows and 41 leaders. Direct TPU/QUIC submission stays a stretch goal there. Our sender takes that route, and 5869 of 5892 delivered direct probes landed in their target window.
+- [factoruuu/inside-the-block-solana](https://github.com/factoruuu/inside-the-block-solana), epoch 1071. Its 51 bursts sent 612 transactions through one public RPC endpoint with preflight on. It detects no rule in any class, Firedancer at fee concordance 0.589 (0.442 to 0.736), and names RPC forwarding against the leader's own scheduler among what it does not separate. Our control path measures that split (section 4.4), and our direct path gives Firedancer tau fee 0.905 in each epoch; what preflight adds, our data do not show.
+- [tempometer/inside-the-block](https://github.com/tempometer/inside-the-block), runs of 2026-10-26 and 2026-10-27 through public RPC relays, whose forwarding latency its operator log puts at 8 to 30 s. Each of its 398 rows is attributed afterwards to the leader of its landing slot; direct TPU/QUIC submission stays a stretch goal. Over that route 5869 of our 5892 delivered direct probes landed in their target window.
+- [9xj89gzrtw-hue/solana-validator-block-ordering](https://github.com/9xj89gzrtw-hue/solana-validator-block-ordering), epoch 1074, passive: 24 blocks of 6 validators in three client families. Over 5430 transactions of other senders it finds Kendall tau-b -0.0424 between `tx_index` and priority fee per compute unit and concludes that the fee does not set the order. That correlation mixes arrival time, bundles and senders, while our probes leave in a send order drawn apart from the fee, so the zero does not contradict the fee rule of 7 of 8 classes.
 
 ## 8. Measurement plan
 
 Each step lifts one condition of section 5.
 
-- **Bursts per cell at the pilot's minimum**. With 28 to 177 bursts per cell the equivalence forms come within reach. An undetermined cell can then read "no rule visible", and a builder pair can show at each moment whether the builder keeps its base order.
+- **Bursts per cell at the pilot's minimum**. With 28 to 177 bursts per cell the equivalence forms come within reach, so an undetermined cell can read "no rule visible" and a builder pair can show at each moment whether the builder keeps its base order.
 - **Senders in several regions**. Bursts from several places into the same windows separate distance from rule and test the half-round-trip correction beyond 82 ms one way.
-- **An own RPC node**. A slot clock and block reads from a node the kit runs itself take the public node's event queue out of the arrival estimate.
+- **An own RPC node**. A slot clock and block reads from the kit's own node take the public node's event queue out of the arrival estimate.
 - **More epochs and more leaders per class**. A stability test fixed before data turns the epoch table into a verdict. Three or more leaders per class separate a client's rule from one operator's setup.
 - **More control routes**. Other RPC providers and staked connections, with preflight on and off, each stand against the direct path within one leader and epoch.
+
+## 9. How the tables are made
+
+`python -m itb report` writes each table between its `<!-- itb:begin NAME -->` and `<!-- itb:end NAME -->` lines from `data/` and `logs/` alone, and `--check` fails when a table differs from the raw data, stands in neither file, or is missing from the section a pointer of DETAILS.md names. `tx_index` in `collect.jsonl` gives each probe's index among its block's signatures, which one `getBlock` call shows; full details need `maxSupportedTransactionVersion` 1 ([README.md](README.md#who-can-use-the-data)).

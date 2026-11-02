@@ -2,7 +2,8 @@
 #
 # Check:    docker compose run --rm reproduce          (no key, no Rust build)
 #           docker compose run --rm reproduce verify   (one step for debugging)
-# Measure:  docker compose --profile measure run --rm plan plan --bursts 8   (draws data/plans/<id>/)
+# Measure:  docker compose --profile measure run --rm plan plan --stage test --bursts 8
+#                                                    (a short test plan into data/plans/<id>/)
 #           docker compose --profile measure run --rm plan panel           (draws data/panels/<id>/)
 #           docker compose --profile measure run --rm plan pilot --panel data/panels/<id>/panel.json
 #                                                    (puts prereg/pilot-table.json into data/plans/pilot-<id>/)
@@ -14,6 +15,8 @@
 #                                                    (dry-run, the default)
 #           docker compose --profile measure run --rm probe run --plan ... --live --max-spend-lamports N
 #           docker compose --profile measure run --rm probe status | close
+#                                                    (close needs the wallet key, even as a dry-run:
+#                                                    the payers derive from it)
 #           python -m itb manifest --stage pilot   (on the host: containers mount prereg/ read-only)
 #           docker compose --profile measure run --rm probe anchor --stage pilot   (dry-run; live
 #                                                    with --live --max-spend-lamports N, once per stage)
@@ -91,9 +94,9 @@ services:
     volumes:
       - ./data:/data
       - ./logs:/logs
-      # Manifests the anchor memo hashes (section 10); the probe only reads them.
+      # Pre-registered files and the manifests the anchor memo hashes; the probe only reads them.
       - ./prereg:/prereg:ro
-      # Spend journal (section 11): survives restarts, reconciled with the chain on start.
+      # Spend journal of the spend limit: survives restarts, reconciled with the chain on start.
       - itb-state:/state
     # Compose v5.6.1 ignores uid, gid and mode of a file secret outside Swarm and
     # mounts it with the host file's rights (0777 under Docker Desktop, measured

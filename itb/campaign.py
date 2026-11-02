@@ -62,7 +62,7 @@ def _burst(cls, rank, arm, timing, path):
 def campaign_table(seed, epochs=CAMPAIGN_EPOCHS, doubling=True):
     """The campaign table drawn from seed; the same seed gives the same table."""
     if epochs % len(prereg.TIMINGS):
-        raise ValueError("campaign: %d epochs do not split evenly over the moment conditions" % epochs)
+        raise ValueError("%d epochs do not split evenly over the moment conditions" % epochs)
     rng = random.Random("itb-campaign-table:" + seed)
     halves = 2 if doubling else 1
     first_t = {}
@@ -213,7 +213,7 @@ def seed_from_anchors(anchors):
     fixed before any pilot data existed, so no one picks it after seeing them."""
     sigs = [a["signature"] for a in anchors if a["stage"] == "pilot"]
     if len(sigs) != 1:
-        raise ValueError("campaign: %d pilot anchors, one expected" % len(sigs))
+        raise ValueError("%d pilot anchors, one expected" % len(sigs))
     return "campaign:" + sigs[0]
 
 
@@ -254,7 +254,7 @@ def slot_sigma(points):
 
 
 def pilot_minimum(runs, epochs=CAMPAIGN_EPOCHS, doubling=True):
-    """The minimum of section 5 from the pilot runs among runs."""
+    """The minimum of analysis plan section 5 from the pilot runs among runs."""
     units = [u for run in runs if run.run["stage"] == "pilot" for u in analyze.units_of(run)]
     kept = [u for u in units if not u.reasons]
     excluded = {}
@@ -385,22 +385,22 @@ def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, 
     nodes_doc, the cluster-nodes.json of the epoch's first plan, makes a plan drawn
     again after a failed run scan the same gossip, so its windows repeat exactly."""
     if epoch != panel_doc["epoch"] + epoch_index:
-        raise ValueError("campaign: epoch index %d runs only in chain epoch %d (panel epoch %d plus the index), "
+        raise ValueError("epoch index %d runs only in chain epoch %d (panel epoch %d plus the index), "
                          "not %d" % (epoch_index, panel_doc["epoch"] + epoch_index, panel_doc["epoch"], epoch))
     info = client.call("getEpochInfo", [{"commitment": "confirmed"}])
     now_slot = info["absoluteSlot"]
     slots = info["slotsInEpoch"]
     if epoch < info["epoch"]:
-        raise ValueError("campaign: chain epoch %d has passed (now %d); epoch index %d draws no more rounds, "
+        raise ValueError("chain epoch %d has passed (now %d); epoch index %d draws no more rounds, "
                          "and its rounds that have not run are lost"
                          % (epoch, info["epoch"], epoch_index))
     if epoch > info["epoch"] + 1:
-        raise ValueError("campaign: epoch %d is neither the current epoch %d nor the next" % (epoch, info["epoch"]))
+        raise ValueError("epoch %d is neither the current epoch %d nor the next" % (epoch, info["epoch"]))
     epoch_first = now_slot - info["slotIndex"] + (epoch - info["epoch"]) * slots
     drawn_utc = plan.utc_now()
     schedule = client.call("getLeaderSchedule", [epoch_first, {"commitment": "confirmed"}])
     if not schedule:
-        raise ValueError("campaign: the leader schedule of epoch %d is not known yet" % epoch)
+        raise ValueError("the leader schedule of epoch %d is not known yet" % epoch)
     nodes = client.call("getClusterNodes", []) if nodes_doc is None else nodes_doc["nodes"]
     vote_accounts = client.call("getVoteAccounts", [{"commitment": "confirmed"}])
     tpu = {n["pubkey"]: n.get("tpuQuic") for n in nodes}
@@ -408,7 +408,7 @@ def draw(client, panel_doc, table, table_sha, manifest_sha, epoch_index, epoch, 
     notes = []
     for cls, ids in leaders.items():
         if len(ids) < panel.PER_CLASS:
-            raise ValueError("panel: class %s has %d leaders" % (cls, len(ids)))
+            raise ValueError("panel: class %s holds %d of the %d leaders it needs" % (cls, len(ids), panel.PER_CLASS))
         notes.extend("panel leader %s of %s has no tpuQuic in gossip now" % (i, cls) for i in ids if not tpu.get(i))
     passing = {}
     for first, _, leader, passes in panel.scan(schedule, epoch_first, tpu):
