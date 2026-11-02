@@ -1,6 +1,7 @@
-"""Generated tables of REPORT.md (plan sections 8 and 9).
+"""Generated tables of REPORT.md and DETAILS.md (plan sections 8 and 9).
 
-REPORT.md is prose with generated blocks in it. A block runs from the line
+REPORT.md and DETAILS.md are prose with generated blocks in them, each block in
+exactly one of the two files. A block runs from the line
 <!-- itb:begin NAME --> to the line <!-- itb:end NAME -->, and everything
 between the two comes from blocks(): after a new run `python -m itb report`
 rewrites the numbers and leaves the prose alone, and `python -m itb report
@@ -359,6 +360,27 @@ def cells_block(result):
                    "Violated pair share (95% CI)"], rows)
 
 
+FORM_COLUMNS = [(arm, timing) for arm in ("independent", "shared", "equal_fee", "denominator")
+                for timing in ("pre300", "slot2")]
+
+
+def forms_block(result):
+    """Form of each class and cell on one screen, with its violated pair share in brackets;
+    the cells block holds the taus behind each form."""
+    if result is None:
+        return NO_RUNS
+    by, order = {}, []
+    for c in result["cells"]:
+        if c["class"] not in by:
+            by[c["class"]] = {}
+            order.append(c["class"])
+        st = c["strictness"]
+        by[c["class"]][(c["arm"], c["timing"])] = "%s%s%s" % (
+            c["form"], " " + c["detail"] if c["detail"] else "", " (%.2f)" % st["share"] if st else "")
+    rows = [[cls] + [by[cls].get(col, "-") for col in FORM_COLUMNS] for cls in order]
+    return _table(["Class"] + ["%s %s" % col for col in FORM_COLUMNS], rows)
+
+
 def inclusion_block(result):
     if result is None:
         return NO_RUNS
@@ -475,7 +497,7 @@ def timing_block(items):
 
 
 def labels_block(items):
-    """Bursts whose leader showed another clientId than at selection (README, leader types)."""
+    """Bursts whose leader showed another clientId than at selection (DESIGN.md, leader types)."""
     mine = [it for it in items if it.unit.burst["path"] == "quic"]
     if not mine:
         return NO_RUNS
@@ -492,7 +514,7 @@ def labels_block(items):
 
 def elsewhere_block(runs):
     """Where delivered probes landed, per path and moment condition and per class of the target
-    (README, interaction of probes)."""
+    (DESIGN.md, interaction of probes)."""
     acc, by_class = {}, {}
     for r in runs:
         for sig, p in r.probes.items():
@@ -982,10 +1004,13 @@ def blocks(data_dir, repo_dir):
         items = _items(chosen)
         out[stage + "-exclusions"] = exclusions_block(result)
         out[stage + "-cells"] = cells_block(result)
+        if stage == "campaign":
+            out[stage + "-forms"] = forms_block(result)
+            # H3 and H4 belong to the campaign addendum; the pilot reads no verdict.
+            out[stage + "-hypotheses"] = hypotheses_block(result)
         out[stage + "-inclusion"] = inclusion_block(result)
         out[stage + "-rounds"] = rounds_block(result)
         out[stage + "-pairs"] = pairs_block(result)
-        out[stage + "-hypotheses"] = hypotheses_block(result)
         out[stage + "-timing"] = timing_block(items)
         out[stage + "-labels"] = labels_block(items)
         out[stage + "-elsewhere"] = elsewhere_block(chosen)
@@ -996,6 +1021,24 @@ def blocks(data_dir, repo_dir):
         out[stage + "-epochs"] = epochs_block(items)
         out[stage + "-competition"] = competition_block(items, data_dir)
         out[stage + "-control"] = control_block(items) if chosen else NO_RUNS
+    return out
+
+
+def placement(texts, generated):
+    """Lines naming each generated block that stands in none of the report files or in more
+    than one; the report is split over files, and a block must not drop out or repeat."""
+    seen = {}
+    for text in texts:
+        for name, _ in split(text):
+            if name is not None:
+                seen[name] = seen.get(name, 0) + 1
+    out = []
+    lost = sorted(n for n in generated if n not in seen)
+    twice = sorted(n for n, k in seen.items() if k > 1)
+    if lost:
+        out.append("blocks in no report file: " + ", ".join(lost))
+    if twice:
+        out.append("blocks in more than one place: " + ", ".join(twice))
     return out
 
 

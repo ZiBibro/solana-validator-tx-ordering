@@ -1,6 +1,6 @@
 """The builder's tick mark over one whole epoch.
 
-README rests the builder classes on a mark in the block: market-tick
+DESIGN.md rests the builder classes on a mark in the block: market-tick
 transactions signed by BAMgx3XP... in slots of BAM leaders and by
 Harmonic8So... in slots of Harmonic leaders. Five samples on 2026-10-26 showed
 it; this script measures it over a random sample of every class's slots in one
@@ -39,7 +39,7 @@ from itb import chain, prereg, rpc  # noqa: E402
 BAM_SIGNER = "BAMgx3XPWrXkNUuQiVWUZU6eB2HQZdwz9HNnT4tpo8LG"
 HARMONIC_SIGNER = "Harmonic8SoAfZixJqUxxdSeyWzr6q7XFjuiXS5Z2zPg"
 BAM_CLASSES = ("AgaveBam", "FireBAM")
-# The BAM node whose leaders post no ticks (README); its leaders stay out of the panel.
+# The BAM node whose leaders post no ticks (DESIGN.md); its leaders stay out of the panel.
 SILENT_BAM_HOST = "88.216.192.50"
 DEFAULT_RPC = "https://api.mainnet-beta.solana.com"
 Z95 = 1.959964

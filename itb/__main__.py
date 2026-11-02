@@ -4,7 +4,7 @@
     python -m itb selftest         known-answer checks only
     python -m itb verify           re-read every recorded signature from the chain
     python -m itb analyze          recompute every REPORT table from raw data
-    python -m itb report           write the generated tables into REPORT.md; --check only compares
+    python -m itb report           write the generated tables into REPORT.md and DETAILS.md; --check only compares
     python -m itb claim <block>    print one generated REPORT block, recomputed from raw data
     python -m itb collect [run]    write inclusion and slot rows of runs from the chain
     python -m itb check-raw FILE   validate raw files against schema/raw-format.json
@@ -43,7 +43,8 @@ DEFAULT_RPC = "https://api.mainnet-beta.solana.com"
 DEFAULT_TABLE = os.path.join(REPO_DIR, "prereg", "pilot-table.json")
 DEFAULT_CAMPAIGN_TABLE = os.path.join(REPO_DIR, "prereg", "campaign-table.json")
 DEFAULT_MINIMUM = os.path.join(REPO_DIR, "prereg", "campaign-minimum.json")
-DEFAULT_REPORT = os.path.join(REPO_DIR, "REPORT.md")
+# REPORT.md is the short report and DETAILS.md every other table; each block stands in exactly one of them.
+DEFAULT_REPORTS = (os.path.join(REPO_DIR, "REPORT.md"), os.path.join(REPO_DIR, "DETAILS.md"))
 
 
 def _not_ready(name, when):
@@ -106,33 +107,47 @@ def cmd_analyze(args):
     return EXIT_OK
 
 
-def _report_file(args):
-    return getattr(args, "file", None) or DEFAULT_REPORT
+def _report_files(args):
+    return [args.file] if getattr(args, "file", None) else list(DEFAULT_REPORTS)
 
 
 def cmd_report(args):
-    path = _report_file(args)
-    if not os.path.exists(path):
-        print("report: no " + path, file=sys.stderr)
+    paths = _report_files(args)
+    missing = [p for p in paths if not os.path.exists(p)]
+    if missing:
+        print("report: no " + ", ".join(missing), file=sys.stderr)
         return EXIT_NOT_READY
-    with open(path, encoding="utf-8") as f:
-        text = f.read()
+    texts = {}
+    for path in paths:
+        with open(path, encoding="utf-8") as f:
+            texts[path] = f.read()
+    generated = report.blocks(_data_dir(args), REPO_DIR)
     try:
-        new, changed = report.fill(text, report.blocks(_data_dir(args), REPO_DIR))
+        filled = {path: report.fill(text, generated) for path, text in texts.items()}
+        placement = report.placement([texts[p] for p in paths], generated) if len(paths) > 1 else []
     except ValueError as e:
         print("report: " + str(e), file=sys.stderr)
         return EXIT_FAIL
+    names = " and ".join(os.path.basename(p) for p in paths)
     if getattr(args, "check", False):
-        if changed:
-            print("report: blocks differ from the raw data: " + ", ".join(changed), file=sys.stderr)
+        bad = ["%s: blocks differ from the raw data: %s" % (os.path.basename(p), ", ".join(filled[p][1]))
+               for p in paths if filled[p][1]]
+        if bad or placement:
+            for line in placement + bad:
+                print("report: " + line, file=sys.stderr)
             return EXIT_FAIL
-        print("report: every generated block of %s matches the raw data" % os.path.basename(path))
+        print("report: every generated block of %s matches the raw data" % names)
         return EXIT_OK
-    if changed:
-        with open(path, "w", encoding="utf-8", newline="\n") as f:
-            f.write(new)
-    print("report: rewrote %s" % (", ".join(changed) if changed else "nothing, every block was current"))
-    return EXIT_OK
+    for path in paths:
+        new, changed = filled[path]
+        if changed:
+            with open(path, "w", encoding="utf-8", newline="\n") as f:
+                f.write(new)
+        print("report: %s rewrote %s" % (os.path.basename(path),
+                                         ", ".join(changed) if changed else "nothing, every block was current"))
+    for line in placement:
+        print("report: " + line, file=sys.stderr)
+    return EXIT_FAIL if placement else EXIT_OK
 
 
 def cmd_report_check(args):
@@ -545,9 +560,9 @@ def main(argv=None):
     p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
     p.add_argument("--stage", action="append", help="run stage to include (default: campaign)")
     p.add_argument("--out", help="write the full result as JSON here")
-    p = sub.add_parser("report", help="write the generated tables into REPORT.md")
+    p = sub.add_parser("report", help="write the generated tables into REPORT.md and DETAILS.md")
     p.add_argument("--check", action="store_true", help="compare only; exit 1 when a block differs")
-    p.add_argument("--file", help="report file (default: REPORT.md)")
+    p.add_argument("--file", help="one report file (default: REPORT.md and DETAILS.md)")
     p.add_argument("--data", help="data directory with runs/ (default: repo data/)")
     p = sub.add_parser("claim", help="print one generated REPORT block, recomputed from raw data")
     p.add_argument("claim_id", help="block name, as in <!-- itb:begin NAME -->")

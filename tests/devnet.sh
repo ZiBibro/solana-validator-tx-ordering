@@ -69,8 +69,8 @@ draw_plan() {
 run_id_of() { sed -n 's/^itb-probe [A-Za-z-]* run \([^:]*\):.*/\1/p' "$1" | head -1; }
 echo "commit $ITB_GIT_COMMIT, transcript logs/devnet-pipeline-$stamp.txt"
 
-step "probe image (built as the README says)"
-docker image inspect inside-the-block-probe:local >/dev/null 2>&1 || { echo "build the probe image first (README)"; exit 1; }
+step "probe image (built as RUNNING.md says)"
+docker image inspect inside-the-block-probe:local >/dev/null 2>&1 || { echo "build the probe image first (RUNNING.md)"; exit 1; }
 
 step "funded public address the dry-run simulates from"
 # The identity of the validator with the most stake pays its vote fees, so it holds SOL.

@@ -43,7 +43,7 @@ const MIN_STEP_SAMPLES: usize = 5;
 /// fresh anchor. The correction is the median, over this leader's earlier windows in the
 /// stream, of the first window slot's node time minus its prediction from the last event
 /// of the window before. Both numbers below come from a firstShredReceived stream of the
-/// public mainnet node on 2026-10-28 (REPORT section 6). From 3 earlier windows on, their
+/// public mainnet node on 2026-10-28 (DETAILS.md section 6). From 3 earlier windows on, their
 /// median cuts the error of the next window about as far as longer runs do, and 3 is the
 /// shortest run whose median one outlying window cannot move. Every leader median there
 /// stays well inside the bound, while single windows run past it, so the bound stops only a

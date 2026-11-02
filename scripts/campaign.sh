@@ -26,7 +26,7 @@
 #
 # It needs the campaign anchor on chain (probe anchor --stage campaign --live) and the
 # wallet key file in ITB_WALLET_KEY_FILE, which only the probe container reads.
-# ITB_EXTRA_CA_PEM, when set, reaches the plan service (README, TLS-inspecting proxy);
+# ITB_EXTRA_CA_PEM, when set, reaches the plan service (RUNNING.md, TLS-inspecting proxy);
 # ITB_EXTRA_CA_FILE names the same root as a file, and the script passes on its text.
 # The transcript lands in logs/campaign-<stamp>.txt. scripts/channel-check.sh checks the
 # line before the start; `python -m itb channel watch --journal logs/channel-<stamp>.jsonl
