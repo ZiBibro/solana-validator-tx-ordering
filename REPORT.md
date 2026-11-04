@@ -155,7 +155,7 @@ The plan drawn at 11:55 UTC left round 3 out, since its first window 462872092 l
 
 ## 7. Other measurements of the same question
 
-Eight public repositories measured the ordering rule on mainnet after Alpenglow; the first four read on 2026-10-27, the rest on 2026-11-02.
+Nine public repositories measured the ordering rule on mainnet after Alpenglow; the first four read on 2026-10-27, the next four on 2026-11-02 and the last on 2026-11-04.
 
 - [fomoles/superteam-inside-the-block](https://github.com/fomoles/superteam-inside-the-block), epoch 1066. Probe pairs go straight to the leader's TPU. It reads the key as fee per estimated cost unit (check C6, -0.61) and Firedancer 26.10.4 giving fee ties to the later arrival, as our denominator arm and H3 do.
 - [eternally-black/alpenglow-validator-ordering](https://github.com/eternally-black/alpenglow-validator-ordering), 2026-10-24 to 2026-10-26, pre-registered in a mainnet Memo. Six core targets, five in our panel, order by Agave's `reward / (cost + 1)`, and Firedancer lands the later of two identical probes first in 50 of 54 pairs.
@@ -165,6 +165,7 @@ Eight public repositories measured the ordering rule on mainnet after Alpenglow;
 - [tempometer/inside-the-block](https://github.com/tempometer/inside-the-block), runs of 2026-10-26 and 2026-10-27 through public RPC relays whose forwarding its operator log puts at 8 to 30 s; each of its 398 rows is attributed afterwards to the leader of its landing slot.
 - [9xj89gzrtw-hue/solana-validator-block-ordering](https://github.com/9xj89gzrtw-hue/solana-validator-block-ordering), epoch 1074, passive: over 5430 transactions of other senders in 24 blocks of 6 validators, Kendall tau-b -0.0424 between `tx_index` and priority fee per compute unit, read as no fee rule. That tau mixes arrival time with bundles of many senders; our probes leave in a send order drawn apart from the fee, so the zero does not contradict our fee rule.
 - [AndrewInUA/solana-block-order](https://github.com/AndrewInUA/solana-block-order), epoch 1075, 83 included probes through Helius RPC at six validators of six classes: no fee rule (price tau -0.196 to 0.400, no p under 0.05), send order in 3 classes. Its rank sorts by slot first, while each of the 11 batches with included probes spread over two slots or more and 32 of the 83 landed outside the target's four slots, so arrival enters the rank. Our control path loses fee order through RPC too (section 4.4); the fee rule stands on direct probes waiting together before the window.
+- [ccclosed/solana-block-ordering](https://github.com/ccclosed/solana-block-ordering), epoch 1076, one run on 2026-11-03 of 312 probes in bursts of three priced 1, 10 and 100 micro-lamports per CU, sent in JSON-RPC batches. It groups leaders by version string and reads fee priority only in 4.4.0-rc.1, where 10 of 11 ascending bursts came back reversed. Its README labels 26.10.5 as Jito, while two of its 26.10.5 leaders are HarmonicFiredancer leaders of our panel. In its data the probes landed 31 to 442 slots after the targeted slot, and 6 of the 294 with a named target leader landed in that leader's slots, so its bursts measure the route together with the scheduler, as our control path does (section 4.4).
 
 ## 8. Measurement plan
 
