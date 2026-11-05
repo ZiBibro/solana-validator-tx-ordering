@@ -155,7 +155,7 @@ The plan drawn at 11:55 UTC left round 3 out, since its first window 462872092 l
 
 ## 7. Other measurements of the same question
 
-Nine public repositories measured the ordering rule on mainnet after Alpenglow; the first four read on 2026-10-27, the next four on 2026-11-02 and the last on 2026-11-04.
+Nine of the public repositories that measured the ordering rule on mainnet after Alpenglow are compared here; the first four were read on 2026-10-27, the next four on 2026-11-02 and the last on 2026-11-04.
 
 - [fomoles/superteam-inside-the-block](https://github.com/fomoles/superteam-inside-the-block), epoch 1066. Probe pairs go straight to the leader's TPU. It reads the key as fee per estimated cost unit (check C6, -0.61) and Firedancer 26.10.4 giving fee ties to the later arrival, as our denominator arm and H3 do.
 - [eternally-black/alpenglow-validator-ordering](https://github.com/eternally-black/alpenglow-validator-ordering), 2026-10-24 to 2026-10-26, pre-registered in a mainnet Memo. Six core targets, five in our panel, order by Agave's `reward / (cost + 1)`, and Firedancer lands the later of two identical probes first in 50 of 54 pairs.
