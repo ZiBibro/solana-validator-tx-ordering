@@ -1,4 +1,4 @@
-# Inside the Block
+# Solana validator transaction ordering
 
 A measurement kit for one question about Solana mainnet: by what rule each leader orders transactions inside its block, and how strictly that rule holds. "No rule" is one of the possible answers and has a test of its own. The kit sends small bursts of its own probe transactions into chosen leader windows, reads the blocks back and tests the order against rules fixed before any live data.
 
